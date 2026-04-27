@@ -3,95 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق الحلة الجامعي</title>
+    <title>تطبيق الحلة الجامعي PRO</title>
     <style>
         :root { --main: #0088cc; --bg: #f8fafd; }
-        body { font-family: sans-serif; background: var(--bg); margin: 0; padding: 0; direction: rtl; text-align: center; }
-        .header { background: #0088cc; color: white; padding: 20px; border-radius: 0 0 20px 20px; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; padding: 0; direction: rtl; }
+        .header { background: linear-gradient(135deg, #0088cc, #005588); color: white; padding: 30px; text-align: center; border-radius: 0 0 30px 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .container { padding: 20px; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .card { background: white; padding: 20px; border-radius: 15px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-weight: bold; }
-        .panel { display: none; background: white; margin: 10px; padding: 20px; border-radius: 15px; min-height: 200px; }
-        .btn-back { background: #eee; border: none; padding: 10px; width: 100%; border-radius: 10px; margin-bottom: 10px; }
-        .item { background: #f1f1f1; padding: 10px; margin: 5px 0; border-radius: 8px; display: flex; justify-content: space-between; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .card { background: white; padding: 25px 15px; border-radius: 20px; text-align: center; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid #f0f0f0; font-weight: bold; }
+        .card:active { transform: scale(0.95); background: #f0f7ff; }
+        .results-panel { display: none; background: white; border-radius: 20px; padding: 20px; margin-top: 10px; min-height: 300px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .back-btn { background: #eee; border: none; padding: 12px; border-radius: 12px; margin-bottom: 15px; cursor: pointer; width: 100%; font-weight: bold; }
+        .list-item { background: #f9f9f9; padding: 15px; border-radius: 12px; margin-bottom: 10px; border-right: 5px solid var(--main); display: flex; justify-content: space-between; align-items: center; }
+        iframe { width: 100%; height: 500px; border: none; border-radius: 15px; }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <h2>🎓 تطبيق الحلة الجامعي</h2>
-</div>
-
-<div class="container" id="mainGrid">
-    <div class="grid">
-        <div class="card" onclick="start('tips')">📢<br>نصيحة اليوم</div>
-        <div class="card" onclick="start('files')">📁<br>الملازم</div>
-        <div class="card" onclick="start('tr')">✅<br>المترجم</div>
-        <div class="card" onclick="start('exams')">⏳<br>الامتحانات</div>
+    <div class="header">
+        <h2 style="margin:0">🎓 تطبيق الحلة الجامعي</h2>
+        <p style="margin:5px; opacity:0.8">نظام التصفح الآمن</p>
     </div>
-</div>
 
-<div id="resultsPanel" class="panel">
-    <button class="btn-back" onclick="home()">🔙 رجوع</button>
-    <div id="content"></div>
-</div>
+    <div class="container">
+        <div class="grid" id="mainGrid">
+            <div class="card" onclick="openSection('files')">📁<br>الملازم</div>
+            <div class="card" onclick="openSection('tr')">✅<br>المترجم</div>
+            <div class="card" onclick="openSection('tips')">📢<br>نصيحة اليوم</div>
+            <div class="card" onclick="openSection('exams')">⏳<br>الامتحانات</div>
+        </div>
 
-<script>
-    // الرابط المباشر
-    const API = "http://fi3.bot-hosting.net:20179";
-    // البروكسي لتجاوز الحماية
-    const PROXY = "https://api.allorigins.win/get?url=";
+        <div id="resultsPanel" class="results-panel">
+            <button id="backBtn" class="back-btn" onclick="goHome()">🔙 العودة للرئيسية</button>
+            <div id="dynamicContent"></div>
+        </div>
+    </div>
 
-    async function start(type) {
-        document.getElementById('mainGrid').style.display = "none";
-        document.getElementById('resultsPanel').style.display = "block";
-        const box = document.getElementById('content');
-        box.innerHTML = "جاري التحميل... 🔄";
+    <script>
+        // الرابط مع بروكسي التشفير لضمان تجاوز حماية المتصفح
+        const API_URL = "https://api.allorigins.win/get?url=" + encodeURIComponent("http://fi3.bot-hosting.net:20179");
 
-        try {
-            let url = "";
-            if(type === 'tips') url = API + "/get_tip";
-            else if(type === 'files') url = API + "/get_categories";
-            else { box.innerHTML = "قريباً..."; return; }
 
-            const response = await fetch(PROXY + encodeURIComponent(url));
-            const data = await response.json();
-            const result = JSON.parse(data.contents);
+        async function openSection(id) {
+            // هذا التعديل ضروري لأن هذا البروكسي يغلف البيانات داخل كائن JSON
+const res = await fetch(`${API_URL}/get_tip`);
+const json = await res.json();
+const data = JSON.parse(json.contents); // هنا نستخرج النصيحة الحقيقية
+content.innerHTML = `🌟 <br> ${data.tip}`;
 
-            if(type === 'tips') {
-                box.innerHTML = `<h3>🌟 نصيحة اليوم</h3><p>${result.tip}</p>`;
-            } else if(type === 'files') {
-                box.innerHTML = "<h3>📂 الأقسام</h3>";
-                result.forEach(c => {
-                    box.innerHTML += `<div class="card" style="margin-bottom:10px" onclick="loadFiles('${c}')">${c}</div>`;
-                });
+            try {
+                if (id === 'tips') {
+                    const res = await fetch(`${API_URL}/get_tip`);
+                    const data = await res.json();
+                    content.innerHTML = `<div style="padding:40px; text-align:center; font-size:22px; line-height:1.6">🌟 <br><br> ${data.tip}</div>`;
+                } 
+                else if (id === 'files') {
+                    const res = await fetch(`${API_URL}/get_categories`);
+                    const cats = await res.json();
+                    content.innerHTML = "<h3>📂 الأقسام المتوفرة:</h3>" + 
+                        cats.map(c => `<div class="card" style="width:90%; margin-bottom:10px" onclick="loadFiles('${c}')">${c}</div>`).join('');
+                }
+                else {
+                    content.innerHTML = "<h3>قريباً...</h3><p>هذا القسم قيد التجهيز.</p>";
+                }
+            } catch (err) {
+                console.error(err);
+                content.innerHTML = `
+                    <div style="color:red; text-align:center">
+                        <p>❌ فشل الاتصال بالسيرفر.</p>
+                        <p style="font-size:12px; color:#666">تأكد من تشغيل الاستضافة واضغط "نصيحة اليوم" مرة أخرى.</p>
+                    </div>`;
             }
-        } catch (e) {
-            box.innerHTML = "❌ فشل الاتصال. تأكد من تشغيل السيرفر.";
         }
-    }
 
-    async function loadFiles(name) {
-        const box = document.getElementById('content');
-        box.innerHTML = "جاري جلب الملفات... 📄";
-        try {
-            const url = API + "/get_files/" + encodeURIComponent(name);
-            const response = await fetch(PROXY + encodeURIComponent(url));
-            const data = await response.json();
-            const files = JSON.parse(data.contents);
-            
-            box.innerHTML = `<h3>📄 ملفات ${name}</h3>`;
-            for(let f in files) {
-                box.innerHTML += `<div class="item"><span>${f}</span> <a href="${files[f]}" target="_blank">👁️ عرض</a></div>`;
-            }
-        } catch (e) { box.innerHTML = "خطأ في التحميل."; }
-    }
+        async function loadFiles(catName) {
+            const content = document.getElementById('dynamicContent');
+            content.innerHTML = "جاري جلب الملفات... 📄";
+            try {
+                const res = await fetch(`${API_URL}/get_files/${catName}`);
+                const files = await res.json();
+                let html = `<h3>📄 ملفات ${catName}:</h3>`;
+                for(let name in files) {
+                    html += `<div class="list-item" onclick="viewFile('${files[name]}', '${name}')"><span>${name}</span> <span style="color:var(--main)">👁️ عرض</span></div>`;
+                }
+                content.innerHTML = html;
+                document.getElementById('backBtn').onclick = () => openSection('files');
+            } catch (e) { content.innerHTML = "خطأ في الاتصال."; }
+        }
 
-    function home() {
-        document.getElementById('mainGrid').style.display = "block";
-        document.getElementById('resultsPanel').style.display = "none";
-    }
-</script>
+        function viewFile(url, name) {
+            const content = document.getElementById('dynamicContent');
+            content.innerHTML = `<div style="margin-bottom:10px; font-weight:bold">👀 عرض: ${name}</div><iframe src="${url}"></iframe>`;
+            document.getElementById('backBtn').onclick = () => openSection('files');
+        }
 
+        function goHome() {
+            document.getElementById('mainGrid').style.display = "grid";
+            document.getElementById('resultsPanel').style.display = "none";
+            document.getElementById('backBtn').onclick = goHome;
+        }
+    </script>
 </body>
 </html>
