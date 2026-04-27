@@ -3,50 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق الخدمات الجامعية</title>
+    <title>تطبيق الحلة الجامعي المطور</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f9; margin: 0; padding: 20px; color: #333; }
-        .header { background: linear-gradient(135deg, #0088cc, #005588); color: white; padding: 30px 20px; border-radius: 20px; text-align: center; margin-bottom: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .btn-container { display: flex; flex-direction: column; gap: 15px; }
-        .app-btn { background: white; border: none; padding: 20px; border-radius: 15px; font-size: 18px; font-weight: bold; color: #005588; cursor: pointer; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: 0.3s; }
-        .app-btn:active { transform: scale(0.98); background-color: #eef5f9; }
-        .icon { font-size: 24px; }
+        :root { --main-color: #0088cc; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--tg-theme-bg-color, #f4f7f9); color: var(--tg-theme-text-color, #222); margin: 0; padding: 15px; }
+        
+        /* شريط البحث */
+        .search-box { background: white; padding: 10px; border-radius: 12px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .search-box input { border: none; width: 100%; padding: 10px; font-size: 16px; outline: none; }
+
+        /* البطاقات */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .card { background: white; padding: 20px; border-radius: 15px; text-align: center; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #eee; }
+        .card:active { transform: scale(0.95); }
+        .card i { font-size: 30px; display: block; margin-bottom: 10px; }
+        .card span { font-weight: bold; font-size: 14px; }
+
+        /* الأقسام المخفية للبحث */
+        .item-list { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>🎓 تطبيق الحلة الجامعي</h1>
-        <p>كل خدماتك في شاشة واحدة</p>
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="🔍 ابحث عن ملزمة، مادة، أو أمر..." onkeyup="search()">
     </div>
 
-    <div class="btn-container">
-        <button class="app-btn" onclick="sendToBot('show_files')">
-            <span>📁 قسم الملفات والملازم</span>
-            <span class="icon">〉</span>
-        </button>
-
-        <button class="app-btn" onclick="sendToBot('show_alarms')">
-            <span>⏰ إدارة منبهاتي</span>
-            <span class="icon">〉</span>
-        </button>
-
-        <button class="app-btn" onclick="sendToBot('show_games')">
-            <span>🎮 ساحة الألعاب</span>
-            <span class="icon">〉</span>
-        </button>
+    <div class="grid" id="mainGrid">
+        <div class="card" onclick="send('files')"><i>📂</i><span>الملازم والملفات</span></div>
+        <div class="card" onclick="send('alarms')"><i>⏰</i><span>المنبهات</span></div>
+        <div class="card" onclick="send('games')"><i>🎮</i><span>ساحة الألعاب</span></div>
+        <div class="card" onclick="send('settings')"><i>⚙️</i><span>الإعدادات</span></div>
     </div>
+
+    <div id="searchResults" style="margin-top: 20px;"></div>
 
     <script>
-        // تهيئة تطبيق تليجرام
         const tg = window.Telegram.WebApp;
-        tg.expand(); // فتح التطبيق بملء الشاشة
-        tg.MainButton.setText("إغلاق التطبيق").show().onClick(() => tg.close());
+        tg.expand();
 
-        function sendToBot(command) {
-            // إرسال الأمر للبوت وإغلاق النافذة
-            tg.sendData(command);
+        // ميزة البحث الذكي
+        const items = [
+            {name: "ملزمة الرياضيات", cmd: "file_math"},
+            {name: "محاضرات الحاسوب", cmd: "file_pc"},
+            {name: "ضبط منبه جديد", cmd: "set_alarm"},
+            {name: "لعبة X و O", cmd: "play_xo"}
+        ];
+
+        function search() {
+            let input = document.getElementById('searchInput').value.toLowerCase();
+            let results = document.getElementById('searchResults');
+            let grid = document.getElementById('mainGrid');
+            
+            if(input.length > 0) {
+                grid.style.display = "none";
+                results.innerHTML = items.filter(i => i.name.toLowerCase().includes(input))
+                    .map(i => `<div class="card" style="width:100%; margin-bottom:10px" onclick="send('${i.cmd}')">${i.name}</div>`).join('');
+            } else {
+                grid.style.display = "grid";
+                results.innerHTML = "";
+            }
+        }
+
+        function send(cmd) {
+            tg.sendData(cmd);
         }
     </script>
 </body>
