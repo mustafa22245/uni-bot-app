@@ -4,29 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تطبيق الحلة الجامعي</title>
-    <meta name="theme-color" content="#0088cc">
-    
     <style>
         :root { --main: #0088cc; --bg: #f8fafd; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 0; direction: rtl; }
-        
-        .header { background: linear-gradient(135deg, #0088cc, #005588); color: white; padding: 30px 20px; text-align: center; border-radius: 0 0 30px 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        
+        body { font-family: sans-serif; background: var(--bg); margin: 0; padding: 0; direction: rtl; }
+        .header { background: linear-gradient(135deg, #0088cc, #005588); color: white; padding: 30px; text-align: center; border-radius: 0 0 30px 30px; }
         .container { padding: 20px; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        
-        .card { background: white; padding: 25px 15px; border-radius: 20px; text-align: center; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid #f0f0f0; }
-        .card:active { transform: scale(0.95); background: #f0f7ff; }
-        .card i { font-size: 40px; display: block; margin-bottom: 10px; }
-        .card span { font-weight: bold; color: #333; }
-
-        .results-panel { display: none; background: white; border-radius: 20px; padding: 20px; margin-top: 10px; min-height: 300px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .back-btn { background: #eee; border: none; padding: 12px; border-radius: 12px; margin-bottom: 15px; cursor: pointer; width: 100%; font-weight: bold; }
-        
-        .list-item { background: #f9f9f9; padding: 15px; border-radius: 12px; margin-bottom: 10px; border-right: 4px solid var(--main); display: flex; justify-content: space-between; align-items: center; }
+        .card { background: white; padding: 25px; border-radius: 20px; text-align: center; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05); font-weight: bold; }
+        .results-panel { display: none; background: white; border-radius: 20px; padding: 20px; margin-top: 10px; min-height: 300px; }
+        .back-btn { background: #eee; border: none; padding: 12px; width: 100%; border-radius: 12px; margin-bottom: 15px; cursor: pointer; font-weight: bold; }
+        .list-item { background: #f9f9f9; padding: 15px; border-radius: 12px; margin-bottom: 10px; border-right: 5px solid var(--main); display: flex; justify-content: space-between; align-items: center; }
         iframe { width: 100%; height: 500px; border: none; border-radius: 15px; }
-        
-        textarea { width: 100%; height: 100px; border-radius: 15px; padding: 10px; border: 1px solid #ddd; box-sizing: border-box; }
     </style>
 </head>
 <body>
@@ -38,14 +26,14 @@
 
     <div class="container">
         <div class="grid" id="mainGrid">
-            <div class="card" onclick="openSection('files')"><i>📁</i><span>الملازم</span></div>
-            <div class="card" onclick="openSection('tr')"><i>✅</i><span>المترجم</span></div>
-            <div class="card" onclick="openSection('exams')"><i>⏳</i><span>الامتحانات</span></div>
-            <div class="card" onclick="openSection('tips')"><i>📢</i><span>نصيحة اليوم</span></div>
+            <div class="card" onclick="openSection('files')">📁<br>الملازم</div>
+            <div class="card" onclick="openSection('tr')">✅<br>المترجم</div>
+            <div class="card" onclick="openSection('tips')">📢<br>نصيحة اليوم</div>
+            <div class="card" onclick="openSection('exams')">⏳<br>الامتحانات</div>
         </div>
 
         <div id="resultsPanel" class="results-panel">
-            <button id="mainBackBtn" class="back-btn" onclick="goHome()">🔙 العودة للرئيسية</button>
+            <button id="backBtn" class="back-btn" onclick="goHome()">🔙 العودة للرئيسية</button>
             <div id="dynamicContent"></div>
         </div>
     </div>
@@ -70,21 +58,16 @@
                     content.innerHTML = "<h3>📂 الأقسام الجامعية:</h3>" + 
                         cats.map(c => `<div class="card" style="width:90%; margin-bottom:10px" onclick="loadFiles('${c}')">${c}</div>`).join('');
                 } 
-                else if (id === 'tr') {
-                    content.innerHTML = `
-                        <h3>✅ المترجم الفوري</h3>
-                        <textarea id="trInput" placeholder="اكتب النص هنا..."></textarea>
-                        <button class="card" style="width:100%; background:var(--main); color:white; margin-top:10px" onclick="runTranslation()">ترجم الآن</button>
-                        <div id="trOutput" style="margin-top:20px; padding:15px; background:#f0f7ff; border-radius:12px; font-weight:bold"></div>
-                    `;
-                }
                 else if (id === 'tips') {
                     const res = await fetch(`${API_URL}/get_tip`);
                     const data = await res.json();
-                    content.innerHTML = `<div style="padding:40px; text-align:center; font-size:20px">🌟 <br><br> ${data.tip}</div>`;
+                    content.innerHTML = `<div style="padding:40px; text-align:center; font-size:20px; line-height:1.6">🌟 <br><br> ${data.tip}</div>`;
+                }
+                else {
+                    content.innerHTML = "<h3>قريباً...</h3><p>هذا القسم قيد التطوير.</p>";
                 }
             } catch (err) {
-                content.innerHTML = "<p style='color:red; text-align:center'>❌ فشل الاتصال بالسيرفر. تأكد من تشغيل الاستضافة واستخدام رابط HTTPS.</p>";
+                content.innerHTML = "<p style='color:red; text-align:center'>❌ فشل الاتصال بالسيرفر. تأكد من تشغيل الاستضافة.</p>";
             }
         }
 
@@ -99,31 +82,19 @@
                 html += `<div class="list-item" onclick="viewFile('${files[name]}', '${name}')"><span>${name}</span> <span style="color:var(--main)">👁️ عرض</span></div>`;
             }
             content.innerHTML = html;
-            document.getElementById('mainBackBtn').onclick = () => openSection('files');
+            document.getElementById('backBtn').onclick = () => openSection('files');
         }
 
         function viewFile(url, name) {
             const content = document.getElementById('dynamicContent');
-            content.innerHTML = `
-                <div style="margin-bottom:10px; font-weight:bold">👀 عرض: ${name}</div>
-                <iframe src="${url}"></iframe>
-            `;
-            document.getElementById('mainBackBtn').onclick = () => openSection('files');
-        }
-
-        async function runTranslation() {
-            const text = document.getElementById('trInput').value;
-            const output = document.getElementById('trOutput');
-            output.innerText = "جاري الترجمة... ⏳";
-            const res = await fetch(`${API_URL}/translate?text=${encodeURIComponent(text)}`);
-            const data = await res.json();
-            output.innerText = data.result;
+            content.innerHTML = `<div style="margin-bottom:10px; font-weight:bold">👀 عرض: ${name}</div><iframe src="${url}"></iframe>`;
+            document.getElementById('backBtn').onclick = () => openSection('files');
         }
 
         function goHome() {
             document.getElementById('mainGrid').style.display = "grid";
             document.getElementById('resultsPanel').style.display = "none";
-            document.getElementById('mainBackBtn').onclick = goHome;
+            document.getElementById('backBtn').onclick = goHome;
         }
     </script>
 </body>
