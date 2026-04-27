@@ -22,7 +22,7 @@
 
     <div class="header">
         <h2 style="margin:0">🎓 تطبيق الحلة الجامعي</h2>
-        <p style="margin:5px; opacity:0.8">نظام التصفح الآمن</p>
+        <p style="margin:5px; opacity:0.8">نظام التصفح المطور</p>
     </div>
 
     <div class="container">
@@ -40,31 +40,33 @@
     </div>
 
     <script>
-        // الرابط مع بروكسي التشفير لضمان تجاوز حماية المتصفح
-        const API_URL = "https://api.allorigins.win/get?url=" + encodeURIComponent("http://fi3.bot-hosting.net:20179"); 
+        // الرابط المطور مع بروكسي التشفير
+        const API_URL = "https://api.allorigins.win/get?url=" + encodeURIComponent("http://fi3.bot-hosting.net:20179");
 
         async function openSection(id) {
-            const res = await fetch(`${API_URL}/get_tip`);
-const json = await res.json();
-const data = JSON.parse(json.contents); // هنا نستخرج النصيحة الحقيقية
-content.innerHTML = `🌟 <br> ${data.tip}`;
-            try {
-    if (id === 'tips') {
-        const res = await fetch(`${API_URL}/get_tip`);
-        const json = await res.json();
-        
-        // إذا كنت تستخدم corsproxy.io، البيانات تأتي مباشرة
-        // إذا كنت تستخدم allorigins، نحتاج لاستخدام json.contents
-        const data = json.contents ? JSON.parse(json.contents) : json;
-        
-        content.innerHTML = `<div style="padding:40px; text-align:center; font-size:22px;">🌟 <br><br> ${data.tip}</div>`;
-    } 
-    // نفس المنطق لبقية الأقسام (files, categories... الخ)
-}
+            const grid = document.getElementById('mainGrid');
+            const panel = document.getElementById('resultsPanel');
+            const content = document.getElementById('dynamicContent');
 
+            grid.style.display = "none";
+            panel.style.display = "block";
+            content.innerHTML = "<p style='text-align:center'>جاري الاتصال بالسيرفر... 🔄</p>";
+
+            try {
+                if (id === 'tips') {
+                    // طلب البيانات عبر البروكسي
+                    const res = await fetch(`${API_URL}/get_tip`);
+                    const json = await res.json();
+                    // فك تغليف البيانات (حل مشكلة undefined)
+                    const data = JSON.parse(json.contents);
+                    
+                    content.innerHTML = `<div style="padding:40px; text-align:center; font-size:22px; line-height:1.6">🌟 <br><br> ${data.tip}</div>`;
+                } 
                 else if (id === 'files') {
                     const res = await fetch(`${API_URL}/get_categories`);
-                    const cats = await res.json();
+                    const json = await res.json();
+                    const cats = JSON.parse(json.contents);
+                    
                     content.innerHTML = "<h3>📂 الأقسام المتوفرة:</h3>" + 
                         cats.map(c => `<div class="card" style="width:90%; margin-bottom:10px" onclick="loadFiles('${c}')">${c}</div>`).join('');
                 }
@@ -73,11 +75,7 @@ content.innerHTML = `🌟 <br> ${data.tip}`;
                 }
             } catch (err) {
                 console.error(err);
-                content.innerHTML = `
-                    <div style="color:red; text-align:center">
-                        <p>❌ فشل الاتصال بالسيرفر.</p>
-                        <p style="font-size:12px; color:#666">تأكد من تشغيل الاستضافة واضغط "نصيحة اليوم" مرة أخرى.</p>
-                    </div>`;
+                content.innerHTML = `<p style="color:red; text-align:center">❌ فشل في قراءة البيانات. تأكد من تشغيل الاستضافة.</p>`;
             }
         }
 
@@ -86,7 +84,9 @@ content.innerHTML = `🌟 <br> ${data.tip}`;
             content.innerHTML = "جاري جلب الملفات... 📄";
             try {
                 const res = await fetch(`${API_URL}/get_files/${catName}`);
-                const files = await res.json();
+                const json = await res.json();
+                const files = JSON.parse(json.contents);
+                
                 let html = `<h3>📄 ملفات ${catName}:</h3>`;
                 for(let name in files) {
                     html += `<div class="list-item" onclick="viewFile('${files[name]}', '${name}')"><span>${name}</span> <span style="color:var(--main)">👁️ عرض</span></div>`;
