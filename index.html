@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق الحلة الجامعي - لوحة الإدارة</title>
+    <title>تطبيق الحلة الجامعي - النسخة المستقرة</title>
     <style>
         :root { --main: #0088cc; --bg: #f8fafd; }
         body { font-family: sans-serif; background: var(--bg); margin: 0; padding: 0; direction: rtl; }
@@ -18,8 +18,8 @@
         iframe { width: 100%; height: 500px; border: none; border-radius: 15px; }
         
         /* تصميم لوحة الإدارة */
-        #adminPanel { background: #2c3e50 !important; color: white; }
-        .admin-input { width: 100%; padding: 10px; margin: 5px 0; border-radius: 10px; border: none; box-sizing: border-box; }
+        #adminPanel { background: #2c3e50 !important; color: white; display: none; }
+        .admin-input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: none; box-sizing: border-box; }
         .admin-btn { width: 100%; padding: 12px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; margin-top: 10px; }
     </style>
 </head>
@@ -27,7 +27,7 @@
 
     <div class="header">
         <h2 style="margin:0">🎓 تطبيق الحلة الجامعي</h2>
-        <p style="margin:5px; opacity:0.8">نظام الإدارة المتكامل ✅</p>
+        <p style="margin:5px; opacity:0.8">نظام الإدارة المطور ✅</p>
     </div>
 
     <div class="container">
@@ -39,26 +39,22 @@
         </div>
 
         <div id="resultsPanel" class="results-panel">
-            <button id="backBtn" class="back-btn" onclick="goHome()">🔙 العودة للرئيسية</button>
+            <button class="back-btn" onclick="goHome()">🔙 العودة للرئيسية</button>
             <div id="dynamicContent"></div>
         </div>
 
         <div id="adminPanel" class="results-panel">
             <button class="back-btn" onclick="goHome()">❌ إغلاق اللوحة</button>
             <h3>🛠️ لوحة تحكم الإدارة</h3>
-            
-            <label>إضافة نصيحة جديدة:</label>
-            <input type="text" id="newTip" class="admin-input" placeholder="اكتب النصيحة هنا...">
-            <button class="admin-btn" style="background:#3498db; color:white;" onclick="addTip()">➕ إضافة النصيحة للقائمة</button>
-            
+            <label>إضافة نصيحة:</label>
+            <input type="text" id="newTip" class="admin-input" placeholder="اكتب النصيحة...">
+            <button class="admin-btn" style="background:#3498db; color:white;" onclick="addTip()">➕ إضافة للنظام</button>
             <hr style="margin:20px 0;">
-            
-            <label>إضافة قسم/ملف جديد:</label>
-            <input type="text" id="newCat" class="admin-input" placeholder="اسم القسم (مثلاً: رياضيات)">
-            <input type="text" id="fileName" class="admin-input" placeholder="اسم الملف">
-            <input type="text" id="fileUrl" class="admin-input" placeholder="رابط الملف PDF">
-            
-            <button class="admin-btn" style="background:#27ae60; color:white;" onclick="saveEntry()">💾 حفظ ونشر التعديلات</button>
+            <label>إضافة ملف:</label>
+            <input type="text" id="newCat" class="admin-input" placeholder="اسم القسم">
+            <input type="text" id="fileName" class="admin-input" placeholder="اسم الملزمة">
+            <input type="text" id="fileUrl" class="admin-input" placeholder="رابط PDF">
+            <button class="admin-btn" style="background:#27ae60; color:white;" onclick="saveEntry()">💾 حفظ ونشر الآن</button>
         </div>
 
         <div style="text-align:center; padding:20px;">
@@ -71,80 +67,82 @@
         const PROXY = "https://api.allorigins.win/get?url=";
         let currentDB = { categories: {}, tips: [] };
 
-        // 1. جلب البيانات من السيرفر
+        // جلب البيانات
         async function getData(path) {
             const res = await fetch(PROXY + encodeURIComponent(API_URL + path));
             const json = await res.json();
             return JSON.parse(json.contents);
         }
 
-        // 2. فتح الأقسام للطلاب
+        // فتح أقسام الطلاب
         async function openSection(id) {
-            const grid = document.getElementById('mainGrid');
-            const panel = document.getElementById('resultsPanel');
+            document.getElementById('mainGrid').style.display = "none";
+            document.getElementById('resultsPanel').style.display = "block";
             const content = document.getElementById('dynamicContent');
-            grid.style.display = "none";
-            panel.style.display = "block";
             content.innerHTML = "جاري التحميل... 🔄";
-
             try {
                 if (id === 'tips') {
                     const data = await getData('/get_tip');
-                    content.innerHTML = `<div style="padding:40px; text-align:center; font-size:22px;">🌟 <br><br> ${data.tip}</div>`;
+                    content.innerHTML = `<div style="padding:40px; text-align:center; font-size:20px;">🌟<br><br>${data.tip}</div>`;
                 } else if (id === 'files') {
                     const cats = await getData('/get_categories');
-                    content.innerHTML = "<h3>📂 الأقسام:</h3>";
-                    cats.forEach(c => {
-                        content.innerHTML += `<div class="card" style="width:90%; margin-bottom:10px" onclick="loadFiles('${c}')">${c}</div>`;
-                    });
+                    content.innerHTML = "<h3>📂 الأقسام:</h3>" + cats.map(c => `<div class="card" style="width:90%; margin:10px auto" onclick="loadFiles('${c}')">${c}</div>`).join('');
                 } else { content.innerHTML = "قريباً..."; }
             } catch (e) { content.innerHTML = "❌ فشل الاتصال."; }
         }
 
-        // 3. لوحة التحكم (Admin)
+        // لوحة التحكم
         async function openAdmin() {
             document.getElementById('mainGrid').style.display = "none";
             document.getElementById('adminPanel').style.display = "block";
-            // جلب البيانات الحالية لتعديلها
-            try {
-                currentDB = await getData('/get_db');
-            } catch(e) { console.log("Starting with empty DB"); }
+            try { currentDB = await getData('/get_db'); } catch(e) {}
         }
 
         function addTip() {
             const tip = document.getElementById('newTip').value;
-            if(tip) {
-                currentDB.tips.push(tip);
-                alert("تمت إضافة النصيحة، لا تنسَ الضغط على 'حفظ ونشر'");
-                document.getElementById('newTip').value = "";
-            }
+            if(tip) { currentDB.tips.push(tip); alert("تمت الإضافة للقائمة المؤقتة"); document.getElementById('newTip').value = ""; }
         }
 
         async function saveEntry() {
             const cat = document.getElementById('newCat').value;
             const name = document.getElementById('fileName').value;
             const url = document.getElementById('fileUrl').value;
-
             if(cat && name && url) {
                 if(!currentDB.categories[cat]) currentDB.categories[cat] = {};
                 currentDB.categories[cat][name] = url;
             }
-
-            // إرسال البيانات للسيرفر (POST)
             try {
                 const response = await fetch(API_URL + "/save_db", {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(currentDB)
                 });
-                const res = await response.json();
-                alert("✅ تم الحفظ والنشر بنجاح!");
+                alert("✅ تم التحديث بنجاح!");
                 goHome();
-            } catch (e) {
-                alert("❌ فشل الحفظ. تأكد من فتح رابط السيرفر يدوياً والسماح بالاتصال.");
-            }
+            } catch (e) { alert("❌ خطأ في الحفظ"); }
         }
 
+        async function loadFiles(catName) {
+            const content = document.getElementById('dynamicContent');
+            content.innerHTML = "جاري التحميل... 📄";
+            const files = await getData('/get_files/' + encodeURIComponent(catName));
+            let html = `<h3>📄 ملفات ${catName}:</h3>`;
+            for(let n in files) { html += `<div class="list-item" onclick="viewFile('${files[n]}','${n}')"><span>${n}</span><span>👁️ عرض</span></div>`; }
+            content.innerHTML = html;
+        }
+
+        function viewFile(url, name) {
+            document.getElementById('dynamicContent').innerHTML = `<h4>👀 ${name}</h4><iframe src="${url}"></iframe>`;
+        }
+
+        function goHome() {
+            document.getElementById('mainGrid').style.display = "grid";
+            document.getElementById('resultsPanel').style.display = "none";
+            document.getElementById('adminPanel').style.display = "none";
+        }
+    </script>
+</body>
+</html>
         // 4. وظائف الملازم والرجوع
         async function loadFiles(catName) {
             const content = document.getElementById('dynamicContent');
