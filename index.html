@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق الخدمات الجامعية</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f9; margin: 0; padding: 20px; color: #333; }
+        .header { background: linear-gradient(135deg, #0088cc, #005588); color: white; padding: 30px 20px; border-radius: 20px; text-align: center; margin-bottom: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .btn-container { display: flex; flex-direction: column; gap: 15px; }
+        .app-btn { background: white; border: none; padding: 20px; border-radius: 15px; font-size: 18px; font-weight: bold; color: #005588; cursor: pointer; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: 0.3s; }
+        .app-btn:active { transform: scale(0.98); background-color: #eef5f9; }
+        .icon { font-size: 24px; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>🎓 تطبيق الحلة الجامعي</h1>
+        <p>كل خدماتك في شاشة واحدة</p>
+    </div>
+
+    <div class="btn-container">
+        <button class="app-btn" onclick="sendToBot('show_files')">
+            <span>📁 قسم الملفات والملازم</span>
+            <span class="icon">〉</span>
+        </button>
+
+        <button class="app-btn" onclick="sendToBot('show_alarms')">
+            <span>⏰ إدارة منبهاتي</span>
+            <span class="icon">〉</span>
+        </button>
+
+        <button class="app-btn" onclick="sendToBot('show_games')">
+            <span>🎮 ساحة الألعاب</span>
+            <span class="icon">〉</span>
+        </button>
+    </div>
+
+    <script>
+        // تهيئة تطبيق تليجرام
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // فتح التطبيق بملء الشاشة
+        tg.MainButton.setText("إغلاق التطبيق").show().onClick(() => tg.close());
+
+        function sendToBot(command) {
+            // إرسال الأمر للبوت وإغلاق النافذة
+            tg.sendData(command);
+        }
+    </script>
+</body>
+</html>
