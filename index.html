@@ -9,7 +9,7 @@
     
     <style>
         :root { --main: #0088cc; --bg: #f8fafd; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; padding: 0; direction: rtl; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; padding: 0; direction: rtl; overflow-x: hidden; }
         
         /* Header */
         .header { background: linear-gradient(135deg, #0088cc, #005588); color: white; padding: 30px 20px; text-align: center; border-radius: 0 0 30px 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
@@ -17,7 +17,7 @@
         /* Search */
         .search-container { padding: 0 20px; margin-top: -25px; }
         .search-box { background: white; padding: 5px 15px; border-radius: 15px; display: flex; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .search-box input { border: none; width: 100%; padding: 12px; font-size: 16px; outline: none; }
+        .search-box input { border: none; width: 100%; padding: 12px; font-size: 16px; outline: none; background: transparent; }
 
         /* Grid Layout */
         .container { padding: 20px; }
@@ -28,22 +28,26 @@
         .card span { font-weight: bold; color: #333; }
 
         /* Results Area */
-        .results-panel { display: none; background: white; border-radius: 20px; padding: 20px; margin-top: 10px; min-height: 300px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .back-btn { background: #eee; border: none; padding: 10px 20px; border-radius: 10px; margin-bottom: 15px; cursor: pointer; width: 100%; font-weight: bold; }
+        .results-panel { display: none; background: white; border-radius: 20px; padding: 20px; margin-top: 10px; min-height: 400px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .back-btn { background: #f0f0f0; border: none; padding: 12px; border-radius: 12px; margin-bottom: 15px; cursor: pointer; width: 100%; font-weight: bold; color: #555; }
         
-        .list-item { background: #f9f9f9; padding: 15px; border-radius: 12px; margin-bottom: 10px; border-right: 4px solid var(--main); display: flex; justify-content: space-between; }
+        .list-item { background: #f9f9f9; padding: 15px; border-radius: 12px; margin-bottom: 10px; border-right: 4px solid var(--main); display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        
+        /* PDF Viewer Container */
+        .viewer-container { width: 100%; height: 550px; border-radius: 15px; overflow: hidden; border: 1px solid #ddd; margin-top: 10px; }
+        iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
 
     <div class="header">
         <h2 style="margin:0">🎓 تطبيق الحلة الجامعي</h2>
-        <p style="margin:5px; opacity:0.8">الإصدار المستقل V10</p>
+        <p style="margin:5px; opacity:0.8">نظام المشاهدة الفورية</p>
     </div>
 
     <div class="search-container">
         <div class="search-box">
-            <input type="text" id="searchInput" placeholder="🔍 ابحث عن ملزمة أو تخصص..." onkeyup="handleLiveSearch()">
+            <input type="text" id="searchInput" placeholder="🔍 ابحث عن ملزمة أو مادة..." onkeyup="handleLiveSearch()">
         </div>
     </div>
 
@@ -56,19 +60,16 @@
         </div>
 
         <div id="resultsPanel" class="results-panel">
-            <button class="back-btn" onclick="goHome()">🔙 العودة للرئيسية</button>
+            <button id="mainBackBtn" class="back-btn" onclick="goHome()">🔙 العودة للرئيسية</button>
             <div id="dynamicContent"></div>
         </div>
     </div>
 
     <script>
         // --- الإعدادات ---
-        // استبدل الرابط التالي برابط الاستضافة (FastAPI URL) الخاص بك
         const API_URL = "http://fi3.bot-hosting.net:20179"; 
 
-        // --- وظائف الجافا سكريبت ---
-
-        // 1. التنقل بين الأقسام
+        // 1. فتح الأقسام الرئيسية
         async function openSection(id) {
             const grid = document.getElementById('mainGrid');
             const panel = document.getElementById('resultsPanel');
@@ -83,68 +84,123 @@
                     const res = await fetch(`${API_URL}/get_categories`);
                     const cats = await res.json();
                     content.innerHTML = "<h3>📂 الأقسام المتوفرة:</h3>" + 
-                        cats.map(c => `<div class="card" style="width:90%; margin-bottom:10px" onclick="loadFiles('${c}')">${c}</div>`).join('');
+                        cats.map(c => `<div class="card" style="width:92%; margin-bottom:10px" onclick="loadFiles('${c}')">${c}</div>`).join('');
                 } 
                 else if (id === 'tr') {
                     content.innerHTML = `
                         <h3>✅ المترجم الفوري</h3>
-                        <textarea id="trInput" placeholder="اكتب النص هنا..." style="width:100%;height:100px;border-radius:15px;padding:10px;border:1px solid #ddd"></textarea>
+                        <textarea id="trInput" placeholder="اكتب النص هنا للترجمة..." style="width:100%;height:100px;border-radius:15px;padding:12px;border:1px solid #ddd;box-sizing:border-box"></textarea>
                         <button class="card" style="width:100%; margin-top:10px; background:var(--main); color:white" onclick="runTranslation()">ترجم الآن</button>
-                        <div id="trOutput" style="margin-top:20px; padding:15px; background:#f0f7ff; border-radius:12px; font-weight:bold; color:#005588"></div>
+                        <div id="trOutput" style="margin-top:20px; padding:15px; background:#f0f7ff; border-radius:12px; font-weight:bold; color:#005588; min-height:50px"></div>
                     `;
                 }
                 else if (id === 'tips') {
                     const res = await fetch(`${API_URL}/get_tip`);
                     const data = await res.json();
-                    content.innerHTML = `<div style="padding:30px; text-align:center; font-size:20px">🌟 ${data.tip}</div>`;
+                    content.innerHTML = `<div style="padding:40px; text-align:center; font-size:22px; color:#444; line-height:1.6">🌟 <br> ${data.tip}</div>`;
                 }
             } catch (err) {
-                content.innerHTML = "<p style='color:red; text-align:center'>❌ فشل الاتصال بالسيرفر. تأكد من تشغيل FastAPI.</p>";
+                content.innerHTML = "<p style='color:red; text-align:center'>❌ فشل الاتصال بالسيرفر.</p>";
             }
         }
 
-        // 2. جلب الملفات داخل قسم
+        // 2. جلب الملفات داخل قسم معين
         async function loadFiles(catName) {
             const content = document.getElementById('dynamicContent');
             content.innerHTML = "<p>جاري جلب الملفات... 📄</p>";
             
-            const res = await fetch(`${API_URL}/get_files/${catName}`);
-            const files = await res.json();
-            
-            let html = `<h3>📄 ملفات ${catName}:</h3>`;
-            for(let name in files) {
-                html += `<div class="list-item"><span>${name}</span> <button onclick="alert('جاري التحميل...')">⬇️</button></div>`;
-            }
-            content.innerHTML = html;
+            try {
+                const res = await fetch(`${API_URL}/get_files/${catName}`);
+                const files = await res.json();
+                
+                let html = `<h3>📄 ملفات ${catName}:</h3>`;
+                for(let name in files) {
+                    let fileUrl = files[name];
+                    html += `
+                        <div class="list-item" onclick="viewFile('${fileUrl}', '${name}')">
+                            <span>${name}</span>
+                            <span style="color:var(--main); font-size:12px">👁️ مشاهدة</span>
+                        </div>`;
+                }
+                content.innerHTML = html;
+                // تغيير وظيفة زر الرجوع ليعود للأقسام بدلاً من الرئيسية
+                document.getElementById('mainBackBtn').onclick = () => openSection('files');
+            } catch (e) { content.innerHTML = "خطأ في جلب الملفات."; }
         }
 
-        // 3. تشغيل المترجم
+        // 3. المشاهدة الداخلية للملف (بدون تحميل على الهاتف)
+        function viewFile(url, name) {
+            const content = document.getElementById('dynamicContent');
+            const backBtn = document.getElementById('mainBackBtn');
+
+            // إعداد واجهة المشاهد
+            content.innerHTML = `
+                <div style="margin-bottom:10px; font-weight:bold; color:var(--main)">👀 عرض ملزمة: ${name}</div>
+                <div class="viewer-container">
+                    <iframe src="${url}"></iframe>
+                </div>
+                <p style="font-size:12px; color:#888; text-align:center; margin-top:10px">يتم العرض عبر النظام السحابي للتطبيق</p>
+            `;
+            
+            // زر الرجوع يعود لقائمة الملفات
+            backBtn.onclick = () => {
+                // استخراج اسم القسم من العنوان إذا أردت دقة أكثر، هنا سنعود للأقسام ببساطة
+                openSection('files');
+            };
+        }
+
+        // 4. تشغيل المترجم
         async function runTranslation() {
             const text = document.getElementById('trInput').value;
             const output = document.getElementById('trOutput');
-            if(!text) return alert("ادخل نصاً أولاً");
+            if(!text) return;
             
             output.innerText = "جاري الترجمة... ⏳";
-            const res = await fetch(`${API_URL}/translate?text=${encodeURIComponent(text)}`);
-            const data = await res.json();
-            output.innerText = data.result;
+            try {
+                const res = await fetch(`${API_URL}/translate?text=${encodeURIComponent(text)}`);
+                const data = await res.json();
+                output.innerText = data.result;
+            } catch (e) { output.innerText = "خطأ في الترجمة."; }
         }
 
-        // 4. البحث اللحظي
+        // 5. البحث اللحظي
         async function handleLiveSearch() {
             const q = document.getElementById('searchInput').value;
+            if(q.length < 3) return;
+
             const grid = document.getElementById('mainGrid');
             const panel = document.getElementById('resultsPanel');
             const content = document.getElementById('dynamicContent');
 
-            if(q.length > 2) {
-                grid.style.display = "none";
-                panel.style.display = "block";
-                content.innerHTML = "<p>جاري البحث... 🔍</p>";
-                
-                const res = await fetch(`${API_URL}/search?q=${q}`);
-                const data = await res.json();
-                
+            grid.style.display = "none";
+            panel.style.display = "block";
+            content.innerHTML = "<p>🔍 جارِ البحث...</p>";
+            
+            const res = await fetch(`${API_URL}/search?q=${q}`);
+            const data = await res.json();
+            
+            if(data.length > 0) {
+                content.innerHTML = "<h3>🔍 نتائج البحث:</h3>" + 
+                    data.map(i => `<div class="list-item" onclick="viewFile('روابط_الملفات_هنا', '${i.name}')"><span>${i.name}</span> <small>${i.cat}</small></div>`).join('');
+            } else {
+                content.innerHTML = "<p>لا توجد نتائج مطابقة.</p>";
+            }
+        }
+
+        function goHome() {
+            document.getElementById('mainGrid').style.display = "grid";
+            document.getElementById('resultsPanel').style.display = "none";
+            document.getElementById('searchInput').value = "";
+            document.getElementById('mainBackBtn').onclick = goHome;
+        }
+
+        // تسجيل Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+    </script>
+</body>
+</html>
                 if(data.length > 0) {
                     content.innerHTML = "<h3>🔍 نتائج البحث:</h3>" + 
                         data.map(i => `<div class="list-item"><span>${i.name}</span> <small>${i.cat}</small></div>`).join('');
