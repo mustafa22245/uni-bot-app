@@ -117,6 +117,59 @@
             document.getElementById('resultsPanel').style.display = "none";
             document.getElementById('backBtn').onclick = goHome;
         }
+        <div style="text-align:center; padding:20px;">
+    <button onclick="openAdmin()" style="background:none; border:none; color:#ccc; font-size:10px;">Control Panel</button>
+</div>
+
+<div id="adminPanel" class="results-panel" style="display:none; background:#2c3e50; color:white;">
+    <button class="back-btn" onclick="goHome()">❌ إغلاق اللوحة</button>
+    <h3>🛠️ لوحة تحكم الإدارة</h3>
+    
+    <label>إضافة نصيحة جديدة:</label>
+    <input type="text" id="newTip" style="width:80%; padding:10px; border-radius:10px;">
+    <button onclick="addTip()" style="padding:10px;">➕</button>
+    
+    <hr>
+    
+    <label>إضافة قسم جديد:</label>
+    <input type="text" id="newCat" placeholder="اسم القسم" style="width:80%; padding:10px; border-radius:10px; margin-bottom:5px;">
+    <br>
+    <input type="text" id="fileName" placeholder="اسم الملف" style="width:40%; padding:10px; border-radius:10px;">
+    <input type="text" id="fileUrl" placeholder="رابط الملف" style="width:40%; padding:10px; border-radius:10px;">
+    <button onclick="addEntry()" style="width:100%; margin-top:10px; background:#27ae60; color:white; border:none; padding:10px; border-radius:10px;">حفظ وإضافة</button>
+</div>
+
+<script>
+    // بيانات مؤقتة للوحة التحكم
+    let currentDB = { categories: {}, tips: [] };
+
+    async function openAdmin() {
+        document.getElementById('mainGrid').style.display = "none";
+        document.getElementById('adminPanel').style.display = "block";
+        // جلب البيانات الحالية لتعديلها
+        const json = await fetch(PROXY + encodeURIComponent(API_URL + "/get_tip")); // مجرد وسيلة لجلب الـ DB كاملاً إذا أعددت ذلك
+    }
+
+    async function saveToServer() {
+        const response = await fetch(API_URL + "/update_db", {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(currentDB)
+        });
+        const res = await response.json();
+        alert(res.message);
+    }
+
+    function addTip() {
+        const tip = document.getElementById('newTip').value;
+        if(tip) {
+            currentDB.tips.push(tip);
+            alert("تمت إضافة النصيحة محلياً، اضغط حفظ نهائي");
+        }
+    }
+    // يمكننا تطوير هذه الوظائف لتشمل مسح وإضافة ملفات بضغطة زر
+</script>
+
     </script>
 </body>
 </html>
