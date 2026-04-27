@@ -44,14 +44,10 @@
         const API_URL = "https://api.allorigins.win/get?url=" + encodeURIComponent("http://fi3.bot-hosting.net:20179"); 
 
         async function openSection(id) {
-            const grid = document.getElementById('mainGrid');
-            const panel = document.getElementById('resultsPanel');
-            const content = document.getElementById('dynamicContent');
-
-            grid.style.display = "none";
-            panel.style.display = "block";
-            content.innerHTML = "<p style='text-align:center'>جاري الاتصال بالسيرفر عبر الجسر الآمن... 🔄</p>";
-
+            const res = await fetch(`${API_URL}/get_tip`);
+const json = await res.json();
+const data = JSON.parse(json.contents); // هنا نستخرج النصيحة الحقيقية
+content.innerHTML = `🌟 <br> ${data.tip}`;
             try {
                 if (id === 'tips') {
                     const res = await fetch(`${API_URL}/get_tip`);
