@@ -49,11 +49,19 @@ const json = await res.json();
 const data = JSON.parse(json.contents); // هنا نستخرج النصيحة الحقيقية
 content.innerHTML = `🌟 <br> ${data.tip}`;
             try {
-                if (id === 'tips') {
-                    const res = await fetch(`${API_URL}/get_tip`);
-                    const data = await res.json();
-                    content.innerHTML = `<div style="padding:40px; text-align:center; font-size:22px; line-height:1.6">🌟 <br><br> ${data.tip}</div>`;
-                } 
+    if (id === 'tips') {
+        const res = await fetch(`${API_URL}/get_tip`);
+        const json = await res.json();
+        
+        // إذا كنت تستخدم corsproxy.io، البيانات تأتي مباشرة
+        // إذا كنت تستخدم allorigins، نحتاج لاستخدام json.contents
+        const data = json.contents ? JSON.parse(json.contents) : json;
+        
+        content.innerHTML = `<div style="padding:40px; text-align:center; font-size:22px;">🌟 <br><br> ${data.tip}</div>`;
+    } 
+    // نفس المنطق لبقية الأقسام (files, categories... الخ)
+}
+
                 else if (id === 'files') {
                     const res = await fetch(`${API_URL}/get_categories`);
                     const cats = await res.json();
