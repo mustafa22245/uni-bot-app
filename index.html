@@ -4,70 +4,97 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تطبيق الحلة الجامعي المطور</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2232/2232688.png">
+
     <style>
-        :root { --main-color: #0088cc; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--tg-theme-bg-color, #f4f7f9); color: var(--tg-theme-text-color, #222); margin: 0; padding: 15px; }
+        :root { --main-color: #0088cc; --bg-color: #f4f7f9; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); margin: 0; padding: 15px; direction: rtl; }
+        
+        .header { background: linear-gradient(135deg, #0088cc, #005588); color: white; padding: 25px; border-radius: 0 0 25px 25px; margin: -15px -15px 20px -15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         
         /* شريط البحث */
-        .search-box { background: white; padding: 10px; border-radius: 12px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        .search-box input { border: none; width: 100%; padding: 10px; font-size: 16px; outline: none; }
+        .search-box { background: white; padding: 5px 15px; border-radius: 12px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #eee; }
+        .search-box input { border: none; width: 100%; padding: 12px; font-size: 16px; outline: none; background: transparent; }
 
-        /* البطاقات */
+        /* شبكة البطاقات */
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .card { background: white; padding: 20px; border-radius: 15px; text-align: center; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #eee; }
-        .card:active { transform: scale(0.95); }
-        .card i { font-size: 30px; display: block; margin-bottom: 10px; }
-        .card span { font-weight: bold; font-size: 14px; }
+        .card { background: white; padding: 20px; border-radius: 15px; text-align: center; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.03); border: 1px solid #f0f0f0; }
+        .card:active { transform: scale(0.95); background-color: #fafafa; }
+        .card .icon { font-size: 35px; display: block; margin-bottom: 10px; }
+        .card span { font-weight: 600; font-size: 15px; color: #333; }
 
-        /* الأقسام المخفية للبحث */
-        .item-list { display: none; }
+        #searchResults { margin-top: 10px; }
+        .search-item { background: white; padding: 15px; border-radius: 12px; margin-bottom: 10px; border-right: 5px solid var(--main-color); box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; justify-content: space-between; align-items: center; }
     </style>
 </head>
 <body>
 
+    <div class="header">
+        <h2 style="margin:0">🎓 تطبيق الحلة الجامعي</h2>
+        <p style="margin:5px 0 0 0; opacity:0.9; font-size:14px">كل ما تحتاجه في مكان واحد</p>
+    </div>
+
     <div class="search-box">
-        <input type="text" id="searchInput" placeholder="🔍 ابحث عن ملزمة، مادة، أو أمر..." onkeyup="search()">
+        <input type="text" id="searchInput" placeholder="🔍 ابحث عن ملزمة أو قسم..." onkeyup="handleSearch()">
     </div>
 
     <div class="grid" id="mainGrid">
-        <div class="card" onclick="send('files')"><i>📂</i><span>الملازم والملفات</span></div>
-        <div class="card" onclick="send('alarms')"><i>⏰</i><span>المنبهات</span></div>
-        <div class="card" onclick="send('games')"><i>🎮</i><span>ساحة الألعاب</span></div>
-        <div class="card" onclick="send('settings')"><i>⚙️</i><span>الإعدادات</span></div>
+        <div class="card" onclick="openSection('files')"><span class="icon">📁</span><span>الملازم</span></div>
+        <div class="card" onclick="openSection('exams')"><span class="icon">⏳</span><span>الامتحانات</span></div>
+        <div class="card" onclick="openSection('alarms')"><span class="icon">⏰</span><span>المنبهات</span></div>
+        <div class="card" onclick="openSection('games')"><span class="icon">🎮</span><span>الألعاب</span></div>
+        <div class="card" onclick="openSection('tr')"><span class="icon">✅</span><span>المترجم</span></div>
+        <div class="card" onclick="openSection('settings')"><span class="icon">⚙️</span><span>الإعدادات</span></div>
     </div>
 
-    <div id="searchResults" style="margin-top: 20px;"></div>
+    <div id="searchResults"></div>
 
     <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-
-        // ميزة البحث الذكي
-        const items = [
-            {name: "ملزمة الرياضيات", cmd: "file_math"},
-            {name: "محاضرات الحاسوب", cmd: "file_pc"},
-            {name: "ضبط منبه جديد", cmd: "set_alarm"},
-            {name: "لعبة X و O", cmd: "play_xo"}
+        // مصفوفة البيانات للبحث (يمكنك التوسع فيها)
+        const dataBank = [
+            { name: "ملزمة الرياضيات العامة", type: "ملف", id: "math_1" },
+            { name: "محاضرات الحاسوب", type: "ملف", id: "pc_lect" },
+            { name: "منبه صلاة الفجر", type: "منبه", id: "alarm_f" },
+            { name: "لعبة X و O", type: "لعبة", id: "game_xo" }
         ];
 
-        function search() {
-            let input = document.getElementById('searchInput').value.toLowerCase();
-            let results = document.getElementById('searchResults');
-            let grid = document.getElementById('mainGrid');
-            
-            if(input.length > 0) {
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            const resultsDiv = document.getElementById('searchResults');
+            const grid = document.getElementById('mainGrid');
+
+            if (query.length > 0) {
                 grid.style.display = "none";
-                results.innerHTML = items.filter(i => i.name.toLowerCase().includes(input))
-                    .map(i => `<div class="card" style="width:100%; margin-bottom:10px" onclick="send('${i.cmd}')">${i.name}</div>`).join('');
+                const filtered = dataBank.filter(item => item.name.toLowerCase().includes(query));
+                
+                if (filtered.length > 0) {
+                    resultsDiv.innerHTML = filtered.map(item => `
+                        <div class="search-item" onclick="openSection('${item.id}')">
+                            <span>${item.name}</span>
+                            <small style="color:#888">${item.type}</small>
+                        </div>
+                    `).join('');
+                } else {
+                    resultsDiv.innerHTML = "<p style='text-align:center; color:#888'>لا توجد نتائج مطابقة</p>";
+                }
             } else {
                 grid.style.display = "grid";
-                results.innerHTML = "";
+                resultsDiv.innerHTML = "";
             }
         }
 
-        function send(cmd) {
-            tg.sendData(cmd);
+        function openSection(id) {
+            // ملاحظة: هنا سنربط الطلب بسيرفر الـ FastAPI لاحقاً
+            console.log("فتح القسم: " + id);
+            alert("تم اختيار: " + id + "\nسيتم الربط بالسيرفر في الخطوة القادمة.");
+        }
+
+        // تسجيل الـ Service Worker لتفعيل ميزة التطبيق (PWA)
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
         }
     </script>
 </body>
