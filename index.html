@@ -3,96 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق الحلة الجامعي المطور</title>
+    <title>تطبيق الحلة الجامعي PRO</title>
     <link rel="manifest" href="manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2232/2232688.png">
-
+    <meta name="theme-color" content="#0088cc">
+    
     <style>
-        :root { --main-color: #0088cc; --bg-color: #f4f7f9; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); margin: 0; padding: 15px; direction: rtl; }
+        :root { --main: #0088cc; --bg: #f8fafd; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; padding: 0; direction: rtl; }
         
-        .header { background: linear-gradient(135deg, #0088cc, #005588); color: white; padding: 25px; border-radius: 0 0 25px 25px; margin: -15px -15px 20px -15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        /* Header */
+        .header { background: linear-gradient(135deg, #0088cc, #005588); color: white; padding: 30px 20px; text-align: center; border-radius: 0 0 30px 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         
-        /* شريط البحث */
-        .search-box { background: white; padding: 5px 15px; border-radius: 12px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #eee; }
-        .search-box input { border: none; width: 100%; padding: 12px; font-size: 16px; outline: none; background: transparent; }
+        /* Search */
+        .search-container { padding: 0 20px; margin-top: -25px; }
+        .search-box { background: white; padding: 5px 15px; border-radius: 15px; display: flex; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .search-box input { border: none; width: 100%; padding: 12px; font-size: 16px; outline: none; }
 
-        /* شبكة البطاقات */
+        /* Grid Layout */
+        .container { padding: 20px; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .card { background: white; padding: 20px; border-radius: 15px; text-align: center; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.03); border: 1px solid #f0f0f0; }
-        .card:active { transform: scale(0.95); background-color: #fafafa; }
-        .card .icon { font-size: 35px; display: block; margin-bottom: 10px; }
-        .card span { font-weight: 600; font-size: 15px; color: #333; }
+        .card { background: white; padding: 25px 15px; border-radius: 20px; text-align: center; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid #f0f0f0; }
+        .card:active { transform: scale(0.95); background: #f0f7ff; }
+        .card i { font-size: 40px; display: block; margin-bottom: 10px; }
+        .card span { font-weight: bold; color: #333; }
 
-        #searchResults { margin-top: 10px; }
-        .search-item { background: white; padding: 15px; border-radius: 12px; margin-bottom: 10px; border-right: 5px solid var(--main-color); box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; justify-content: space-between; align-items: center; }
+        /* Results Area */
+        .results-panel { display: none; background: white; border-radius: 20px; padding: 20px; margin-top: 10px; min-height: 300px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .back-btn { background: #eee; border: none; padding: 10px 20px; border-radius: 10px; margin-bottom: 15px; cursor: pointer; width: 100%; font-weight: bold; }
+        
+        .list-item { background: #f9f9f9; padding: 15px; border-radius: 12px; margin-bottom: 10px; border-right: 4px solid var(--main); display: flex; justify-content: space-between; }
     </style>
 </head>
 <body>
 
     <div class="header">
         <h2 style="margin:0">🎓 تطبيق الحلة الجامعي</h2>
-        <p style="margin:5px 0 0 0; opacity:0.9; font-size:14px">كل ما تحتاجه في مكان واحد</p>
+        <p style="margin:5px; opacity:0.8">الإصدار المستقل V10</p>
     </div>
 
-    <div class="search-box">
-        <input type="text" id="searchInput" placeholder="🔍 ابحث عن ملزمة أو قسم..." onkeyup="handleSearch()">
+    <div class="search-container">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="🔍 ابحث عن ملزمة أو تخصص..." onkeyup="handleLiveSearch()">
+        </div>
     </div>
 
-    <div class="grid" id="mainGrid">
-        <div class="card" onclick="openSection('files')"><span class="icon">📁</span><span>الملازم</span></div>
-        <div class="card" onclick="openSection('exams')"><span class="icon">⏳</span><span>الامتحانات</span></div>
-        <div class="card" onclick="openSection('alarms')"><span class="icon">⏰</span><span>المنبهات</span></div>
-        <div class="card" onclick="openSection('games')"><span class="icon">🎮</span><span>الألعاب</span></div>
-        <div class="card" onclick="openSection('tr')"><span class="icon">✅</span><span>المترجم</span></div>
-        <div class="card" onclick="openSection('settings')"><span class="icon">⚙️</span><span>الإعدادات</span></div>
-    </div>
+    <div class="container">
+        <div class="grid" id="mainGrid">
+            <div class="card" onclick="openSection('files')"><i>📁</i><span>الملازم</span></div>
+            <div class="card" onclick="openSection('tr')"><i>✅</i><span>المترجم</span></div>
+            <div class="card" onclick="openSection('exams')"><i>⏳</i><span>الامتحانات</span></div>
+            <div class="card" onclick="openSection('tips')"><i>📢</i><span>نصيحة اليوم</span></div>
+        </div>
 
-    <div id="searchResults"></div>
+        <div id="resultsPanel" class="results-panel">
+            <button class="back-btn" onclick="goHome()">🔙 العودة للرئيسية</button>
+            <div id="dynamicContent"></div>
+        </div>
+    </div>
 
     <script>
-        // مصفوفة البيانات للبحث (يمكنك التوسع فيها)
-        const dataBank = [
-            { name: "ملزمة الرياضيات العامة", type: "ملف", id: "math_1" },
-            { name: "محاضرات الحاسوب", type: "ملف", id: "pc_lect" },
-            { name: "منبه صلاة الفجر", type: "منبه", id: "alarm_f" },
-            { name: "لعبة X و O", type: "لعبة", id: "game_xo" }
-        ];
+        // --- الإعدادات ---
+        // استبدل الرابط التالي برابط الاستضافة (FastAPI URL) الخاص بك
+        const API_URL = "https://your-bot-hosting-link.com"; 
 
-        function handleSearch() {
-            const query = document.getElementById('searchInput').value.trim().toLowerCase();
-            const resultsDiv = document.getElementById('searchResults');
+        // --- وظائف الجافا سكريبت ---
+
+        // 1. التنقل بين الأقسام
+        async function openSection(id) {
             const grid = document.getElementById('mainGrid');
+            const panel = document.getElementById('resultsPanel');
+            const content = document.getElementById('dynamicContent');
 
-            if (query.length > 0) {
-                grid.style.display = "none";
-                const filtered = dataBank.filter(item => item.name.toLowerCase().includes(query));
-                
-                if (filtered.length > 0) {
-                    resultsDiv.innerHTML = filtered.map(item => `
-                        <div class="search-item" onclick="openSection('${item.id}')">
-                            <span>${item.name}</span>
-                            <small style="color:#888">${item.type}</small>
-                        </div>
-                    `).join('');
-                } else {
-                    resultsDiv.innerHTML = "<p style='text-align:center; color:#888'>لا توجد نتائج مطابقة</p>";
+            grid.style.display = "none";
+            panel.style.display = "block";
+            content.innerHTML = "<p style='text-align:center'>جاري الاتصال بالسيرفر... 🔄</p>";
+
+            try {
+                if (id === 'files') {
+                    const res = await fetch(`${API_URL}/get_categories`);
+                    const cats = await res.json();
+                    content.innerHTML = "<h3>📂 الأقسام المتوفرة:</h3>" + 
+                        cats.map(c => `<div class="card" style="width:90%; margin-bottom:10px" onclick="loadFiles('${c}')">${c}</div>`).join('');
+                } 
+                else if (id === 'tr') {
+                    content.innerHTML = `
+                        <h3>✅ المترجم الفوري</h3>
+                        <textarea id="trInput" placeholder="اكتب النص هنا..." style="width:100%;height:100px;border-radius:15px;padding:10px;border:1px solid #ddd"></textarea>
+                        <button class="card" style="width:100%; margin-top:10px; background:var(--main); color:white" onclick="runTranslation()">ترجم الآن</button>
+                        <div id="trOutput" style="margin-top:20px; padding:15px; background:#f0f7ff; border-radius:12px; font-weight:bold; color:#005588"></div>
+                    `;
                 }
-            } else {
-                grid.style.display = "grid";
-                resultsDiv.innerHTML = "";
+                else if (id === 'tips') {
+                    const res = await fetch(`${API_URL}/get_tip`);
+                    const data = await res.json();
+                    content.innerHTML = `<div style="padding:30px; text-align:center; font-size:20px">🌟 ${data.tip}</div>`;
+                }
+            } catch (err) {
+                content.innerHTML = "<p style='color:red; text-align:center'>❌ فشل الاتصال بالسيرفر. تأكد من تشغيل FastAPI.</p>";
             }
         }
 
-        function openSection(id) {
-            // ملاحظة: هنا سنربط الطلب بسيرفر الـ FastAPI لاحقاً
-            console.log("فتح القسم: " + id);
-            alert("تم اختيار: " + id + "\nسيتم الربط بالسيرفر في الخطوة القادمة.");
+        // 2. جلب الملفات داخل قسم
+        async function loadFiles(catName) {
+            const content = document.getElementById('dynamicContent');
+            content.innerHTML = "<p>جاري جلب الملفات... 📄</p>";
+            
+            const res = await fetch(`${API_URL}/get_files/${catName}`);
+            const files = await res.json();
+            
+            let html = `<h3>📄 ملفات ${catName}:</h3>`;
+            for(let name in files) {
+                html += `<div class="list-item"><span>${name}</span> <button onclick="alert('جاري التحميل...')">⬇️</button></div>`;
+            }
+            content.innerHTML = html;
         }
 
-        // تسجيل الـ Service Worker لتفعيل ميزة التطبيق (PWA)
+        // 3. تشغيل المترجم
+        async function runTranslation() {
+            const text = document.getElementById('trInput').value;
+            const output = document.getElementById('trOutput');
+            if(!text) return alert("ادخل نصاً أولاً");
+            
+            output.innerText = "جاري الترجمة... ⏳";
+            const res = await fetch(`${API_URL}/translate?text=${encodeURIComponent(text)}`);
+            const data = await res.json();
+            output.innerText = data.result;
+        }
+
+        // 4. البحث اللحظي
+        async function handleLiveSearch() {
+            const q = document.getElementById('searchInput').value;
+            const grid = document.getElementById('mainGrid');
+            const panel = document.getElementById('resultsPanel');
+            const content = document.getElementById('dynamicContent');
+
+            if(q.length > 2) {
+                grid.style.display = "none";
+                panel.style.display = "block";
+                content.innerHTML = "<p>جاري البحث... 🔍</p>";
+                
+                const res = await fetch(`${API_URL}/search?q=${q}`);
+                const data = await res.json();
+                
+                if(data.length > 0) {
+                    content.innerHTML = "<h3>🔍 نتائج البحث:</h3>" + 
+                        data.map(i => `<div class="list-item"><span>${i.name}</span> <small>${i.cat}</small></div>`).join('');
+                } else {
+                    content.innerHTML = "<p>لا توجد نتائج مطابقة 😕</p>";
+                }
+            }
+        }
+
+        function goHome() {
+            document.getElementById('mainGrid').style.display = "grid";
+            document.getElementById('resultsPanel').style.display = "none";
+            document.getElementById('searchInput').value = "";
+        }
+
+        // تسجيل Service Worker لتحويله لتطبيق
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js');
         }
