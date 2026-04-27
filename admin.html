@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>لوحة تحكم تطبيق الحلة</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: sans-serif; background: #f0f2f5; padding: 20px; direction: rtl; }
+        .box { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        input, button { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #ddd; box-sizing: border-box; }
+        button { background: #0088cc; color: white; font-weight: bold; cursor: pointer; border: none; }
+        .item { background: #eee; padding: 10px; margin: 5px 0; border-radius: 8px; display: flex; justify-content: space-between; }
+        .del-btn { background: #ff4444; width: auto; padding: 5px 10px; }
+    </style>
+</head>
+<body>
+    <h2>🛠️ إدارة تطبيق الحلة الجامعي</h2>
+
+    <div class="box">
+        <h3>📢 إدارة النصائح</h3>
+        <input type="text" id="tipInput" placeholder="اكتب نصيحة جديدة...">
+        <button onclick="addTip()">➕ إضافة نصيحة</button>
+        <div id="tipsList"></div>
+    </div>
+
+    <div class="box">
+        <h3>📂 إدارة الأقسام والملازم</h3>
+        <input type="text" id="catInput" placeholder="اسم القسم (مثلاً: مرحلة ثالثة)">
+        <input type="text" id="fileName" placeholder="اسم الملزمة">
+        <input type="text" id="fileUrl" placeholder="رابط الملزمة (PDF)">
+        <button onclick="addFile()" style="background: #27ae60;">💾 حفظ الملزمة في القسم</button>
+        <div id="filesList"></div>
+    </div>
+
+    <button onclick="saveAll()" style="background: #e67e22; font-size: 18px;">🚀 نشر التعديلات للطلاب</button>
+
+    <script>
+        const API = "https://api.allorigins.win/get?url=" + encodeURIComponent("http://fi3.bot-hosting.net:20179");
+        const SAVE_API = "http://fi3.bot-hosting.net:20179/save_db"; // الحفظ يحتاج اتصال مباشر أو بروكسي يدعم POST
+        let db = { categories: {}, tips: [] };
+
+        async function loadData() {
+            const res = await fetch(API + "/get_db");
+            const data = await res.json();
+            db = JSON.parse(data.contents);
+            render();
+        }
+
+        function render() {
+            document.getElementById('tipsList').innerHTML = db.tips.map((t, i) => `<div class="item">${t} <button class="del-btn" onclick="db.tips.splice(${i},1);render()">X</button></div>`).join('');
+            
+            let html = "";
+            for(let cat in db.categories) {
+                html += `<h4>📁 ${cat}</h4>`;
+                for(let file in db.categories[cat]) {
+                    html += `<div class="item">${file} <button class="del-btn" onclick="delete file db.categories['${cat}']['${file}'];render()">X</button></div>`;
+                }
+            }
+            document.getElementById('filesList').innerHTML = html;
+        }
+
+        function addTip() {
+            const val = document.getElementById('tipInput').value;
+            if(val) { db.tips.push(val); render(); document.getElementById('tipInput').value = ""; }
+        }
+
+        function addFile() {
+            const cat = document.getElementById('catInput').value;
+            const name = document.getElementById('fileName').value;
+            const url = document.getElementById('fileUrl').value;
+            if(cat && name && url) {
+                if(!db.categories[cat]) db.categories[cat] = {};
+                db.categories[cat][name] = url;
+                render();
+            }
+        }
+
+        async function saveAll() {
+            // ملاحظة: لإرسال البيانات للاستضافة، يفضل فتح رابط السيرفر مباشرة في المتصفح مرة واحدة للسماح
+            const res = await fetch("http://fi3.bot-hosting.net:20179/save_db", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(db)
+            });
+            if(res.ok) alert("✅ تم تحديث التطبيق بنجاح!");
+            else alert("❌ فشل الحفظ، تأكد من فتح رابط السيرفر والسماح بالاتصال.");
+        }
+
+        loadData();
+    </script>
+</body>
+</html>
