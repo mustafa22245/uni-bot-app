@@ -9,99 +9,215 @@
 
 <style>
 body{
-    font-family: sans-serif;
+    font-family:Cairo;
     margin:0;
-    background:#f5f5f5;
+    background:#f1f5f9;
 }
 
-/* header */
-.header{
-    background:#4D95FF;
-    color:white;
-    padding:20px;
-    text-align:center;
-}
-
-/* pages */
+/* صفحات */
 .page{display:none;padding:15px;}
 .page.active{display:block}
 
-/* cards */
+/* عناصر */
 .card{
-    background:white;
+    background:#fff;
     padding:15px;
-    border-radius:10px;
+    border-radius:12px;
     margin-bottom:10px;
     cursor:pointer;
 }
 
-/* nav */
+/* النافبار */
 .nav{
     position:fixed;
     bottom:0;
     width:100%;
-    background:white;
+    background:#fff;
     display:flex;
     justify-content:space-around;
     padding:10px;
     border-top:1px solid #ddd;
 }
+
 .nav div{cursor:pointer}
+
+/* القائمة الجانبية */
+.sidebar{
+    position:fixed;
+    right:-100%;
+    top:0;
+    width:260px;
+    height:100%;
+    background:#fff;
+    transition:.3s;
+    padding:20px;
+}
+.sidebar.active{right:0;}
+
+.profile img{
+    width:80px;
+    border-radius:50%;
+}
+
+.close-btn{
+    cursor:pointer;
+    font-size:20px;
+}
+
+/* الأدمن */
+.admin{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:#fff;
+    display:none;
+    padding:20px;
+}
 </style>
 </head>
 
 <body>
 
-<div class="header">
-    <h2>المساعد الأكاديمي</h2>
+<!-- القائمة -->
+<div id="sidebar" class="sidebar">
+    <div class="close-btn" onclick="toggleSide()">❌</div>
+
+    <div class="profile">
+        <img id="profileImg" src="https://i.ibb.co/VvzKXY7/bot-avatar.png">
+        <h3 id="profileName">المساعد الأكاديمي</h3>
+    </div>
+
+    <div class="card">⚙️ الإعدادات</div>
+    <div class="card" onclick="toggleDark()">🌙 الوضع الليلي</div>
+    <div class="card">🔔 الإشعارات</div>
+    <div class="card">ℹ️ من نحن</div>
+    <div class="card">🌐 اللغة</div>
+    <div class="card">🚪 تسجيل خروج</div>
 </div>
 
-<!-- الصفحة الرئيسية -->
+<!-- الرئيسية -->
 <div id="home" class="page active">
-    <div class="card" onclick="nav('subjects')">📂 الأقسام</div>
-    <div class="card">⭐ المفضلة</div>
+    <h2 onclick="toggleSide()">☰ المساعد الأكاديمي</h2>
+    <input id="search" placeholder="ابحث..." oninput="search()">
+
+    <div id="subjects"></div>
 </div>
 
-<!-- صفحة الأقسام -->
-<div id="subjects" class="page">
-    <h3>الأقسام</h3>
-    <div id="subjectsList"></div>
+<!-- المفضلة -->
+<div id="fav" class="page">
+    <h2>⭐ المفضلة</h2>
+    <div id="favList"></div>
+</div>
+
+<!-- المحفوظات -->
+<div id="recent" class="page">
+    <h2>🕒 المحفوظات</h2>
+    <div id="recentList"></div>
+</div>
+
+<!-- البحث -->
+<div id="more" class="page">
+    <h2>🔍 النتائج</h2>
+    <div id="searchList"></div>
+</div>
+
+<!-- الأدمن -->
+<div id="admin" class="admin">
+    <h2>لوحة التحكم</h2>
+
+    <input id="newSub" placeholder="اسم القسم">
+    <button onclick="addSub()">إضافة قسم</button>
+
+    <input id="fileName" placeholder="اسم الملف">
+    <input id="fileUrl" placeholder="الرابط">
+    <button onclick="addFile()">إضافة ملف</button>
+
+    <input id="appName" placeholder="اسم التطبيق">
+    <input id="appImg" placeholder="صورة التطبيق">
+    <button onclick="updateApp()">تحديث</button>
+
+    <button onclick="closeAdmin()">إغلاق</button>
 </div>
 
 <!-- النافبار -->
 <div class="nav">
     <div onclick="nav('home')">🏠</div>
-    <div onclick="nav('subjects')">📂</div>
+    <div onclick="nav('fav')">⭐</div>
+    <div onclick="nav('recent')">🕒</div>
+    <div onclick="nav('more')">🔍</div>
 </div>
 
 <script>
-const DB_URL = "https://hillah-app-default-rtdb.firebaseio.com/.json";
-
-let appData = {subjects:[]};
-
-async function load(){
-    const r = await fetch(DB_URL);
-    const d = await r.json();
-    if(d) appData = d;
-    render();
-}
+let data={subjects:[]}
+let favs=JSON.parse(localStorage.getItem("favs"))||[]
+let rec=JSON.parse(localStorage.getItem("rec"))||[]
 
 function render(){
-    const list = document.getElementById('subjectsList');
-    list.innerHTML = "";
+    let s=document.getElementById("subjects")
+    s.innerHTML=""
 
-    (appData.subjects || []).forEach(s=>{
-        list.innerHTML += `<div class="card">${s.name}</div>`;
-    });
+    data.subjects.forEach((sub,i)=>{
+        s.innerHTML+=`<div class="card">${sub.name}</div>`
+
+        sub.files?.forEach(f=>{
+            s.innerHTML+=`
+            <div class="card" onclick="openFile('${f.name}','${f.url}')">
+                ${f.name}
+                <span onclick="fav('${f.url}',event)">⭐</span>
+            </div>`
+        })
+    })
+}
+
+function openFile(n,u){
+    rec.unshift({n,u})
+    localStorage.setItem("rec",JSON.stringify(rec))
+    window.open(u)
+}
+
+function fav(u,e){
+    e.stopPropagation()
+    if(favs.includes(u)) favs=favs.filter(x=>x!=u)
+    else favs.push(u)
+    localStorage.setItem("favs",JSON.stringify(favs))
+    showFav()
+}
+
+function showFav(){
+    let l=document.getElementById("favList")
+    l.innerHTML=""
+    data.subjects.forEach(s=>s.files?.forEach(f=>{
+        if(favs.includes(f.url)){
+            l.innerHTML+=`<div class="card">${f.name}</div>`
+        }
+    }))
+}
+
+function showRecent(){
+    let l=document.getElementById("recentList")
+    l.innerHTML=""
+    rec.forEach(r=>{
+        l.innerHTML+=`<div class="card">${r.n}</div>`
+    })
+}
+
+function search(){
+    let q=document.getElementById("search").value.toLowerCase()
+    nav("more")
+    let l=document.getElementById("searchList")
+    l.innerHTML=""
+    data.subjects.forEach(s=>s.files?.forEach(f=>{
+        if(f.name.toLowerCase().includes(q)){
+            l.innerHTML+=`<div class="card">${f.name}</div>`
+        }
+    }))
 }
 
 function nav(id){
-    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-}
+    document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"))
+    document.getElementById(id).classList.add("active")
 
-load();
-</script>
-
-</body>
-</html>
+    if(id=="fav") showFav()
+    if(id=="recent
