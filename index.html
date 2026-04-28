@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>المساعد الأكاديمي 🎓</title>
+    <title>منصة المساعد الأكاديمي 🎓</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
@@ -22,38 +22,35 @@
 
         body { font-family: 'Cairo', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; transition: 0.3s; overflow-x: hidden; }
 
+        /* شاشة تسجيل الدخول لأول مرة */
+        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 30px; box-sizing: border-box; }
+        .login-input { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 12px; border: 1px solid var(--border); font-family: 'Cairo'; }
+        .login-btn { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
+
         /* الهيدر */
         .app-header { background: var(--header-grad); padding: 50px 20px 30px; text-align: center; position: relative; }
         .menu-icon { position: absolute; right: 20px; top: 25px; font-size: 24px; cursor: pointer; }
-        .app-logo { width: 90px; height: 90px; background: white; border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; }
+        .app-logo { width: 85px; height: 85px; background: white; border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; }
         .app-logo img { width: 100%; height: 100%; object-fit: cover; }
-
-        /* القائمة الجانبية */
-        .sidebar { position: fixed; right: -100%; top: 0; width: 85%; max-width: 300px; height: 100%; background: var(--card); z-index: 2000; transition: 0.4s; box-shadow: -10px 0 30px rgba(0,0,0,0.1); padding: 25px; box-sizing: border-box; }
-        .sidebar.active { right: 0; }
-        .side-profile { text-align: center; border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 20px; }
-        .side-profile img { width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--primary); object-fit: cover; }
-        .side-item { display: flex; align-items: center; gap: 15px; padding: 15px; border-radius: 12px; cursor: pointer; margin-bottom: 5px; font-weight: 600; font-size: 14px; }
 
         /* الصفحات */
         .page { display: none; padding: 20px 20px 120px; animation: fadeIn 0.4s; box-sizing: border-box; min-height: 100vh; }
         .page.active { display: block; }
 
-        /* أزرار الرئيسية */
-        .main-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
-        .card-btn { background: var(--card); border-radius: 15px; padding: 15px 5px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.02); cursor: pointer; font-size: 11px; font-weight: 700; transition: 0.2s; }
-        .card-btn:active { transform: scale(0.95); }
-        .card-btn i { font-size: 24px; margin-bottom: 8px; display: block; color: var(--primary); }
-
-        /* مواد الفاينل */
-        .section-title { color: var(--primary); border-right: 4px solid var(--primary); padding-right: 10px; margin: 25px 0 15px; font-size: 18px; }
+        /* بطاقة الملف مع القلب */
         .file-card { background: var(--card); border-radius: 15px; padding: 15px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); }
         .file-info { display: flex; align-items: center; gap: 12px; flex: 1; cursor: pointer; }
-        .download-icon { color: #2ecc71; font-size: 20px; cursor: pointer; padding: 5px; }
+        .fav-heart { font-size: 20px; color: #ddd; cursor: pointer; transition: 0.3s; margin-right: 10px; }
+        .fav-heart.active { color: #ef4444; }
 
-        /* إصلاح الترجمة */
-        .translate-box { text-align: center; background: white; padding: 30px 20px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .translate-btn { background: var(--primary); color: white; border: none; padding: 15px 30px; border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
+        /* الشات */
+        .chat-container { height: 60vh; background: var(--card); border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--border); }
+        #chat-messages { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+        .msg { padding: 10px 15px; border-radius: 15px; max-width: 80%; font-size: 13px; }
+        .msg.sent { background: var(--primary); color: white; align-self: flex-start; }
+        .msg.received { background: #eee; color: #333; align-self: flex-end; }
+        .chat-input-area { display: flex; padding: 10px; background: var(--bg); gap: 10px; }
+        .chat-input { flex: 1; padding: 10px; border-radius: 10px; border: 1px solid var(--border); }
 
         /* الشريط السفلي */
         .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--card); display: flex; justify-content: space-around; padding: 10px 0; border-radius: 20px 20px 0 0; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); z-index: 1000; }
@@ -67,128 +64,171 @@
 </head>
 <body id="appBody">
 
-    <div class="overlay" id="overlay" onclick="toggleSide()"></div>
-
-    <div id="sidebar" class="sidebar">
-        <div class="side-profile">
-            <img src="https://i.ibb.co/VvzKXY7/bot-avatar.png">
-            <h3 style="margin:10px 0 5px;">مصطفى مهند</h3>
-            <span style="color:var(--primary); font-size:12px;">@M3y4_p</span>
-        </div>
-        <div class="side-item" onclick="nav('home')"><i class="fas fa-home"></i> الرئيسية</div>
-        <div class="side-item" onclick="toggleDark()"><i class="fas fa-moon"></i> الوضع الليلي</div>
-        <div class="side-item" style="color:#ef4444; margin-top:20px;" onclick="location.reload()"><span><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</span></div>
+    <div id="login-screen">
+        <div class="app-logo"><img src="https://i.ibb.co/VvzKXY7/bot-avatar.png"></div>
+        <h2 style="margin-bottom: 20px;">إنشاء ملفك الشخصي</h2>
+        <input type="text" id="reg-name" class="login-input" placeholder="اسمك الكامل">
+        <input type="text" id="reg-uni" class="login-input" placeholder="اسم الجامعة">
+        <input type="text" id="reg-level" class="login-input" placeholder="المرحلة الدراسية">
+        <input type="number" id="reg-age" class="login-input" placeholder="العمر">
+        <button class="login-btn" onclick="saveUserProfile()">ابدأ رحلتك التعليمية 🚀</button>
     </div>
+
+    <div class="overlay" id="overlay" onclick="toggleSide()"></div>
 
     <div id="home-page" class="page active" style="padding:0;">
         <div class="app-header">
-            <i class="fas fa-bars menu-icon" onclick="toggleSide()"></i>
             <div class="app-logo"><img src="https://i.ibb.co/VvzKXY7/bot-avatar.png"></div>
-            <h2>المساعد الأكاديمي</h2>
-            <p style="font-size:12px; opacity:0.8;">مرحباً بك في مواد الفاينل 🎓</p>
+            <h2 id="welcome-user">مرحباً بك</h2>
+            <p style="font-size: 11px;">تطبيقك الاجتماعي التعليمي المتكامل</p>
         </div>
 
         <div style="padding: 20px;">
-            <div class="main-grid">
-                <div class="card-btn" onclick="nav('subjects')"><i class="fas fa-graduation-cap"></i>مواد الفاينل</div>
-                <div class="card-btn"><i class="fas fa-clock"></i>العد التنازلي</div>
-                <div class="card-btn"><i class="fas fa-stopwatch"></i>منبهاتي</div>
-                <div class="card-btn" onclick="nav('translate')"><i class="fas fa-language"></i>الترجمة</div>
-                <div class="card-btn"><i class="fas fa-gamepad"></i>ترفيه</div>
-                <div class="card-btn"><i class="fas fa-lightbulb"></i>نصائح</div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                <div onclick="nav('subjects')" style="background: white; padding: 20px 10px; text-align: center; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                    <i class="fas fa-graduation-cap" style="color: var(--primary); font-size: 24px;"></i><br><small>مواد الفاينل</small>
+                </div>
+                <div onclick="nav('social')" style="background: white; padding: 20px 10px; text-align: center; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                    <i class="fas fa-users" style="color: #2ecc71; font-size: 24px;"></i><br><small>الأصدقاء</small>
+                </div>
+                <div onclick="nav('chat')" style="background: white; padding: 20px 10px; text-align: center; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                    <i class="fas fa-comments" style="color: #a855f7; font-size: 24px;"></i><br><small>شات عام</small>
+                </div>
             </div>
         </div>
     </div>
 
     <div id="subjects-page" class="page">
-        <div style="display:flex; align-items:center; gap:15px; margin-bottom:10px;">
-            <i class="fas fa-arrow-right" onclick="nav('home')" style="font-size:20px; cursor:pointer; color:var(--primary);"></i>
-            <h2 style="margin:0;">مواد الفاينل</h2>
-        </div>
+        <h2>📂 مواد الفاينل</h2>
         <div id="subjects-list"></div>
     </div>
 
-    <div id="translate-page" class="page">
-        <div style="display:flex; align-items:center; gap:15px; margin-bottom:10px;">
-            <i class="fas fa-arrow-right" onclick="nav('home')" style="font-size:20px; cursor:pointer; color:var(--primary);"></i>
-            <h2 style="margin:0;">الترجمة الفورية</h2>
+    <div id="chat-page" class="page">
+        <h2>💬 الشات العام</h2>
+        <div class="chat-container">
+            <div id="chat-messages"></div>
+            <div class="chat-input-area">
+                <input type="text" id="chat-input" class="chat-input" placeholder="اكتب رسالة...">
+                <button onclick="sendChatMessage()" style="border:none; background:var(--primary); color:white; border-radius:10px; padding:0 15px;"><i class="fas fa-paper-plane"></i></button>
+            </div>
         </div>
-        <div class="translate-box">
-            <i class="fas fa-language" style="font-size: 50px; color: var(--primary); margin-bottom: 20px;"></i>
-            <h3>مترجم جوجل الذكي</h3>
-            <p style="font-size: 13px; color: gray;">لضمان أفضل تجربة ترجمة بدون أخطاء، سيتم فتح المترجم في نافذة احترافية مستقلة.</p>
-            <button class="translate-btn" onclick="window.open('https://translate.google.com/?sl=en&tl=ar&op=translate', '_blank')">افتح المترجم الآن</button>
+    </div>
+
+    <div id="social-page" class="page">
+        <h2>👥 الأصدقاء والبحث</h2>
+        <input type="text" class="login-input" placeholder="ابحث عن صديق بالاسم...">
+        <div id="users-list">
+            <p style="color: gray; text-align: center; margin-top: 20px;">سيظهر المستخدمون هنا قريباً...</p>
         </div>
     </div>
 
     <div class="nav-bar">
         <div class="nav-item active" onclick="nav('home')"><i class="fas fa-home"></i>الرئيسية</div>
         <div class="nav-item" onclick="nav('subjects')"><i class="fas fa-heart"></i>المفضلة</div>
-        <div class="nav-item" onclick="nav('subjects')"><i class="fas fa-history"></i>المحفوظات</div>
-        <div class="nav-item" onclick="toggleSide()"><i class="fas fa-bars"></i>المزيد</div>
+        <div class="nav-item" onclick="nav('chat')"><i class="fas fa-comment-dots"></i>شات</div>
+        <div class="nav-item" onclick="nav('social')"><i class="fas fa-user-friends"></i>أصدقاء</div>
     </div>
 
     <script>
-        // --- قاعدة البيانات (أضف ملازمك هنا) ---
-        const myAppData = {
+        const DB_URL = "https://hillah-app-default-rtdb.firebaseio.com/"; // رابط قاعدتك
+        let userData = JSON.parse(localStorage.getItem('userProfile'));
+        let favorites = JSON.parse(localStorage.getItem('favs')) || [];
+
+        // 1. فحص المستخدم لأول مرة
+        window.onload = function() {
+            if(!userData) {
+                document.getElementById('login-screen').style.display = 'flex';
+            } else {
+                document.getElementById('welcome-user').innerText = "مرحباً، " + userData.name;
+                loadContent();
+                listenToChat();
+            }
+        };
+
+        function saveUserProfile() {
+            const name = document.getElementById('reg-name').value;
+            const uni = document.getElementById('reg-uni').value;
+            const level = document.getElementById('reg-level').value;
+            const age = document.getElementById('reg-age').value;
+
+            if(name && uni && level && age) {
+                const profile = { name, uni, level, age, id: Date.now() };
+                localStorage.setItem('userProfile', JSON.stringify(profile));
+                // رفع المستخدم للسحاب ليجده الآخرون
+                fetch(DB_URL + "users/" + profile.id + ".json", { method: 'PUT', body: JSON.stringify(profile) });
+                location.reload();
+            } else { alert("يرجى إكمال جميع الحقول"); }
+        }
+
+        // 2. إدارة الملفات والمفضلة
+        const myData = {
             subjects: [
-                {
-                    name: "اللغة العربية",
-                    files: [
-                        { 
-                            name: "ملزمة النحو", 
-                            id: "1Vl9sP1Lh5oRS6Wrg-F5gJ9s7OQCRNIpl" // معرف الملف فقط
-                        }
-                    ]
-                }
+                { name: "اللغة العربية", files: [{ id: "1", name: "ملزمة النحو", url: "https://drive.google.com/file/d/1Vl9sP1Lh5oRS6Wrg-F5gJ9s7OQCRNIpl/view" }] }
             ]
         };
 
-        function renderSubjects() {
+        function loadContent() {
             const list = document.getElementById('subjects-list');
             list.innerHTML = "";
-            myAppData.subjects.forEach(sub => {
-                let html = `<h4 class="section-title">📂 ${sub.name}</h4>`;
+            myData.subjects.forEach(sub => {
+                let html = `<h4>${sub.name}</h4>`;
                 sub.files.forEach(f => {
-                    // رابط معاينة مباشر جداً
-                    const previewUrl = `https://docs.google.com/viewer?url=https://drive.google.com/uc?id=${f.id}&embedded=true`;
-                    // رابط تحميل مباشر جداً
-                    const downloadUrl = `https://drive.google.com/uc?export=download&id=${f.id}`;
-
+                    const isFav = favorites.includes(f.id) ? 'active' : '';
                     html += `
                         <div class="file-card">
-                            <div class="file-info" onclick="window.open('${downloadUrl}','_self')">
-                                <div style="background:#fee2e2; padding:8px; border-radius:10px;"><i class="fas fa-file-pdf" style="color:#ef4444;"></i></div>
-                                <div style="margin-right:10px;">
-                                    <b style="font-size:14px;">${f.name}</b>
-                                    <p style="margin:0; font-size:10px; color:gray;">انقر للفتح السريع</p>
-                                </div>
+                            <div class="file-info" onclick="window.open('${f.url}','_blank')">
+                                <i class="fas fa-file-pdf" style="color:red;"></i>
+                                <span>${f.name}</span>
                             </div>
-                            <i class="fas fa-download download-icon" onclick="window.location.href='${downloadUrl}'"></i>
+                            <i class="fas fa-heart fav-heart ${isFav}" onclick="toggleFav('${f.id}', this)"></i>
                         </div>`;
                 });
                 list.innerHTML += html;
             });
         }
 
+        function toggleFav(id, el) {
+            if(favorites.includes(id)) {
+                favorites = favorites.filter(i => i !== id);
+                el.classList.remove('active');
+            } else {
+                favorites.push(id);
+                el.classList.add('active');
+            }
+            localStorage.setItem('favs', JSON.stringify(favorites));
+        }
+
+        // 3. الشات العام (مباشر)
+        async function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            if(!input.value) return;
+            const msg = { sender: userData.name, text: input.value, time: Date.now() };
+            await fetch(DB_URL + "public_chat.json", { method: 'POST', body: JSON.stringify(msg) });
+            input.value = "";
+            listenToChat();
+        }
+
+        async function listenToChat() {
+            const res = await fetch(DB_URL + "public_chat.json");
+            const data = await res.json();
+            const chatBox = document.getElementById('chat-messages');
+            chatBox.innerHTML = "";
+            for(let key in data) {
+                const m = data[key];
+                const type = m.sender === userData.name ? 'sent' : 'received';
+                chatBox.innerHTML += `<div class="msg ${type}"><b>${m.sender}:</b><br>${m.text}</div>`;
+            }
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // 4. التنقل
         function nav(p) {
             document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active'));
             document.getElementById(p + '-page').classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(ni => ni.classList.remove('active'));
-            if(p === 'home') document.querySelectorAll('.nav-item')[0].classList.add('active');
-            toggleSide(true);
-        }
-
-        function toggleSide(close = false) {
-            const s = document.getElementById('sidebar'), o = document.getElementById('overlay');
-            if(close) { s.classList.remove('active'); o.style.display="none"; return; }
-            s.classList.toggle('active');
-            o.style.display = s.classList.contains('active') ? "block" : "none";
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         }
 
         function toggleDark() { document.body.classList.toggle('dark'); }
-
-        renderSubjects();
     </script>
 </body>
 </html>
