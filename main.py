@@ -1,31 +1,45 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-# تعريف التطبيق واسمه
-app = FastAPI(title="تطبيق الحلة الجامعي - الخادم")
+# إنشاء تطبيق FastAPI
+app = FastAPI(
+    title="تطبيق الحلة الجامعي",
+    description="الواجهة الخلفية المحدثة والمستضافة على Vercel",
+    version="2.0.0"
+)
 
-# إعداد CORS للسماح لتطبيق الواجهة (الهاتف أو الويب) بالاتصال بالسيرفر
+# إعدادات CORS: ضرورية جداً للسماح لتطبيق الهاتف بالاتصال بالسيرفر
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # يسمح بالاتصال من أي تطبيق. (يمكنك لاحقاً تحديد رابط تطبيقك فقط)
+    allow_origins=["*"],  # يسمح بالاتصال من أي مصدر
     allow_credentials=True,
-    allow_methods=["*"],  # يسمح بجميع أنواع الطلبات (GET, POST, PUT, DELETE)
+    allow_methods=["*"],  # يسمح بجميع أنواع العمليات (GET, POST, إلخ)
     allow_headers=["*"],
 )
 
-# الصفحة الرئيسية للسيرفر
+# الصفحة الرئيسية (الرابط الأساسي)
 @app.get("/")
-def read_root():
+async def root():
     return {
-        "status": "success",
-        "message": "أهلاً بك! سيرفر تطبيق الحلة الجامعي يعمل بنجاح."
+        "message": "مرحباً بك في سيرفر تطبيق الحلة الجامعي",
+        "status": "online",
+        "environment": "Vercel Production"
     }
 
-# رابط إضافي لاختبار حالة السيرفر (مفيد لتطبيق الهاتف للتحقق من الاتصال)
-@app.get("/api/health")
-def health_check():
+# رابط لفحص حالة النظام (Health Check)
+@app.get("/api/status")
+async def get_status():
     return {
-        "status": "active",
-        "platform": "Vercel",
-        "app_name": "Hillah Uni App"
+        "app": "Hillah University App",
+        "version": "2.0.0",
+        "server": "Vercel Serverless",
+        "connection": "Secure"
+    }
+
+# مثال لرابط جلب بيانات (يمكنك توسيعه لاحقاً)
+@app.get("/api/info")
+async def get_info():
+    return {
+        "university": "جامعة الحلة",
+        "notice": "السيرفر يعمل الآن بنظام التحديث التلقائي من GitHub"
     }
