@@ -1,107 +1,366 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>المساعد الأكاديمي</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>المساعد الأكاديمي 🎓</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #F0F4F8; --card: #FFFFFF; --text: #1E293B; --primary: #4D95FF;
+            --header-grad: linear-gradient(180deg, #A4CDFF 0%, #F0F4F8 100%);
+            --border: #E2E8F0; --gray: #94A3B8;
+        }
 
-<style>
-body{
-    font-family: sans-serif;
-    margin:0;
-    background:#f5f5f5;
-}
+        body.dark {
+            --bg: #0F172A; --card: #1E293B; --text: #F8FAFC; --primary: #38BDF8;
+            --header-grad: linear-gradient(180deg, #1E293B 0%, #0F172A 100%);
+            --border: #334155;
+        }
 
-/* header */
-.header{
-    background:#4D95FF;
-    color:white;
-    padding:20px;
-    text-align:center;
-}
+        body { 
+            font-family: 'Cairo', sans-serif; background: var(--bg); color: var(--text); 
+            margin: 0; padding: 0; transition: 0.3s; overflow-x: hidden;
+            user-select: none; -webkit-user-select: none; /* منع تحديد النص */
+        }
 
-/* pages */
-.page{display:none;padding:15px;}
-.page.active{display:block}
+        /* القائمة الجانبية */
+        .sidebar { position: fixed; right: -100%; top: 0; width: 85%; max-width: 300px; height: 100%; background: var(--card); z-index: 2000; transition: 0.4s; box-shadow: -10px 0 30px rgba(0,0,0,0.1); padding: 25px; box-sizing: border-box; }
+        .sidebar.active { right: 0; }
+        .side-profile { text-align: center; margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+        .side-profile img { width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--primary); object-fit: cover; }
+        .side-item { display: flex; align-items: center; justify-content: space-between; padding: 15px; border-radius: 12px; cursor: pointer; margin-bottom: 5px; font-weight: 600; }
+        .side-item:hover { background: rgba(77, 149, 255, 0.1); }
+        .side-item i { color: var(--primary); width: 25px; }
 
-/* cards */
-.card{
-    background:white;
-    padding:15px;
-    border-radius:10px;
-    margin-bottom:10px;
-    cursor:pointer;
-}
+        /* الهيدر */
+        .app-header { background: var(--header-grad); padding: 50px 20px 30px; text-align: center; position: relative; }
+        .menu-icon { position: absolute; right: 20px; top: 25px; font-size: 24px; cursor: pointer; }
+        .app-logo { 
+            width: 100px; height: 100px; background: white; border-radius: 50%; 
+            margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden;
+            touch-action: none; -webkit-touch-callout: none; /* منع قائمة المتصفح عند الضغط المطول */
+        }
+        .app-logo img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
 
-/* nav */
-.nav{
-    position:fixed;
-    bottom:0;
-    width:100%;
-    background:white;
-    display:flex;
-    justify-content:space-around;
-    padding:10px;
-    border-top:1px solid #ddd;
-}
-.nav div{cursor:pointer}
-</style>
+        /* البحث */
+        .search-wrap { padding: 0 20px; margin-top: -25px; position: relative; z-index: 10; }
+        .search-box { background: var(--card); border-radius: 15px; padding: 12px 20px; display: flex; align-items: center; box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
+        .search-box input { flex: 1; border: none; background: transparent; outline: none; font-family: 'Cairo'; color: var(--text); }
+
+        /* المحتوى */
+        .page { display: none; padding: 20px; padding-bottom: 100px; animation: fadeIn 0.4s; box-sizing: border-box; }
+        .page.active { display: block; }
+        .main-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 30px; }
+        .card-btn { background: var(--card); border-radius: 20px; padding: 20px 5px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.03); cursor: pointer; font-size: 11px; font-weight: 700; }
+        .card-btn i { font-size: 26px; margin-bottom: 8px; display: block; }
+
+        /* القوائم */
+        .list-item { background: var(--card); border-radius: 15px; padding: 15px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+        .item-info { display: flex; align-items: center; gap: 12px; flex: 1; }
+        .fav-star { font-size: 20px; color: #ddd; cursor: pointer; transition: 0.3s; }
+        .fav-star.active { color: #FFD700; }
+
+        /* شريط سفلي */
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--card); display: flex; justify-content: space-around; padding: 10px 0; border-radius: 25px 25px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); z-index: 1000; }
+        .nav-btn { text-align: center; color: var(--gray); font-size: 10px; cursor: pointer; flex: 1; transition: 0.3s; }
+        .nav-btn.active { color: var(--primary); font-weight: 700; }
+        .nav-btn i { font-size: 22px; display: block; margin-bottom: 3px; }
+
+        /* لوحة الإدارة */
+        .admin-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--card); z-index: 5000; display: none; padding: 25px; box-sizing: border-box; overflow-y: auto; }
+        .admin-input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 10px; font-family: 'Cairo'; background: var(--bg); color: var(--text); }
+        .admin-action { width: 100%; padding: 15px; border-radius: 12px; border: none; background: var(--primary); color: white; font-weight: 700; margin-bottom: 10px; cursor: pointer; }
+
+        /* المفاتيح */
+        .switch { position: relative; display: inline-block; width: 40px; height: 22px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--primary); }
+        input:checked + .slider:before { transform: translateX(18px); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
+    </style>
 </head>
+<body id="appBody">
 
-<body>
+    <div id="sidebar" class="sidebar">
+        <div class="side-profile">
+            <img id="sideLogo" src="https://i.ibb.co/VvzKXY7/bot-avatar.png">
+            <h3 id="sideName" style="margin:10px 0 5px;">المساعد الأكاديمي</h3>
+            <span style="color:var(--primary); font-size:12px;">@M3y4_p</span>
+        </div>
+        <div class="side-item"><span><i class="fas fa-cog"></i> الإعدادات</span></div>
+        <div class="side-item" onclick="toggleDark()">
+            <span><i class="fas fa-moon"></i> الوضع الليلي</span>
+            <label class="switch"><input type="checkbox" id="darkCheck"><span class="slider"></span></label>
+        </div>
+        <div class="side-item"><span><i class="fas fa-bell"></i> الإشعارات</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+        <div class="side-item"><span><i class="fas fa-info-circle"></i> من نحن</span></div>
+        <div class="side-item"><span><i class="fas fa-language"></i> اللغة</span> <small>العربية</small></div>
+        <div class="side-item" style="color:#ef4444; margin-top:20px;" onclick="location.reload()"><span><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</span></div>
+    </div>
 
-<div class="header">
-    <h2>المساعد الأكاديمي</h2>
-</div>
+    <div id="home-page" class="page active" style="padding:0;">
+        <div class="app-header">
+            <i class="fas fa-bars menu-icon" onclick="toggleSide()"></i>
+            <div class="app-logo" id="mainLogo" oncontextmenu="return false;">
+                <img id="appLogoImg" src="https://i.ibb.co/VvzKXY7/bot-avatar.png">
+            </div>
+            <h2 id="appTitleText" style="margin:0;">بوت المساعد الأكاديمي</h2>
+            <p id="appSubtitleText" style="opacity:0.7; font-size:12px;">مساعدك الذكي في رحلتك التعليمية</p>
+        </div>
 
-<!-- الصفحة الرئيسية -->
-<div id="home" class="page active">
-    <div class="card" onclick="nav('subjects')">📂 الأقسام</div>
-    <div class="card">⭐ المفضلة</div>
-</div>
+        <div class="search-wrap">
+            <div class="search-box">
+                <i class="fas fa-search" style="margin-left:10px;"></i>
+                <input type="text" id="searchInput" placeholder="ابحث عن مادة أو ملف..." oninput="doSearch()">
+            </div>
+        </div>
 
-<!-- صفحة الأقسام -->
-<div id="subjects" class="page">
-    <h3>الأقسام</h3>
-    <div id="subjectsList"></div>
-</div>
+        <div class="main-grid" style="padding:20px;">
+            <div class="card-btn" onclick="nav('subjects')" style="color:#4D95FF;"><i class="fas fa-folder"></i>الأقسام</div>
+            <div class="card-btn" style="color:#2ecc71;"><i class="fas fa-clock"></i>العد التنازلي</div>
+            <div class="card-btn" style="color:#a855f7;"><i class="fas fa-stopwatch"></i>منبهاتي</div>
+            <div class="card-btn" style="color:#f59e0b;"><i class="fas fa-lightbulb"></i>نصائح</div>
+            <div class="card-btn" style="color:#ec4899;"><i class="fas fa-gamepad"></i>ترفيه</div>
+            <div class="card-btn" style="color:#3b82f6;"><i class="fas fa-language"></i>ترجمة</div>
+        </div>
+    </div>
 
-<!-- النافبار -->
-<div class="nav">
-    <div onclick="nav('home')">🏠</div>
-    <div onclick="nav('subjects')">📂</div>
-</div>
+    <div id="subjects-page" class="page">
+        <div style="display:flex; align-items:center; gap:15px; margin-bottom:20px;">
+            <i class="fas fa-arrow-right" onclick="nav('home')" style="font-size:20px;"></i>
+            <h2 style="margin:0;">الأقسام</h2>
+        </div>
+        <div id="subjectsList"></div>
+    </div>
 
-<script>
-const DB_URL = "https://hillah-app-default-rtdb.firebaseio.com/.json";
+    <div id="favorites-page" class="page">
+        <h2>⭐ المفضلة</h2>
+        <div id="favoritesList"></div>
+    </div>
 
-let appData = {subjects:[]};
+    <div id="recent-page" class="page">
+        <h2>🕒 المحفوظات</h2>
+        <div id="recentList"></div>
+    </div>
 
-async function load(){
-    const r = await fetch(DB_URL);
-    const d = await r.json();
-    if(d) appData = d;
-    render();
-}
+    <div id="more-page" class="page">
+        <h2>🔍 المزيد والبحث</h2>
+        <div id="searchResultList"></div>
+    </div>
 
-function render(){
-    const list = document.getElementById('subjectsList');
-    list.innerHTML = "";
+    <div id="admin-page" class="admin-page">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2>🛠 لوحة التحكم</h2>
+            <i class="fas fa-times" onclick="closeAdmin()" style="font-size:24px;"></i>
+        </div>
+        
+        <div style="background:rgba(77,149,255,0.05); padding:15px; border-radius:15px; margin-bottom:20px;">
+            <h4>🎨 هوية التطبيق</h4>
+            <input type="text" id="admAppTitle" class="admin-input" placeholder="اسم التطبيق">
+            <input type="text" id="admAppLogo" class="admin-input" placeholder="رابط صورة اللوغو">
+            <button class="admin-action" onclick="updateAppInfo()">تحديث الهوية</button>
+        </div>
 
-    (appData.subjects || []).forEach(s=>{
-        list.innerHTML += `<div class="card">${s.name}</div>`;
-    });
-}
+        <div style="background:rgba(46,204,113,0.05); padding:15px; border-radius:15px; margin-bottom:20px;">
+            <h4>📂 إدارة الأقسام</h4>
+            <input type="text" id="admSubName" class="admin-input" placeholder="اسم القسم الجديد">
+            <button class="admin-action" onclick="addSubject()">إضافة قسم</button>
+            <div id="admSubjectsList"></div>
+        </div>
+    </div>
 
-function nav(id){
-    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-}
+    <div class="nav-bar">
+        <div class="nav-btn active" onclick="nav('home')"><i class="fas fa-home"></i>الرئيسية</div>
+        <div class="nav-btn" onclick="nav('favorites')"><i class="fas fa-star"></i>المفضلة</div>
+        <div class="nav-btn" onclick="nav('recent')"><i class="fas fa-history"></i>المحفوظات</div>
+        <div class="nav-btn" onclick="nav('more')"><i class="fas fa-search"></i>المزيد</div>
+    </div>
 
-load();
-</script>
+    <script>
+        const DB_URL = "https://hillah-app-default-rtdb.firebaseio.com/.json";
+        
+        let appData = { subjects: [], config: { title: "المساعد الأكاديمي", logo: "https://i.ibb.co/VvzKXY7/bot-avatar.png" } };
+        let favs = JSON.parse(localStorage.getItem('favs')) || [];
+        let recents = JSON.parse(localStorage.getItem('recents')) || [];
 
+        // منع القائمة الافتراضية والضغط المطول
+        let pressTimer;
+        const logoBtn = document.getElementById('mainLogo');
+
+        logoBtn.addEventListener('touchstart', (e) => {
+            pressTimer = setTimeout(() => {
+                const p = prompt("رمز الدخول الإداري:");
+                if(p === "1234") document.getElementById('admin-page').style.display = "block";
+            }, 3000);
+        });
+
+        logoBtn.addEventListener('touchend', () => clearTimeout(pressTimer));
+
+        // جلب البيانات
+        async function load() {
+            try {
+                const r = await fetch(DB_URL + "?t=" + Date.now());
+                const d = await r.json();
+                if(d) appData = d;
+                syncUI();
+            } catch(e) { console.log("Offline mode"); }
+        }
+
+        function syncUI() {
+            document.getElementById('appTitleText').innerText = appData.config.title;
+            document.getElementById('appLogoImg').src = appData.config.logo;
+            document.getElementById('sideLogo').src = appData.config.logo;
+            renderAll();
+        }
+
+        function nav(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(page + '-page').classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            const idx = {home:0, favorites:1, recent:2, more:3}[page];
+            document.querySelectorAll('.nav-btn')[idx].classList.add('active');
+            window.scrollTo(0,0);
+        }
+
+        function renderAll() {
+            renderSubjects();
+            renderFavs();
+            renderRecents();
+            renderAdminSubjects();
+        }
+
+        function renderSubjects() {
+            const list = document.getElementById('subjectsList');
+            list.innerHTML = "";
+            (appData.subjects || []).forEach((s, si) => {
+                let files = "";
+                (s.files || []).forEach((f, fi) => {
+                    const isFav = favs.includes(f.url) ? 'active' : '';
+                    files += `
+                        <div class="list-item">
+                            <div class="item-info" onclick="openFile('${f.name}', '${f.url}')">
+                                <i class="fas fa-file-pdf" style="color:#ef4444;"></i>
+                                <div><b>${f.name}</b></div>
+                            </div>
+                            <i class="fas fa-star fav-star ${isFav}" onclick="toggleFav('${f.url}', event)"></i>
+                        </div>`;
+                });
+                list.innerHTML += `<div style="margin-bottom:20px;"><h4>📂 ${s.name}</h4>${files}</div>`;
+            });
+        }
+
+        function openFile(name, url) {
+            recents = recents.filter(u => u.url !== url);
+            recents.unshift({name, url, time: new Date().toLocaleTimeString()});
+            if(recents.length > 15) recents.pop();
+            localStorage.setItem('recents', JSON.stringify(recents));
+            window.open(url, '_blank');
+            renderRecents();
+        }
+
+        function toggleFav(url, e) {
+            e.stopPropagation();
+            if(favs.includes(url)) favs = favs.filter(u => u !== url);
+            else favs.push(url);
+            localStorage.setItem('favs', JSON.stringify(favs));
+            renderAll();
+        }
+
+        function renderFavs() {
+            const list = document.getElementById('favoritesList');
+            list.innerHTML = "";
+            appData.subjects.forEach(s => s.files?.forEach(f => {
+                if(favs.includes(f.url)) {
+                    list.innerHTML += `<div class="list-item" onclick="openFile('${f.name}','${f.url}')"><b>${f.name}</b><i class="fas fa-chevron-left"></i></div>`;
+                }
+            }));
+        }
+
+        function renderRecents() {
+            const list = document.getElementById('recentList');
+            list.innerHTML = recents.length ? "" : "<p>لا يوجد محفوظات</p>";
+            recents.forEach(r => {
+                list.innerHTML += `<div class="list-item" onclick="openFile('${r.name}','${r.url}')"><div><b>${r.name}</b><br><small>${r.time}</small></div></div>`;
+            });
+        }
+
+        function doSearch() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            if(q.length < 2) return;
+            nav('more');
+            const list = document.getElementById('searchResultList');
+            list.innerHTML = "";
+            appData.subjects.forEach(s => s.files?.forEach(f => {
+                if(f.name.toLowerCase().includes(q)) {
+                    list.innerHTML += `<div class="list-item" onclick="openFile('${f.name}','${f.url}')"><b>${f.name}</b></div>`;
+                }
+            }));
+        }
+
+        // وظائف الإدارة
+        function renderAdminSubjects() {
+            const list = document.getElementById('admSubjectsList');
+            list.innerHTML = "";
+            (appData.subjects || []).forEach((s, i) => {
+                list.innerHTML += `
+                <div style="background:#fff; padding:10px; border-radius:10px; margin-bottom:10px; border:1px solid #ddd;">
+                    <input type="text" value="${s.name}" onchange="editSubName(${i}, this.value)" class="admin-input">
+                    <button onclick="addFileToSub(${i})" class="admin-action" style="background:#2ecc71; font-size:12px;">+ ملف لهذا القسم</button>
+                    <button onclick="delSub(${i})" style="color:red; background:none; border:none; cursor:pointer;">حذف القسم</button>
+                </div>`;
+            });
+        }
+
+        async function updateAppInfo() {
+            appData.config.title = document.getElementById('admAppTitle').value || appData.config.title;
+            appData.config.logo = document.getElementById('admAppLogo').value || appData.config.logo;
+            await save();
+        }
+
+        async function addSubject() {
+            const n = document.getElementById('admSubName').value;
+            if(!n) return;
+            if(!appData.subjects) appData.subjects = [];
+            appData.subjects.push({ name: n, files: [] });
+            await save();
+        }
+
+        function editSubName(i, n) { appData.subjects[i].name = n; save(); }
+        function delSub(i) { if(confirm("حذف القسم؟")) { appData.subjects.splice(i, 1); save(); } }
+        
+        async function addFileToSub(i) {
+            const n = prompt("اسم الملف:");
+            const u = prompt("رابط الملف:");
+            if(n && u) {
+                if(!appData.subjects[i].files) appData.subjects[i].files = [];
+                appData.subjects[i].files.push({ name: n, url: u });
+                await save();
+            }
+        }
+
+        async function save() {
+            await fetch(DB_URL, { method: 'PUT', body: JSON.stringify(appData) });
+            load();
+        }
+
+        function toggleSide() { document.getElementById('sidebar').classList.toggle('active'); }
+        function toggleDark() { 
+            const d = document.body.classList.toggle('dark');
+            localStorage.setItem('dark', d);
+            document.getElementById('darkCheck').checked = d;
+        }
+        function closeAdmin() { document.getElementById('admin-page').style.display = "none"; }
+
+        if(localStorage.getItem('dark') === 'true') toggleDark();
+        load();
+    </script>
 </body>
 </html>
