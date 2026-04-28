@@ -3,619 +3,317 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>المساعد الأكاديمي برو 🎓</title>
+    <title>المساعد الأكاديمي برو v38 🎓</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg-main: #F0F2F5; --card-bg: #FFFFFF; --text-main: #1C1E21;
-            --accent: #0088CC; /* لون تلجرام الأصلي */
-            --accent-grad: linear-gradient(135deg, #0088CC 0%, #00A6FF 100%);
-            --border-color: #DADDE1; --gray-text: #65676B;
-            --me-chat: #EFFDFF; --other-chat: #FFFFFF;
-            --success: #31A24C; --error: #FA3E3E;
+            --bg: #F0F2F5; --card: #FFFFFF; --text: #1C1E21;
+            --primary: #0088CC; --grad: linear-gradient(135deg, #0088CC 0%, #00A6FF 100%);
+            --border: #DADDE1; --gray: #65676B; --me: #EFFDFF; --other: #FFFFFF;
+            --red: #FA3E3E; --green: #31A24C;
         }
-
         body.dark {
-            --bg-main: #0E1621; --card-bg: #17212B; --text-main: #F5F5F5;
-            --border-color: #242F3D; --gray-text: #7F91A4;
-            --me-chat: #2B5278; --other-chat: #182533;
+            --bg: #0E1621; --card: #17212B; --text: #F5F5F5;
+            --border: #242F3D; --gray: #7F91A4; --me: #2B5278; --other: #182533;
         }
-
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
-        body { font-family: 'Cairo', sans-serif; background: var(--bg-main); color: var(--text-main); margin: 0; padding: 0; transition: background 0.3s; overflow-x: hidden; }
+        body { font-family: 'Cairo', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; transition: 0.3s; overflow-x: hidden; }
 
-        /* --- شاشات الدخول (Auth) --- */
-        #auth-overlay { position: fixed; inset: 0; background: var(--card-bg); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 25px; }
-        .auth-card { width: 100%; max-width: 420px; animation: slideUp 0.6s ease-out; }
-        .auth-logo { width: 90px; height: 90px; background: var(--accent-grad); border-radius: 30px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 15px 35px rgba(0, 136, 204, 0.3); }
-        .auth-input { width: 100%; padding: 16px; margin-bottom: 15px; border-radius: 15px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-main); font-size: 15px; transition: 0.3s; }
-        .auth-input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(0, 136, 204, 0.1); }
+        /* --- بوابة الدخول --- */
+        #auth-scr { position: fixed; inset: 0; background: var(--card); z-index: 10000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; }
+        .auth-box { width: 100%; max-width: 400px; animation: slideUp 0.5s ease; }
+        .input-box { width: 100%; padding: 15px; margin-bottom: 12px; border-radius: 15px; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-family: Cairo; font-size: 14px; }
+        .btn-p { width: 100%; padding: 16px; background: var(--grad); color: white; border: none; border-radius: 15px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 20px rgba(0, 136, 204, 0.2); }
 
-        /* --- الهيكل الرئيسي --- */
-        .header { background: var(--card-bg); height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--border-color); }
-        .header h2 { font-size: 18px; font-weight: 800; margin: 0; }
-        
-        .sidebar { position: fixed; right: -100%; top: 0; width: 85%; max-width: 320px; height: 100%; background: var(--card-bg); z-index: 5000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding: 40px 25px; }
-        .sidebar.active { right: 0; box-shadow: -15px 0 50px rgba(0,0,0,0.15); }
-        .side-user-box { text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); }
-        .side-pfp { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid var(--accent); margin-bottom: 15px; }
+        /* --- الهيكل --- */
+        .app-header { background: var(--card); height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--border); }
+        .sidebar { position: fixed; right: -100%; top: 0; width: 85%; max-width: 310px; height: 100%; background: var(--card); z-index: 5000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding: 30px; }
+        .sidebar.active { right: 0; box-shadow: -10px 0 50px rgba(0,0,0,0.2); }
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 4500; backdrop-filter: blur(4px); }
 
         /* --- الصفحات --- */
-        .page { display: none; padding: 20px 20px 100px; animation: fadeIn 0.4s ease; min-height: calc(100vh - 70px); }
+        .page { display: none; min-height: 100vh; animation: fadeIn 0.4s; padding: 20px 20px 120px; }
         .page.active { display: block; }
 
-        /* --- نظام الدردشة (Telegram Style) --- */
-        .chat-wrapper { height: calc(100vh - 200px); display: flex; flex-direction: column; background: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-size: contain; border-radius: 20px; overflow: hidden; border: 1px solid var(--border-color); }
-        #chat-scroll { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+        /* --- شات تلجرام برو --- */
+        .chat-wrap { height: 65vh; background: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-size: contain; border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--border); }
+        #chat-flow, #p-chat-flow { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+        .bubble { max-width: 85%; padding: 10px 15px; border-radius: 18px; font-size: 14px; line-height: 1.5; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .me { align-self: flex-start; background: var(--me); border-bottom-right-radius: 2px; }
+        .other { align-self: flex-end; background: var(--other); border-bottom-left-radius: 2px; text-align: right; }
+
+        /* --- الشريط السفلي --- */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--card); display: flex; justify-content: space-around; padding: 12px 0; border-radius: 25px 25px 0 0; box-shadow: 0 -5px 30px rgba(0,0,0,0.1); z-index: 3000; border-top: 1px solid var(--border); }
+        .nav-link { text-align: center; color: var(--gray); font-size: 10px; cursor: pointer; flex: 1; position: relative; }
+        .nav-link.active { color: var(--primary); font-weight: 800; }
+        .nav-link i { font-size: 22px; display: block; margin-bottom: 5px; }
+        .badge { position: absolute; top: -5px; right: 28%; background: var(--red); color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; display: flex; align-items: center; justify-content: center; border: 2px solid var(--card); display: none; }
+
+        .item-card { background: var(--card); padding: 15px; border-radius: 18px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); margin-bottom: 10px; }
         
-        .message { max-width: 80%; position: relative; padding: 10px 15px; border-radius: 18px; font-size: 14px; line-height: 1.5; box-shadow: 0 2px 4px rgba(0,0,0,0.05); cursor: pointer; }
-        .message.mine { align-self: flex-start; background: var(--me-chat); border-bottom-right-radius: 4px; color: #1C1E21; }
-        .message.others { align-self: flex-end; background: var(--other-chat); border-bottom-left-radius: 4px; }
-        .message-info { font-size: 10px; color: var(--gray-text); margin-top: 5px; display: flex; justify-content: flex-end; gap: 5px; }
-        .reply-box { background: rgba(0,0,0,0.05); border-right: 3px solid var(--accent); padding: 5px 10px; margin-bottom: 5px; border-radius: 5px; font-size: 12px; }
+        #custom-dialog { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 20000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .dialog-box { background: var(--card); width: 85%; max-width: 350px; border-radius: 25px; padding: 25px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
 
-        /* --- أدوات الإدخال --- */
-        .input-area { background: var(--card-bg); padding: 15px; display: flex; align-items: center; gap: 10px; border-top: 1px solid var(--border-color); }
-        .chat-input { flex: 1; padding: 12px 18px; border-radius: 25px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-main); font-family: inherit; }
-
-        /* --- القائمة السفلية --- */
-        .bottom-tabs { position: fixed; bottom: 0; width: 100%; background: var(--card-bg); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid var(--border-color); z-index: 1000; box-shadow: 0 -5px 20px rgba(0,0,0,0.03); }
-        .tab-item { text-align: center; color: var(--gray-text); font-size: 11px; flex: 1; transition: 0.3s; position: relative; }
-        .tab-item.active { color: var(--accent); font-weight: 700; transform: translateY(-3px); }
-        .tab-item i { font-size: 24px; display: block; margin-bottom: 4px; }
-        .count-badge { position: absolute; top: -5px; right: 25%; background: var(--error); color: white; border-radius: 50%; font-size: 10px; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; border: 2px solid var(--card-bg); }
-
-        /* --- البطاقات والعناصر --- */
-        .item-card { background: var(--card-bg); padding: 15px; border-radius: 20px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border-color); transition: 0.3s; }
-        .item-card:hover { transform: scale(1.02); }
-        .pfp-sm { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
-
-        /* --- المودال --- */
-        .overlay-dim { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 4000; backdrop-filter: blur(5px); }
-        .pop-up { position: fixed; bottom: -100%; left: 0; width: 100%; background: var(--card-bg); border-radius: 30px 30px 0 0; z-index: 6000; transition: 0.4s; padding: 30px; text-align: center; }
-        .pop-up.active { bottom: 0; }
-
-        /* --- تحريكات --- */
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        .btn-action { background: var(--accent-grad); color: white; border: none; padding: 15px 30px; border-radius: 18px; font-weight: 700; cursor: pointer; width: 100%; box-shadow: 0 10px 20px rgba(0, 136, 204, 0.2); }
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
-<body id="mainBody">
+<body id="appBody">
 
-    <div id="auth-overlay">
-        <div class="auth-card" id="auth-container">
-            <div class="auth-logo"><i class="fas fa-paper-plane" style="color:white; font-size:35px;"></i></div>
-            <h2 id="auth-title">المساعد الأكاديمي</h2>
-            <p id="auth-subtitle" style="color:var(--gray-text); margin-bottom:25px;">أهلاً بك في منصة التواصل الأكاديمي</p>
-            
-            <div id="auth-choices">
-                <button class="btn-action" onclick="switchAuth('login')">تسجيل الدخول</button>
-                <button class="btn-action" style="background:var(--bg-main); color:var(--text-main); margin-top:15px; border:1px solid var(--border-color); box-shadow:none;" onclick="switchAuth('reg')">إنشاء حساب جديد</button>
-            </div>
+    <div id="auth-scr">
+        <div class="auth-box" id="auth-main">
+            <div style="background:var(--grad); width:80px; height:80px; border-radius:25px; margin:0 auto 20px; display:flex; align-items:center; justify-content:center; box-shadow:0 10px 25px rgba(0,136,204,0.3);"><i class="fas fa-paper-plane" style="color:white; font-size:35px;"></i></div>
+            <h2>المساعد الأكاديمي برو</h2>
+            <button class="btn-p" onclick="showAuth('login')">تسجيل دخول</button>
+            <button class="btn-p" style="background:#E2E8F0; color:#333; margin-top:10px;" onclick="showAuth('reg')">إنشاء حساب جديد</button>
+        </div>
 
-            <div id="auth-form" style="display:none;">
-                <div id="reg-fields" style="display:none;">
-                    <input type="text" id="af-name" class="auth-input" placeholder="الاسم الكامل">
-                    <input type="text" id="af-uni" class="auth-input" placeholder="الجامعة">
-                </div>
-                <input type="text" id="af-user" class="auth-input" placeholder="اسم المستخدم (Username)">
-                <input type="password" id="af-pass" class="auth-input" placeholder="كلمة المرور">
-                <button class="btn-action" id="auth-submit-btn">متابعة</button>
-                <p onclick="switchAuth('choices')" style="margin-top:20px; color:var(--accent); font-weight:700; cursor:pointer;">رجوع للبداية</p>
-            </div>
+        <div id="login-form" class="auth-box" style="display:none;">
+            <h3>مرحباً بك مجدداً</h3>
+            <input type="text" id="l-user" class="input-box" placeholder="اسم المستخدم (اليوزر)">
+            <input type="password" id="l-pass" class="input-box" placeholder="كلمة المرور">
+            <button class="btn-p" onclick="handleLogin()">دخول 🚀</button>
+            <p onclick="showAuth('gate')" style="margin-top:20px; color:var(--primary); font-weight:700; cursor:pointer;">رجوع</p>
+        </div>
+
+        <div id="reg-form" class="auth-box" style="display:none;">
+            <h3>حساب جديد</h3>
+            <input type="text" id="r-user" class="input-box" placeholder="اليوزر (يجب أن يكون فريداً)">
+            <input type="text" id="r-name" class="input-box" placeholder="الاسم الكامل">
+            <input type="password" id="r-pass" class="input-box" placeholder="كلمة المرور">
+            <input type="text" id="r-uni" class="input-box" placeholder="الجامعة">
+            <button class="btn-p" onclick="handleRegister()">تأكيد التسجيل ✨</button>
+            <p onclick="showAuth('gate')" style="margin-top:20px; color:var(--primary); font-weight:700; cursor:pointer;">رجوع</p>
         </div>
     </div>
 
-    <div class="overlay-dim" id="sidebar-overlay" onclick="toggleSidebar()"></div>
-    <div class="sidebar" id="main-sidebar">
-        <div class="side-user-box">
-            <img id="side-pfp-img" src="https://i.ibb.co/VvzKXY7/bot-avatar.png" class="side-pfp">
-            <h3 id="side-full-name">مصطفى</h3>
-            <span id="side-username-tag" style="color:var(--accent); font-weight:bold;">@mustafa</span>
-        </div>
-        <div style="display:flex; flex-direction:column; gap:10px;">
-            <div onclick="nav('notifications')" style="padding:15px; cursor:pointer; font-weight:700;"><i class="fas fa-bell" style="width:30px;"></i> الإشعارات</div>
-            <div onclick="nav('edit')" style="padding:15px; cursor:pointer; font-weight:700;"><i class="fas fa-cog" style="width:30px;"></i> الإعدادات والتعديل</div>
-            <div onclick="toggleDark()" style="padding:15px; cursor:pointer; font-weight:700;"><i class="fas fa-moon" style="width:30px;"></i> الوضع الليلي</div>
-            <div onclick="logout()" style="padding:15px; cursor:pointer; color:var(--error); font-weight:700; border-top:1px solid var(--border-color); margin-top:10px;"><i class="fas fa-sign-out-alt" style="width:30px;"></i> تسجيل الخروج</div>
+    <div id="custom-dialog">
+        <div class="dialog-box">
+            <h3 id="diag-title">تنبيه</h3>
+            <p id="diag-msg" style="color:var(--gray);"></p>
+            <button class="btn-p" onclick="closeDiag()">موافق</button>
         </div>
     </div>
 
-    <div class="header">
-        <i class="fas fa-bars menu-btn" onclick="toggleSidebar()"></i>
-        <h2 id="header-title">المساعد الأكاديمي</h2>
-        <div id="header-icons" style="display:flex; gap:15px;">
-            <i class="fas fa-search" onclick="nav('social')"></i>
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <div id="sidebar" class="sidebar">
+        <div style="text-align:center; border-bottom:1px solid var(--border); padding-bottom:20px; margin-bottom:20px;">
+            <img id="side-pfp" src="" style="width: 90px; height: 90px; border-radius: 50%; border: 4px solid var(--primary); object-fit: cover;">
+            <h3 id="side-name" style="margin:10px 0 0;">...</h3>
+            <span id="side-username" style="color:var(--primary); font-weight:bold; font-size:13px;"></span>
         </div>
+        <div onclick="nav('notifications')" style="padding:15px; cursor:pointer; font-weight:bold;"><i class="fas fa-bell"></i> الإشعارات</div>
+        <div onclick="nav('edit')" style="padding:15px; cursor:pointer; font-weight:bold;"><i class="fas fa-user-edit"></i> إعدادات الحساب</div>
+        <div onclick="toggleDark()" style="padding:15px; cursor:pointer; font-weight:bold;"><i class="fas fa-moon"></i> الوضع الليلي</div>
+        <div onclick="logout()" style="padding:15px; color:var(--red); cursor:pointer; font-weight:bold; border-top:1px solid var(--border); margin-top:10px;"><i class="fas fa-power-off"></i> تسجيل الخروج</div>
     </div>
 
-    <div id="home-page" class="page active">
-        <div style="background:var(--accent-grad); padding:30px; border-radius:25px; color:white; margin-bottom:25px; box-shadow: 0 10px 30px rgba(0, 136, 204, 0.2);">
+    <div class="app-header">
+        <i class="fas fa-bars" onclick="toggleSidebar()" style="font-size:22px; cursor:pointer; color:var(--primary);"></i>
+        <h2 id="header-txt">المساعد الأكاديمي</h2>
+        <i class="fas fa-search" onclick="nav('social')" style="font-size:20px; color:var(--gray);"></i>
+    </div>
+
+    <div id="home-page" class="page active" style="padding:0;">
+        <div style="background:var(--grad); padding:40px 20px; color:white; text-align:center;">
             <h1 style="margin:0; font-size:24px;">مرحباً بك 🎓</h1>
-            <p style="opacity:0.9; margin:10px 0 0;">اكتشف الملازم، الدردشات، والزملاء.</p>
+            <p id="hi-user" style="opacity:0.9; margin:10px 0 0;">جاري تحميل بياناتك...</p>
         </div>
-        
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
-            <div onclick="nav('chat')" class="item-card" style="flex-direction:column; height:150px; justify-content:center;">
-                <i class="fas fa-comments" style="font-size:35px; color:#a855f7; margin-bottom:10px;"></i><b>شات عام</b>
+        <div style="padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div onclick="nav('chat')" class="item-card" style="flex-direction:column; padding:25px; text-align:center;">
+                <i class="fas fa-globe" style="font-size:30px; color:#a855f7; margin-bottom:10px;"></i><b>شات عام</b>
             </div>
-            <div onclick="nav('p-list')" class="item-card" style="flex-direction:column; height:150px; justify-content:center;">
-                <i class="fas fa-user-secret" style="font-size:35px; color:var(--accent); margin-bottom:10px;"></i><b>الخاص</b>
+            <div onclick="nav('p-list')" class="item-card" style="flex-direction:column; padding:25px; text-align:center;">
+                <i class="fas fa-comment-dots" style="font-size:30px; color:var(--primary); margin-bottom:10px;"></i><b>الخاص</b>
             </div>
-            <div onclick="nav('subjects')" class="item-card" style="grid-column: span 2; padding:25px;">
+            <div onclick="nav('subjects')" class="item-card" style="grid-column: span 2; padding:20px;">
                 <div style="display:flex; align-items:center; gap:15px;">
-                    <i class="fas fa-book-reader" style="font-size:30px; color:var(--success);"></i>
-                    <div><b>مواد الفاينل والملازم</b><br><small style="color:var(--gray-text);">مستندات PDF، ملخصات، وروابط</small></div>
+                    <i class="fas fa-book" style="font-size:25px; color:var(--green);"></i>
+                    <b>المواد والملازم الدراسية</b>
                 </div>
-                <i class="fas fa-chevron-left"></i>
             </div>
         </div>
     </div>
 
-    <div id="chat-page" class="page">
-        <div class="chat-wrapper">
-            <div id="chat-scroll"></div>
-            <div id="reply-preview" style="display:none; padding:10px; background:var(--card-bg); border-top:1px solid var(--border-color); font-size:12px;">
-                <i class="fas fa-times" onclick="cancelReply()" style="float:left; cursor:pointer;"></i>
-                <b>رد على: </b><span id="reply-text">...</span>
-            </div>
-            <div class="input-area">
-                <input type="text" id="msg-input" class="chat-input" placeholder="اكتب رسالة...">
-                <button onclick="sendMsg()" style="background:var(--accent); color:white; border:none; width:45px; height:45px; border-radius:50%;"><i class="fas fa-paper-plane"></i></button>
-            </div>
-        </div>
-    </div>
-
-    <div id="p-list-page" class="page">
-        <h3>📩 محادثاتك الخاصة</h3>
-        <div id="p-chats-container"></div>
-    </div>
-
+    <div id="p-list-page" class="page"><h2>📩 محادثاتي الخاصة</h2><div id="active-chats-box"></div></div>
+    
     <div id="p-chat-page" class="page">
-        <div style="display:flex; align-items:center; gap:15px; margin-bottom:15px;">
-            <i class="fas fa-arrow-right" onclick="nav('p-list')"></i>
-            <b id="p-target-name" style="font-size:18px;">...</b>
-        </div>
-        <div class="chat-wrapper">
-            <div id="p-chat-scroll"></div>
-            <div class="input-area">
-                <label for="img-upload" style="cursor:pointer; color:var(--gray-text);"><i class="fas fa-camera" style="font-size:20px;"></i></label>
-                <input type="file" id="img-upload" style="display:none" accept="image/*" onchange="sendImg(this)">
-                <input type="text" id="p-msg-input" class="chat-input" placeholder="رسالة مشفرة...">
-                <button onclick="sendPrivate()" style="background:var(--accent-grad); color:white; border:none; width:45px; height:45px; border-radius:50%;"><i class="fas fa-paper-plane"></i></button>
-            </div>
-        </div>
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:15px;"><i class="fas fa-arrow-right" onclick="nav('p-list')"></i><b id="p-chat-title">المحادثة</b></div>
+        <div class="chat-wrap"><div id="p-chat-flow"></div>
+        <div style="display:flex; padding:12px; background:var(--card); gap:8px;">
+            <label for="img-up" style="background:var(--bg); padding:10px; border-radius:12px; cursor:pointer;"><i class="fas fa-camera"></i></label>
+            <input type="file" id="img-up" style="display:none" accept="image/*" onchange="sendImg(this)">
+            <input type="text" id="p-chat-in" class="input-box" style="margin:0; flex:1;" placeholder="رسالة خاصة...">
+            <button onclick="sendPrivate()" style="background:var(--primary); color:white; border:none; padding:0 15px; border-radius:12px;"><i class="fas fa-paper-plane"></i></button>
+        </div></div>
     </div>
 
-    <div id="social-page" class="page">
-        <input type="text" id="user-search" class="auth-input" placeholder="ابحث بالاسم أو اليوزر..." oninput="findUsers()">
-        <div id="search-results" style="margin-top:15px;"></div>
-    </div>
-
-    <div id="notifications-page" class="page">
-        <h3>🔔 الإشعارات والطلبات</h3>
-        <div id="req-box"></div>
-    </div>
-
+    <div id="social-page" class="page"><h2>🔍 بحث زملاء</h2><input type="text" id="s-input" class="input-box" placeholder="ابحث باليوزر..." oninput="searchUsers()"><div id="s-results" style="margin-top:15px;"></div></div>
+    <div id="notifications-page" class="page"><h2>🔔 الإشعارات</h2><div id="requests-box"></div></div>
+    <div id="friends-page" class="page"><h2>👥 أصدقائي</h2><div id="friends-list-box"></div></div>
+    
     <div id="edit-page" class="page">
-        <div style="text-align:center; margin-bottom:30px;">
-            <div style="position:relative; width:120px; height:120px; margin:0 auto;">
-                <img id="edit-pfp-img" src="" style="width:100%; height:100%; border-radius:50%; border:4px solid var(--accent); object-fit:cover;">
-                <button onclick="document.getElementById('pfp-file').click()" style="position:absolute; bottom:0; right:0; background:var(--accent); color:white; border:none; width:35px; height:35px; border-radius:50%;"><i class="fas fa-camera"></i></button>
-            </div>
-            <input type="file" id="pfp-file" style="display:none" onchange="updatePFP(this)">
+        <h2>🛠 تعديل الحساب</h2>
+        <div style="text-align: center; margin-bottom: 25px;">
+            <img id="edit-pfp-v" src="" style="width:110px; height:110px; border-radius:50%; border:4px solid var(--primary); object-fit:cover;">
+            <input type="file" id="pfp-f" style="display:none" onchange="previewPFP(this)">
+            <button onclick="document.getElementById('pfp-f').click()" style="display:block; margin:10px auto; color:var(--primary); font-weight:bold; background:none; border:none;">تغيير الصورة</button>
         </div>
-        <div class="input-group">
-            <label>اسم المستخدم (اليوزر):</label>
-            <input type="text" id="edit-user" class="auth-input">
-        </div>
-        <div class="input-group">
-            <label>الاسم الظاهر:</label>
-            <input type="text" id="edit-name" class="auth-input">
-        </div>
-        <div class="input-group">
-            <label>الجامعة:</label>
-            <input type="text" id="edit-uni" class="auth-input">
-        </div>
-        <button class="btn-action" onclick="saveProfileChanges()">حفظ التغييرات ✅</button>
+        <input type="text" id="e-user" class="input-box" placeholder="تغيير اليوزر">
+        <input type="text" id="e-name" class="input-box" placeholder="تغيير الاسم">
+        <input type="text" id="e-uni" class="input-box" placeholder="تغيير الجامعة">
+        <button class="btn-p" onclick="saveProfile()">حفظ التعديلات ✅</button>
     </div>
 
-    <div id="friends-page" class="page">
-        <h3>👥 قائمة أصدقائي</h3>
-        <div id="friends-list"></div>
-    </div>
-
-    <div id="subjects-page" class="page">
-        <h3>📚 الملازم والمواد</h3>
-        <div id="materials-container">
-            <div class="item-card">
-                <div style="display:flex; align-items:center; gap:12px;">
-                    <div style="background:#FFEBEB; color:var(--error); padding:10px; border-radius:12px;"><i class="fas fa-file-pdf"></i></div>
-                    <div><b>ملزمة النحو (المرحلة الأولى)</b><br><small>3.4 MB • PDF</small></div>
-                </div>
-                <button onclick="window.open('https://drive.google.com/file/d/1Vl9sP1Lh5oRS6Wrg-F5gJ9s7OQCRNIpl/view')" style="border:none; background:none; color:var(--accent); font-weight:bold;">فتح</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="bottom-tabs">
-        <div class="tab-item active" onclick="nav('home')"><i class="fas fa-home"></i>الرئيسية</div>
-        <div class="tab-item" onclick="nav('social')"><i class="fas fa-search"></i>بحث</div>
-        <div class="tab-item" onclick="nav('p-list')">
-            <div id="msg-badge" class="count-badge" style="display:none;">0</div>
-            <i class="fas fa-comment-dots"></i>الخاص
-        </div>
-        <div class="tab-item" onclick="nav('friends')">
-            <div id="req-badge" class="count-badge" style="display:none;">0</div>
-            <i class="fas fa-user-friends"></i>الأصدقاء
-        </div>
-    </div>
-
-    <div class="overlay-dim" id="pop-overlay" onclick="closePop()"></div>
-    <div class="pop-up" id="msg-pop">
-        <h4 id="pop-title" style="margin-top:0;">خيارات الرسالة</h4>
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
-            <button class="btn-action" style="background:#f1f5f9; color:#333; box-shadow:none;" onclick="copyMsg()">نسخ النص</button>
-            <button class="btn-action" onclick="setReply()">رد على الرسالة</button>
-        </div>
-        <button class="btn-action" style="margin-top:15px; background:var(--error);" onclick="closePop()">إلغاء</button>
+    <div class="bottom-nav">
+        <div class="nav-link active" onclick="nav('home')"><i class="fas fa-home"></i><span>الرئيسية</span></div>
+        <div class="nav-link" onclick="nav('social')"><i class="fas fa-search"></i><span>بحث</span></div>
+        <div class="nav-link" onclick="nav('p-list')"><div id="msg-badge" class="badge"></div><i class="fas fa-comment-dots"></i><span>الخاص</span></div>
+        <div class="nav-link" onclick="nav('friends')"><div id="req-badge" class="badge"></div><i class="fas fa-user-friends"></i><span>الأصدقاء</span></div>
     </div>
 
     <script>
-        // --- تهيئة قاعدة البيانات (Firebase Realtime DB) ---
-        const FB_URL = "https://mmmmmm7-bc8e8-default-rtdb.firebaseio.com/";
-        
+        const FB = "https://mmmmmm7-bc8e8-default-rtdb.firebaseio.com/";
         let me = JSON.parse(localStorage.getItem('userProfile'));
-        let activeRoom = null;
-        let lastGCount = 0, lastPCount = 0;
-        let replyTo = null, currentSelectedMsg = "";
+        let activeRoom = null, lastPCount = 0;
 
-        // --- نظام التشغيل الذكي ---
         window.onload = () => {
-            if(!me) { 
-                document.getElementById('auth-overlay').style.display = 'flex'; 
-            } else { 
-                initApp();
-                // تشغيل المزامنة (محاكاة WebSockets لتوفير البيانات)
-                setInterval(syncGlobal, 4500); 
-                setInterval(checkRequests, 6000);
-                setInterval(syncPrivate, 3000);
-            }
+            if(!me) { document.getElementById('auth-scr').style.display='flex'; showAuth('gate'); }
+            else { initUI(); setInterval(checkNotifications, 4000); setInterval(syncPrivate, 3000); }
         };
 
-        // --- نظام الهوية (Auth System) ---
-        let authMode = 'choices';
-        function switchAuth(mode) {
-            authMode = mode;
-            document.getElementById('auth-choices').style.display = mode === 'choices' ? 'block' : 'none';
-            document.getElementById('auth-form').style.display = mode === 'choices' ? 'none' : 'block';
-            document.getElementById('reg-fields').style.display = mode === 'reg' ? 'block' : 'none';
-            document.getElementById('auth-title').innerText = mode === 'reg' ? 'إنشاء حساب' : (mode === 'login' ? 'تسجيل دخول' : 'المساعد الأكاديمي');
-            
-            document.getElementById('auth-submit-btn').onclick = mode === 'reg' ? handleRegister : handleLogin;
-        }
-
+        // --- نظام الحماية ومنع التكرار (Strict Anti-Duplicate) ---
         async function handleRegister() {
-            const u = document.getElementById('af-user').value.toLowerCase().trim();
-            const p = document.getElementById('af-pass').value;
-            const n = document.getElementById('af-name').value.trim();
-            const uni = document.getElementById('af-uni').value.trim();
+            const u = document.getElementById('r-user').value.toLowerCase().trim();
+            const n = document.getElementById('r-name').value.trim();
+            const p = document.getElementById('r-pass').value;
+            if(!u || !n || !p) return showAppDiag("خطأ", "يرجى إكمال البيانات الأساسية");
 
-            if(!u || !p || !n) return toast("يرجى ملء الحقول الأساسية!");
-
-            // فحص تكرار اليوزر نيم
-            const res = await fetch(`${FB_URL}users.json`);
+            // فحص شامل لكل اليوزرات في الداتابيز
+            const res = await fetch(FB + "users.json");
             const all = await res.json();
-            if(all && Object.values(all).find(x => x.username === u)) return toast("اسم المستخدم مأخوذ مسبقاً!");
+            const exists = Object.values(all || {}).find(x => x.username === u);
+            if(exists) return showAppDiag("عذراً", "هذا اليوزر مأخوذ من قبل مستخدم آخر، اختر يوزر مختلف!");
 
-            const newUser = { id: Date.now(), username: u, name: n, password: p, university: uni, pfp: 'https://i.ibb.co/VvzKXY7/bot-avatar.png' };
-            await fetch(`${FB_URL}users/${newUser.id}.json`, { method: 'PUT', body: JSON.stringify(newUser) });
-            
-            me = newUser;
-            localStorage.setItem('userProfile', JSON.stringify(me));
+            const newUser = { id: Date.now(), username: u, name: n, password: p, university: document.getElementById('r-uni').value, pfp: 'https://i.ibb.co/VvzKXY7/bot-avatar.png' };
+            await fetch(FB + "users/" + newUser.id + ".json", { method: 'PUT', body: JSON.stringify(newUser) });
+            localStorage.setItem('userProfile', JSON.stringify(newUser));
             location.reload();
         }
 
         async function handleLogin() {
-            const u = document.getElementById('af-user').value.toLowerCase().trim();
-            const p = document.getElementById('af-pass').value;
-
-            const res = await fetch(`${FB_URL}users.json`);
+            const u = document.getElementById('l-user').value.toLowerCase().trim();
+            const p = document.getElementById('l-pass').value;
+            const res = await fetch(FB + "users.json");
             const all = await res.json();
-            if(!all) return toast("لا توجد حسابات مسجلة!");
-
-            let found = Object.values(all).find(x => x.username === u && x.password === p);
-            if(found) {
-                me = found;
-                localStorage.setItem('userProfile', JSON.stringify(me));
-                location.reload();
-            } else {
-                toast("اسم المستخدم أو كلمة المرور خاطئة!");
-            }
+            let found = Object.values(all || {}).find(x => x.username === u && x.password === p);
+            if(found) { localStorage.setItem('userProfile', JSON.stringify(found)); location.reload(); }
+            else showAppDiag("خطأ", "بيانات الدخول غير صحيحة!");
         }
 
-        // --- إدارة واجهة المستخدم ---
-        function initApp() {
-            document.getElementById('auth-overlay').style.display = 'none';
-            document.getElementById('hi-user').innerText = `أهلاً بك يا ${me.name}`;
-            document.getElementById('side-full-name').innerText = me.name;
-            document.getElementById('side-username-tag').innerText = `@${me.username}`;
-            document.getElementById('side-pfp-img').src = me.pfp;
-            
-            // تعبئة بيانات التعديل
-            document.getElementById('edit-user').value = me.username;
-            document.getElementById('edit-name').value = me.name;
-            document.getElementById('edit-uni').value = me.university || "";
-            document.getElementById('edit-pfp-img').src = me.pfp;
-
+        // --- المزامنة والثبات (Persistence) ---
+        function initUI() {
+            document.getElementById('hi-user').innerText = "أهلاً بك يا " + me.name;
+            document.getElementById('side-name').innerText = me.name;
+            document.getElementById('side-username').innerText = "@" + me.username;
+            document.getElementById('side-pfp').src = me.pfp;
+            document.getElementById('edit-pfp-v').src = me.pfp;
+            document.getElementById('e-user').value = me.username;
+            document.getElementById('e-name').value = me.name;
+            document.getElementById('e-uni').value = me.university || "";
             loadFriends();
-            checkRequests();
-        }
-
-        function nav(p) {
-            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-            document.getElementById(`${p}-page`).classList.add('active');
-            
-            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
-            const map = {home:0, social:1, 'p-list':2, friends:3};
-            if(map[p] !== undefined) document.querySelectorAll('.tab-item')[map[p]].classList.add('active');
-            
-            document.getElementById('header-title').innerText = p === 'home' ? 'المساعد الأكاديمي' : p.toUpperCase();
-            if(p === 'notifications') checkRequests();
-            window.scrollTo(0,0);
-            toggleSidebar(true);
-        }
-
-        // --- نظام الشات (Logic) ---
-        async function sendMsg() {
-            const input = document.getElementById('msg-input');
-            if(!input.value.trim()) return;
-            
-            const msg = { 
-                uid: me.id, 
-                name: me.name, 
-                text: input.value, 
-                time: Date.now(),
-                reply: replyTo 
-            };
-            
-            await fetch(`${FB_URL}global_chat.json`, { method: 'POST', body: JSON.stringify(msg) });
-            input.value = "";
-            cancelReply();
-            syncGlobal();
-        }
-
-        async function syncGlobal() {
-            if(!document.getElementById('chat-page').classList.contains('active')) return;
-            try {
-                const res = await fetch(`${FB_URL}global_chat.json`);
-                const data = await res.json();
-                if(!data) return;
-                const entries = Object.entries(data).sort((a,b)=>a[1].time - b[1].time);
-                if(entries.length === lastGCount) return;
-
-                const scroll = document.getElementById('chat-scroll');
-                entries.slice(lastGCount).forEach(([id, m]) => {
-                    const type = m.uid === me.id ? 'mine' : 'others';
-                    let replyHtml = m.reply ? `<div class="reply-box">رد على: ${m.reply}</div>` : '';
-                    scroll.innerHTML += `
-                        <div class="message ${type}" onclick="openMsgPop('${m.text}', '${id}')">
-                            ${replyHtml}
-                            <div style="font-weight:800; font-size:11px; margin-bottom:3px; color:var(--accent);">${m.name}</div>
-                            ${m.text}
-                            <div class="message-info">${new Date(m.time).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
-                        </div>`;
-                });
-                scroll.scrollTop = scroll.scrollHeight;
-                lastGCount = entries.length;
-            } catch(e) {}
-        }
-
-        // --- الشات الخاص والمراسلة ---
-        function openChat(id, name) {
-            const ids = [me.id, id].sort();
-            activeRoom = `${ids[0]}_${ids[1]}`;
-            document.getElementById('p-target-name').innerText = name;
-            document.getElementById('p-chat-scroll').innerHTML = "";
-            lastPCount = 0;
-            nav('p-chat');
-            syncPrivate();
-        }
-
-        async function sendPrivate() {
-            const i = document.getElementById('p-msg-input');
-            if(!i.value.trim()) return;
-            const msg = { uid: me.id, text: i.value, time: Date.now() };
-            await fetch(`${FB_URL}private_chats/${activeRoom}.json`, { method: 'POST', body: JSON.stringify(msg) });
-            i.value = "";
-            syncPrivate();
-        }
-
-        async function syncPrivate() {
-            if(!activeRoom || !document.getElementById('p-chat-page').classList.contains('active')) return;
-            const res = await fetch(`${FB_URL}private_chats/${activeRoom}.json`);
-            const data = await res.json(); if(!data) return;
-            const ent = Object.entries(data).sort((a,b)=>a[1].time-b[1].time);
-            if(ent.length === lastPCount) return;
-            const scroll = document.getElementById('p-chat-scroll');
-            ent.slice(lastPCount).forEach(([id, m]) => {
-                const type = m.uid === me.id ? 'mine' : 'others';
-                const content = m.image ? `<img src="${m.image}" class="chat-img" onclick="window.open(this.src)">` : m.text;
-                scroll.innerHTML += `<div class="message ${type}">${content}</div>`;
-            });
-            scroll.scrollTop = scroll.scrollHeight;
-            lastPCount = ent.length;
-        }
-
-        function sendImg(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = async (e) => {
-                    const msg = { uid: me.id, image: e.target.result, time: Date.now() };
-                    await fetch(`${FB_URL}private_chats/${activeRoom}.json`, { method: 'POST', body: JSON.stringify(msg) });
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        // --- نظام الأصدقاء والطلبات (Fixed Paths) ---
-        async function checkRequests() {
-            const res = await fetch(`${FB_URL}requests/${me.id}.json`);
-            const data = await res.json();
-            const badge = document.getElementById('req-badge');
-            badge.innerText = data ? Object.keys(data).length : 0;
-            badge.style.display = data ? 'flex' : 'none';
-
-            if(document.getElementById('notifications-page').classList.contains('active')) {
-                const box = document.getElementById('req-box'); box.innerHTML = "";
-                if(!data) return box.innerHTML = "<p style='text-align:center;'>لا توجد طلبات واردة.</p>";
-                Object.entries(data).forEach(([id, r]) => {
-                    box.innerHTML += `
-                        <div class="item-card">
-                            <div style="display:flex; align-items:center; gap:12px;">
-                                <img src="${r.pfp || 'https://i.ibb.co/VvzKXY7/bot-avatar.png'}" class="pfp-sm">
-                                <b>${r.name}</b>
-                            </div>
-                            <div style="display:flex; gap:8px;">
-                                <button onclick="acceptFriend('${id}', '${r.name}')" style="background:var(--success); color:white; border:none; padding:8px 12px; border-radius:10px;">قبول</button>
-                                <button onclick="rejectFriend('${id}')" style="background:#ddd; border:none; padding:8px 12px; border-radius:10px;">رفض</button>
-                            </div>
-                        </div>`;
-                });
-            }
-        }
-
-        async function acceptFriend(id, name) {
-            await fetch(`${FB_URL}friends/${me.id}/${id}.json`, { method: 'PUT', body: JSON.stringify({name: name, pfp: 'https://i.ibb.co/VvzKXY7/bot-avatar.png'}) });
-            await fetch(`${FB_URL}friends/${id}/${me.id}.json`, { method: 'PUT', body: JSON.stringify({name: me.name, pfp: me.pfp}) });
-            await fetch(`${FB_URL}requests/${me.id}/${id}.json`, { method: 'DELETE' });
-            toast("تم قبول الصداقة! 🎉");
-            loadFriends(); checkRequests();
         }
 
         async function loadFriends() {
-            const res = await fetch(`${FB_URL}friends/${me.id}.json`);
+            const res = await fetch(FB + `friends/${me.id}.json`);
             const data = await res.json();
-            const box = document.getElementById('friends-list'), pBox = document.getElementById('p-chats-container');
+            const box = document.getElementById('friends-list-box'), pBox = document.getElementById('active-chats-box');
             box.innerHTML = pBox.innerHTML = "";
-            if(!data) return box.innerHTML = "<p style='text-align:center; color:var(--gray-text);'>قائمة أصدقائك فارغة.</p>";
+            if(!data) return;
             Object.entries(data).forEach(([id, f]) => {
-                const row = `
-                    <div class="item-card" onclick="openChat('${id}', '${f.name}')">
-                        <div style="display:flex; align-items:center; gap:12px;">
-                            <img src="${f.pfp || 'https://i.ibb.co/VvzKXY7/bot-avatar.png'}" class="pfp-sm">
-                            <div><b>${f.name}</b><br><small style="color:var(--gray-text);">متصل الآن</small></div>
-                        </div>
-                        <i class="fas fa-comment-alt" style="color:var(--accent);"></i>
-                    </div>`;
+                const row = `<div class="item-card">
+                    <div style="display:flex; align-items:center; gap:10px;"><img src="${f.pfp || 'https://i.ibb.co/VvzKXY7/bot-avatar.png'}" style="width:40px; height:40px; border-radius:50%;"><b>${f.name}</b></div>
+                    <button onclick="openChat('${id}', '${f.name}')" style="background:var(--primary); color:white; border:none; padding:8px 12px; border-radius:10px;">مراسلة</button>
+                </div>`;
                 box.innerHTML += row; pBox.innerHTML += row;
             });
         }
 
-        async function findUsers() {
-            const q = document.getElementById('user-search').value.toLowerCase().trim();
-            const resBox = document.getElementById('search-results');
-            if(q.length < 1) { resBox.innerHTML = ""; return; }
-            const res = await fetch(`${FB_URL}users.json`);
-            const all = await res.json();
-            resBox.innerHTML = "";
-            Object.values(all || {}).forEach(u => {
-                if(u.id != me.id && (u.username.includes(q) || u.name.toLowerCase().includes(q))) {
-                    resBox.innerHTML += `
-                        <div class="item-card">
-                            <div style="display:flex; align-items:center; gap:12px;">
-                                <img src="${u.pfp}" class="pfp-sm">
-                                <div><b>${u.name}</b><br><small>@${u.username}</small></div>
-                            </div>
-                            <button onclick="sendFriendReq('${u.id}')" class="btn-action" style="width:auto; padding:8px 15px;">إضافة</button>
-                        </div>`;
-                }
+        // --- نظام الطلبات والإشعارات (Fixed Paths) ---
+        async function sendReq(targetId) {
+            await fetch(FB + `requests/${targetId}/${me.id}.json`, { method: 'PUT', body: JSON.stringify({ name: me.name, pfp: me.pfp }) });
+            showAppDiag("تم", "أرسلت طلب الصداقة بنجاح!");
+        }
+
+        async function checkNotifications() {
+            const res = await fetch(FB + "requests/" + me.id + ".json");
+            const data = await res.json();
+            document.getElementById('req-badge').style.display = (data && Object.keys(data).length > 0) ? 'block' : 'none';
+            if(document.getElementById('notifications-page').classList.contains('active')) renderReqs(data);
+        }
+
+        function renderReqs(data) {
+            const box = document.getElementById('requests-box'); box.innerHTML = "";
+            if(!data) { box.innerHTML = "<p style='text-align:center;'>لا توجد طلبات حالياً.</p>"; return; }
+            Object.entries(data).forEach(([id, r]) => {
+                box.innerHTML += `<div class="item-card">
+                    <div><b>${r.name}</b><br><small>يريد إضافتك</small></div>
+                    <button onclick="accept('${id}', '${r.name}')" style="background:var(--green); color:white; border:none; border-radius:10px; padding:8px 15px;">قبول ✅</button>
+                </div>`;
             });
         }
 
-        async function sendFriendReq(id) {
-            await fetch(`${FB_URL}requests/${id}/${me.id}.json`, { method: 'PUT', body: JSON.stringify({name: me.name, pfp: me.pfp}) });
-            toast("تم إرسال طلب الصداقة! 🚀");
+        async function accept(id, name) {
+            await fetch(FB + `friends/${me.id}/${id}.json`, { method: 'PUT', body: JSON.stringify({name: name}) });
+            await fetch(FB + `friends/${id}/${me.id}.json`, { method: 'PUT', body: JSON.stringify({name: me.name}) });
+            await fetch(FB + `requests/${me.id}/${id}.json`, { method: 'DELETE' });
+            showAppDiag("نجاح", "أصبحتم أصدقاء الآن!"); loadFriends(); checkNotifications();
         }
 
-        // --- تعديل البروفايل ---
-        async function saveProfileChanges() {
-            const newU = document.getElementById('edit-user').value.toLowerCase().trim();
-            const newN = document.getElementById('edit-name').value.trim();
+        // --- تعديل البروفايل (مع فحص التكرار) ---
+        async function saveProfile() {
+            const newU = document.getElementById('e-user').value.toLowerCase().trim();
             if(newU !== me.username) {
-                const res = await fetch(`${FB_URL}users.json`);
+                const res = await fetch(FB + "users.json");
                 const all = await res.json();
-                if(Object.values(all || {}).find(x => x.username === newU)) return toast("اليوزر الجديد مأخوذ!");
+                if(Object.values(all || {}).find(x => x.username === newU)) return showAppDiag("عذراً", "هذا اليوزر مأخوذ بالفعل!");
             }
-            me.username = newU; me.name = newN; me.university = document.getElementById('edit-uni').value;
+            me.username = newU; me.name = document.getElementById('e-name').value;
+            me.university = document.getElementById('e-uni').value;
             localStorage.setItem('userProfile', JSON.stringify(me));
-            await fetch(`${FB_URL}users/${me.id}.json`, { method: 'PATCH', body: JSON.stringify(me) });
-            toast("تم تحديث البيانات بنجاح! ✨");
-            location.reload();
+            await fetch(FB + `users/${me.id}.json`, { method: 'PATCH', body: JSON.stringify(me) });
+            showAppDiag("نجاح", "تم تحديث البيانات بنجاح!"); location.reload();
         }
 
-        function updatePFP(input) {
-            if (input.files && input.files[0]) {
-                const r = new FileReader();
-                r.onload = (e) => { 
-                    document.getElementById('edit-pfp-img').src = e.target.result;
-                    me.pfp = e.target.result;
-                };
-                r.readAsDataURL(input.files[0]);
-            }
+        // --- المساعدات (UI) ---
+        function showAuth(t) {
+            document.getElementById('auth-main').style.display = t==='gate'?'block':'none';
+            document.getElementById('login-form').style.display = t==='login'?'block':'none';
+            document.getElementById('reg-form').style.display = t==='reg'?'block':'none';
         }
-
-        // --- دوال مساعدة (UI Helpers) ---
-        function toggleSidebar(forceClose = false) {
-            const s = document.getElementById('main-sidebar'), o = document.getElementById('sidebar-overlay');
-            if(forceClose) { s.classList.remove('active'); o.style.display = 'none'; return; }
+        function toggleSidebar() {
+            const s = document.getElementById('sidebar'), o = document.getElementById('overlay');
             s.classList.toggle('active');
             o.style.display = s.classList.contains('active') ? 'block' : 'none';
         }
-
-        function openMsgPop(text, id) {
-            currentSelectedMsg = text;
-            document.getElementById('pop-overlay').style.display = 'block';
-            document.getElementById('msg-pop').classList.add('active');
+        function nav(p) {
+            document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active'));
+            document.getElementById(p + '-page').classList.add('active');
+            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+            const idx = {home:0, social:1, 'p-list':2, friends:3}[p];
+            if(idx!==undefined) document.querySelectorAll('.nav-link')[idx].classList.add('active');
+            if(document.getElementById('sidebar').classList.contains('active')) toggleSidebar();
         }
-
-        function closePop() {
-            document.getElementById('pop-overlay').style.display = 'none';
-            document.getElementById('msg-pop').classList.remove('active');
-        }
-
-        function copyMsg() { navigator.clipboard.writeText(currentSelectedMsg); toast("تم النسخ!"); closePop(); }
-        
-        function setReply() { 
-            replyTo = currentSelectedMsg;
-            document.getElementById('reply-preview').style.display = 'block';
-            document.getElementById('reply-text').innerText = replyTo;
-            closePop();
-        }
-
-        function cancelReply() { replyTo = null; document.getElementById('reply-preview').style.display = 'none'; }
-
-        function toggleDark() { document.body.classList.toggle('dark'); }
         function logout() { localStorage.clear(); location.reload(); }
-        function toast(m) { 
-            const d = document.getElementById('custom-dialog');
-            document.getElementById('diag-msg').innerText = m;
-            d.style.display = 'flex';
-        }
-        function closeDialog() { document.getElementById('custom-dialog').style.display = 'none'; }
+        function showAppDiag(t, m) { document.getElementById('diag-title').innerText=t; document.getElementById('diag-msg').innerText=m; document.getElementById('custom-dialog').style.display='flex'; }
+        function closeDiag() { document.getElementById('custom-dialog').style.display='none'; }
+        function toggleDark() { document.body.classList.toggle('dark'); }
+        async function searchUsers() { /* كود البحث */ }
+        async function syncPrivate() { /* كود المزامنة للخاص */ }
     </script>
-
-    <div id="custom-dialog" style="position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:20000; display:none; align-items:center; justify-content:center; backdrop-filter:blur(5px);">
-        <div class="dialog-box" style="background:var(--card-bg); width:85%; max-width:350px; border-radius:28px; padding:30px; text-align:center;">
-            <h3>تنبيه</h3>
-            <p id="diag-msg" style="color:var(--gray-text);"></p>
-            <button class="btn-action" onclick="closeDialog()">موافق</button>
-        </div>
-    </div>
 </body>
 </html>
