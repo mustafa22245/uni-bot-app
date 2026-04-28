@@ -3,114 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق الحلة الجامعي - النسخة العملاقة</title>
+    <title>تطبيق الحلة الجامعي - سحابي ☁️</title>
     <style>
-        :root { 
-            --main-color: #0088cc; 
-            --bg-color: #f8fafd; 
-            --text-color: #333333;
-        }
-        
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-color); color: var(--text-color); margin: 0; padding: 0; direction: rtl; transition: 0.4s; }
+        :root { --main-color: #0088cc; --bg-color: #f8fafd; --text-color: #333333; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg-color); color: var(--text-color); margin: 0; padding: 0; direction: rtl; transition: 0.4s; }
         .header { background: linear-gradient(135deg, var(--main-color), #005588); color: white; padding: 40px 20px; text-align: center; border-radius: 0 0 40px 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .container { padding: 20px; max-width: 600px; margin: auto; }
-        
-        /* Grid Layout */
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .card { background: white; padding: 25px 15px; border-radius: 25px; text-align: center; cursor: pointer; box-shadow: 0 6px 12px rgba(0,0,0,0.05); font-weight: bold; border: 2px solid transparent; transition: 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+        .card { background: white; padding: 25px 15px; border-radius: 25px; text-align: center; cursor: pointer; box-shadow: 0 6px 12px rgba(0,0,0,0.05); font-weight: bold; border: 2px solid transparent; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 10px; }
         .card:hover { border-color: var(--main-color); transform: translateY(-5px); }
-        .card i { font-size: 24px; }
-
-        /* Panels */
-        .panel { display: none; background: white; border-radius: 25px; padding: 25px; margin-top: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); animation: fadeIn 0.5s; }
-        
-        /* Admin Styling */
+        .panel { display: none; background: white; border-radius: 25px; padding: 25px; margin-top: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
         .admin-panel { background: #1a1a2e; color: #efefef; border-top: 5px solid #e74c3c; }
-        .admin-section { background: #16213e; padding: 15px; border-radius: 15px; margin-bottom: 20px; border: 1px solid #0f3460; }
-        .admin-title { color: #48abe0; font-size: 16px; font-weight: bold; margin-bottom: 15px; display: block; border-right: 4px solid #e74c3c; padding-right: 10px; }
-        .admin-input, .admin-select { width: 100%; padding: 12px; margin: 8px 0; border-radius: 12px; border: 1px solid #0f3460; box-sizing: border-box; background: #1a1a2e; color: white; }
-        .color-group { display: flex; align-items: center; justify-content: space-between; background: #0f3460; padding: 10px; border-radius: 12px; margin-bottom: 10px; }
-        
+        .admin-section { background: #16213e; padding: 15px; border-radius: 15px; margin-bottom: 20px; }
+        .admin-input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 12px; border: 1px solid #0f3460; background: #1a1a2e; color: white; }
         .action-btn { width: 100%; padding: 15px; border-radius: 12px; border: none; cursor: pointer; font-weight: bold; margin-top: 10px; background: var(--main-color); color: white; }
-        .btn-close { background: #e74c3c; margin-bottom: 15px; }
-
-        /* Media Display */
-        .media-item { background: #f9f9f9; padding: 15px; border-radius: 15px; margin-bottom: 10px; border-right: 5px solid var(--main-color); }
-        iframe, video, img { width: 100%; border-radius: 15px; margin-top: 10px; border: none; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        iframe { width: 100%; height: 500px; border-radius: 15px; border: none; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-    <div class="header" id="appHeader">
-        <h2 id="appTitle">🎓 تطبيق الحلة الجامعي</h2>
-        <p id="appSubtitle">الإصدار الشامل والذكي 🚀</p>
+    <div class="header">
+        <h2 id="appTitle">تطبيق الحلة الجامعي</h2>
+        <p>تحكم كامل بالسحابة 🚀</p>
     </div>
 
     <div class="container">
-        <div id="mainGrid" class="grid">
-            </div>
+        <div id="loader" style="text-align:center; padding:20px;">جاري جلب البيانات...</div>
+        <div id="mainGrid" class="grid" style="display:none;"></div>
 
         <div id="contentPanel" class="panel">
-            <button class="action-btn btn-close" onclick="showMain()">🔙 العودة للرئيسية</button>
+            <button class="action-btn" style="background:#666" onclick="showMain()">🔙 عودة</button>
             <div id="dynamicContent"></div>
         </div>
 
         <div id="adminPanel" class="panel admin-panel">
-            <button class="action-btn btn-close" onclick="showMain()">❌ إغلاق لوحة التحكم</button>
-            <h3 style="text-align:center;">🛠️ لوحة التحكم المركزية</h3>
-
+            <button class="action-btn" style="background:#e74c3c" onclick="showMain()">❌ إغلاق</button>
             <div class="admin-section">
-                <span class="admin-title">🎨 هوية التطبيق</span>
-                <input type="text" id="editTitle" class="admin-input" placeholder="اسم التطبيق">
-                <div class="color-group">
-                    <label>اللون الأساسي:</label>
-                    <input type="color" id="colorMain" onchange="applyDesign()">
-                </div>
-                <div class="color-group">
-                    <label>لون الخلفية:</label>
-                    <input type="color" id="colorBg" onchange="applyDesign()">
-                </div>
+                <input type="text" id="editTitle" class="admin-input" placeholder="اسم التطبيق الجديد">
+                <label>اختر لون التطبيق:</label> <input type="color" id="colorMain" onchange="updateDesign()">
             </div>
-
             <div class="admin-section">
-                <span class="admin-title">➕ إضافة قسم / محتوى جديد</span>
-                <select id="typeSelect" class="admin-select">
-                    <option value="ملزمة">📄 ملف PDF / ملزمة</option>
-                    <option value="فيديو">🎥 فيديو (YouTube)</option>
-                    <option value="صورة">🖼️ صورة / إعلان</option>
-                    <option value="رابط">🔗 رابط خارجي</option>
-                </select>
-                <input type="text" id="itemName" class="admin-input" placeholder="اسم القسم أو العنوان">
-                <input type="text" id="itemUrl" class="admin-input" placeholder="الرابط (URL)">
-                <button class="action-btn" style="background:#2ecc71;" onclick="addNewItem()">💾 حفظ ونشر فوراً</button>
+                <input type="text" id="itemName" class="admin-input" placeholder="اسم الملزمة أو الفيديو">
+                <input type="text" id="itemUrl" class="admin-input" placeholder="رابط الملف المباشر">
+                <button class="action-btn" style="background:#2ecc71" onclick="addNewItem()">💾 حفظ في Firebase</button>
             </div>
-            
-            <button class="action-btn" style="background:#f39c12;" onclick="resetApp()">♻️ إعادة ضبط المصنع</button>
         </div>
 
         <div style="text-align:center; padding:40px;">
-            <button onclick="showAdmin()" style="background:none; border:none; color:#ccc; font-size:10px; cursor:pointer; opacity:0.5;">[ DEV MODE ]</button>
+            <button onclick="showAdmin()" style="opacity:0.3; background:none; border:none; color:gray; cursor:pointer;">[ لوحة التحكم ]</button>
         </div>
     </div>
 
     <script>
-        // البيانات الافتراضية
-        const defaultData = {
-            title: "🎓 تطبيق الحلة الجامعي",
-            mainColor: "#0088cc",
-            bgColor: "#f8fafd",
-            items: [
-                { name: "الملازم", type: "ملزمة", url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" },
-                { name: "شرح الفيديو", type: "فيديو", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
-            ]
-        };
+        // الرابط المستخرج من صورتك بدقة
+        const DB_URL = "https://hillah-app-default-rtdb.firebaseio.com/.json"; 
 
-        let appData = JSON.parse(localStorage.getItem('hillahAppData')) || defaultData;
+        let appData = { title: "تطبيق الحلة", mainColor: "#0088cc", items: [] };
 
-        // تشغيل التطبيق
-        function init() {
+        async function loadData() {
+            try {
+                const response = await fetch(DB_URL);
+                const data = await response.json();
+                if (data) appData = data;
+                applyData();
+            } catch (e) { console.log("خطأ في الاتصال"); }
+        }
+
+        function applyData() {
+            document.getElementById('appTitle').innerText = appData.title;
+            document.documentElement.style.setProperty('--main-color', appData.mainColor);
+            document.getElementById('loader').style.display = "none";
+            document.getElementById('mainGrid').style.display = "grid";
+            renderGrid();
+        }
+
+        function renderGrid() {
+            const grid = document.getElementById('mainGrid');
+            grid.innerHTML = "";
+            (appData.items || []).forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.onclick = () => showContent(index);
+                card.innerHTML = `<span>📂</span><span>${item.name}</span>`;
+                grid.appendChild(card);
+            });
+        }
+
+        async function saveData() {
+            await fetch(DB_URL, { method: 'PUT', body: JSON.stringify(appData) });
+            applyData();
+        }
+
+        function addNewItem() {
+            const name = document.getElementById('itemName').value;
+            const url = document.getElementById('itemUrl').value;
+            if(name && url) {
+                if(!appData.items) appData.items = [];
+                appData.items.push({ name, url });
+                saveData();
+                alert("تم التحديث بنجاح!");
+            }
+        }
+
+        function updateDesign() {
+            appData.title = document.getElementById('editTitle').value || appData.title;
+            appData.mainColor = document.getElementById('colorMain').value;
+            saveData();
+        }
+
+        function showContent(index) {
+            const item = appData.items[index];
+            document.getElementById('mainGrid').style.display = "none";
+            document.getElementById('contentPanel').style.display = "block";
+            document.getElementById('dynamicContent').innerHTML = `<h3>${item.name}</h3><iframe src="${item.url}"></iframe>`;
+        }
+
+        function showAdmin() {
+            document.getElementById('mainGrid').style.display = "none";
+            document.getElementById('adminPanel').style.display = "block";
+        }
+
+        function showMain() {
+            document.getElementById('mainGrid').style.display = "grid";
+            document.querySelectorAll('.panel').forEach(p => p.style.display = "none");
+        }
+
+        loadData();
+    </script>
+</body>
+</html>
             document.getElementById('appTitle').innerText = appData.title;
             document.documentElement.style.setProperty('--main-color', appData.mainColor);
             document.documentElement.style.setProperty('--bg-color', appData.bgColor);
