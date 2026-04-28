@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>المساعد الأكاديمي - النسخة البريميوم 🎓</title>
+    <title>المساعد الأكاديمي - النسخة الكاملة 🎓</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
@@ -21,130 +21,358 @@
             --border: #334155;
         }
 
-        body { font-family: 'Cairo', sans-serif; background: var(--bg); color: var(--text); margin: 0; transition: 0.3s; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Cairo', sans-serif; background: var(--bg); color: var(--text); margin: 0; transition: 0.3s; overflow-x: hidden; padding-bottom: 80px; }
 
         /* القائمة الجانبية */
-        .sidebar { position: fixed; right: -100%; top: 0; width: 80%; max-width: 300px; height: 100%; background: var(--card); z-index: 1000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: -10px 0 30px rgba(0,0,0,0.1); padding: 20px; }
+        .sidebar { position: fixed; right: -100%; top: 0; width: 85%; max-width: 320px; height: 100%; background: var(--card); z-index: 1500; transition: 0.4s; box-shadow: -10px 0 30px rgba(0,0,0,0.1); padding: 25px; }
         .sidebar.active { right: 0; }
-        .sidebar-header { text-align: center; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
-        .profile-img { width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--primary); padding: 3px; }
-        .side-link { display: flex; align-items: center; gap: 15px; padding: 15px; border-radius: 12px; cursor: pointer; transition: 0.2s; font-weight: 600; color: var(--text); text-decoration: none; }
-        .side-link:hover { background: rgba(77, 149, 255, 0.1); }
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; backdrop-filter: blur(4px); }
+        .sidebar-profile { text-align: center; padding-bottom: 25px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+        .profile-pic { width: 90px; height: 90px; border-radius: 20px; border: 3px solid var(--primary); object-fit: cover; }
+        .side-btn { display: flex; align-items: center; justify-content: space-between; padding: 15px; border-radius: 15px; cursor: pointer; transition: 0.2s; font-weight: 600; margin-bottom: 5px; }
+        .side-btn:hover { background: rgba(77, 149, 255, 0.1); }
+        .side-btn i { font-size: 20px; color: var(--primary); }
 
         /* الهيدر */
-        .main-header { background: var(--header-grad); padding: 40px 20px 20px; text-align: center; position: relative; }
-        .top-btns { position: absolute; top: 20px; width: calc(100% - 40px); display: flex; justify-content: space-between; align-items: center; }
-        .round-btn { width: 40px; height: 40px; border-radius: 12px; background: var(--card); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); cursor: pointer; }
-        .bot-avatar { width: 100px; height: 100px; background: white; border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-        .bot-avatar img { width: 80%; }
+        .app-header { background: var(--header-grad); padding: 40px 20px 30px; text-align: center; position: relative; }
+        .menu-icon { position: absolute; right: 20px; top: 20px; font-size: 24px; cursor: pointer; }
+        .app-logo-box { width: 100px; height: 100px; background: white; border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; }
+        .app-logo-box img { width: 100%; height: 100%; object-fit: cover; }
 
         /* البحث */
-        .search-area { padding: 0 20px; margin-top: -20px; }
-        .search-box { background: var(--card); border-radius: 15px; padding: 12px 20px; display: flex; align-items: center; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        .search-box input { flex: 1; border: none; background: transparent; outline: none; font-family: 'Cairo'; color: var(--text); }
-        .search-box i { color: var(--primary); margin-right: 10px; }
+        .search-container { padding: 0 20px; margin-top: -25px; }
+        .search-input-box { background: var(--card); border-radius: 18px; padding: 12px 20px; display: flex; align-items: center; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .search-input-box input { flex: 1; border: none; background: transparent; outline: none; font-family: 'Cairo'; color: var(--text); }
 
-        /* الشبكة Grid */
-        .home-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 25px 20px; }
-        .menu-card { background: var(--card); border-radius: 20px; padding: 20px 10px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: 0.3s; }
-        .menu-card:active { transform: scale(0.95); }
-        .menu-card i { font-size: 28px; margin-bottom: 10px; display: block; }
-        .menu-card span { font-size: 11px; font-weight: 700; line-height: 1.4; display: block; }
-
-        /* الصفحات الداخلية */
-        .page { display: none; padding: 20px; padding-bottom: 100px; animation: slideIn 0.4s ease-out; }
+        /* الأقسام والملفات */
+        .page { display: none; padding: 20px; animation: fadeIn 0.4s; }
         .page.active { display: block; }
-        .page-header { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; }
-        .list-item { background: var(--card); border-radius: 18px; padding: 15px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 12px rgba(0,0,0,0.02); cursor: pointer; }
-        .item-icon { width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 25px; }
+        .card-btn { background: var(--card); border-radius: 20px; padding: 20px 10px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .card-btn i { font-size: 28px; margin-bottom: 10px; display: block; }
 
-        /* الإعدادات */
-        .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--card); border-radius: 15px; margin-bottom: 10px; }
-        .switch { position: relative; display: inline-block; width: 45px; height: 24px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--primary); }
-        input:checked + .slider:before { transform: translateX(21px); }
+        /* القائمة الاحترافية للملفات */
+        .list-item { background: var(--card); border-radius: 18px; padding: 15px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
+        .item-info { display: flex; align-items: center; gap: 15px; flex: 1; }
+        .item-details h4 { margin: 0; font-size: 14px; }
+        .item-details p { margin: 0; font-size: 11px; color: var(--gray); }
+        .fav-icon { font-size: 20px; cursor: pointer; transition: 0.3s; color: #ddd; }
+        .fav-icon.active { color: #ef4444; }
 
         /* الشريط السفلي */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: var(--card); display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); border-radius: 25px 25px 0 0; z-index: 900; }
-        .nav-item { text-align: center; color: var(--gray); font-size: 11px; cursor: pointer; transition: 0.3s; flex: 1; }
-        .nav-item.active { color: var(--primary); font-weight: 700; }
-        .nav-item i { font-size: 22px; display: block; margin-bottom: 4px; }
-        .center-nav { position: relative; top: -30px; background: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(77, 149, 255, 0.3); border: 5px solid var(--bg); }
-        .center-nav img { width: 70%; }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: var(--card); display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); border-radius: 25px 25px 0 0; z-index: 1000; }
+        .nav-link { text-align: center; color: var(--gray); font-size: 10px; cursor: pointer; flex: 1; }
+        .nav-link.active { color: var(--primary); font-weight: 700; }
+        .nav-link i { font-size: 22px; display: block; margin-bottom: 4px; }
+        .nav-center-btn { position: relative; top: -30px; background: white; width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(77, 149, 255, 0.3); border: 5px solid var(--bg); }
+        .nav-center-btn img { width: 70%; }
 
-        /* لوحة التحكم (Admin) */
-        .admin-panel { background: #1a1a2e; color: white; padding: 25px; border-radius: 30px 30px 0 0; position: fixed; bottom: 0; width: 100%; z-index: 2000; display: none; box-sizing: border-box; }
-        .admin-input { width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 12px; border: 1px solid #334155; background: #0f172a; color: white; outline: none; font-family: 'Cairo'; }
+        /* لوحة الإدارة الشاملة */
+        .admin-panel { background: var(--card); position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000; display: none; padding: 20px; box-sizing: border-box; overflow-y: auto; }
+        .admin-input { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 12px; border: 1px solid var(--border); font-family: 'Cairo'; background: var(--bg); color: var(--text); }
+        .admin-btn { width: 100%; padding: 15px; border-radius: 12px; border: none; background: var(--primary); color: white; font-weight: 700; cursor: pointer; margin-bottom: 10px; }
+        .danger-btn { background: #ef4444; }
 
-        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        /* المفاتيح (Switches) */
+        .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 20px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--primary); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body id="appBody">
 
-    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
-
     <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <img src="https://i.ibb.co/VvzKXY7/bot-avatar.png" class="profile-img">
-            <h3 style="margin:10px 0 5px;">مصطفى مهند</h3>
+        <div class="sidebar-profile">
+            <img src="https://i.ibb.co/VvzKXY7/bot-avatar.png" id="sideUserPic" class="profile-pic">
+            <h3 style="margin:10px 0 5px;" id="sideUserName">مصطفى مهند</h3>
             <span style="color:var(--primary); font-size:12px; font-weight:700;">@M3y4_p</span>
         </div>
-        <div style="margin-top:20px;">
-            <div class="side-link"><i class="fas fa-user-circle"></i> الحساب الشخصي</div>
-            <div class="side-link" onclick="switchPage('settings')"><i class="fas fa-cog"></i> الإعدادات</div>
-            <div class="side-link"><i class="fas fa-palette"></i> المظهر</div>
-            <div class="side-link" onclick="toggleDark()"><i class="fas fa-moon"></i> الوضع الليلي</div>
-            <div class="side-link"><i class="fas fa-sign-out-alt" style="color:#ef4444;"></i> تسجيل الخروج</div>
+        <div class="side-btn"><span><i class="fas fa-user-cog"></i> الإعدادات</span> <i class="fas fa-chevron-left" style="font-size:12px;"></i></div>
+        <div class="side-btn" onclick="toggleDark()">
+            <span><i class="fas fa-moon"></i> الوضع الليلي</span>
+            <label class="switch"><input type="checkbox" id="darkToggle"><span class="slider"></span></label>
         </div>
+        <div class="side-btn"><span><i class="fas fa-bell"></i> الإشعارات</span> <label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+        <div class="side-btn"><span><i class="fas fa-info-circle"></i> من نحن</span></div>
+        <div class="side-btn"><span><i class="fas fa-globe"></i> اللغة</span> <span style="font-size:12px; color:var(--gray);">العربية</span></div>
+        <div class="side-btn" style="margin-top:20px; color:#ef4444;" onclick="location.reload()"><span><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</span></div>
     </div>
 
     <div id="home-page" class="page active" style="padding:0;">
-        <div class="main-header">
-            <div class="top-btns">
-                <div class="round-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></div>
-                <div class="round-btn"><i class="fas fa-bell"></i></div>
-            </div>
-            <div class="bot-avatar">
-                <img src="https://i.ibb.co/VvzKXY7/bot-avatar.png">
-            </div>
-            <h2 style="margin:0;">بوت المساعد الأكاديمي</h2>
-            <p style="opacity:0.7;">مساعدك الذكي في رحلتك التعليمية</p>
+        <div class="app-header">
+            <i class="fas fa-bars menu-icon" onclick="toggleSidebar()"></i>
+            <div class="app-logo-box"><img src="https://i.ibb.co/VvzKXY7/bot-avatar.png" id="mainAppLogo"></div>
+            <h2 id="mainAppTitle" style="margin:0;">تطبيق الحلة الجامعي</h2>
+            <p id="mainAppSubtitle" style="opacity:0.7; font-size:12px;">مساعدك الدراسي الذكي متصل بالسحابة ☁️</p>
         </div>
 
-        <div class="search-area">
-            <div class="search-box">
-                <i class="fas fa-search"></i>
-                <input type="text" id="mainSearch" placeholder="ابحث عن مادة أو ملف..." oninput="appSearch()">
+        <div class="search-container">
+            <div class="search-input-box">
+                <i class="fas fa-search" style="color:var(--primary); margin-left:10px;"></i>
+                <input type="text" id="appSearch" placeholder="ابحث عن مادة، محاضرة، ملخص..." oninput="realTimeSearch()">
             </div>
         </div>
 
-        <div class="home-grid">
-            <div class="menu-card" onclick="switchPage('subjects')" style="color:#4D95FF;">
-                <i class="fas fa-folder"></i><span>الأقسام والملفات<br><small style="font-weight:400; opacity:0.7;">تصفح المواد</small></span>
-            </div>
-            <div class="menu-card" style="color:#2ecc71;">
-                <i class="fas fa-clock"></i><span>العد التنازلي<br><small style="font-weight:400; opacity:0.7;">للامتحانات</small></span>
-            </div>
-            <div class="menu-card" style="color:#a855f7;">
-                <i class="fas fa-stopwatch"></i><span>منبهاتي<br><small style="font-weight:400; opacity:0.7;">الشخصية</small></span>
-            </div>
-            <div class="menu-card" style="color:#f59e0b;">
-                <i class="fas fa-lightbulb"></i><span>نصائح يومية<br><small style="font-weight:400; opacity:0.7;">خذ نصيحة</small></span>
-            </div>
-            <div class="menu-card" style="color:#ec4899;">
-                <i class="fas fa-gamepad"></i><span>قسم الترفيه<br><small style="font-weight:400; opacity:0.7;">ألعاب ممتعة</small></span>
-            </div>
-            <div class="menu-card" style="color:#3b82f6;">
-                <i class="fas fa-language"></i><span>ترجمة النصوص<br><small style="font-weight:400; opacity:0.7;">ترجمة فورية</small></span>
-            </div>
-            <div class="menu-card" style="color:#0ea5e9;">
-                <i class="fas fa-comment-alt"></i><span>إبلاغ / اقتراح<br><small style="font-weight:400; opacity:0.7;">تواصل معنا</small></span>
-            </div>
-            <div class="menu-card" style="color:#10b981;">
+        <div class="grid" style="padding: 20px;">
+            <div class="card-btn" onclick="openSubjectPage()" style="color:#4D95FF;"><i class="fas fa-folder"></i><span>الأقسام</span></div>
+            <div class="card-btn" style="color:#2ecc71;"><i class="fas fa-clock"></i><span>العد التنازلي</span></div>
+            <div class="card-btn" style="color:#a855f7;"><i class="fas fa-stopwatch"></i><span>منبهاتي</span></div>
+            <div class="card-btn" style="color:#f59e0b;"><i class="fas fa-lightbulb"></i><span>نصائح</span></div>
+            <div class="card-btn" style="color:#ec4899;"><i class="fas fa-gamepad"></i><span>ترفيه</span></div>
+            <div class="card-btn" style="color:#3b82f6;"><i class="fas fa-language"></i><span>ترجمة</span></div>
+        </div>
+    </div>
+
+    <div id="subjects-page" class="page">
+        <div style="display:flex; align-items:center; gap:15px; margin-bottom:20px;">
+            <i class="fas fa-arrow-right" onclick="navigate('home')" style="font-size:20px; cursor:pointer;"></i>
+            <h2 style="margin:0;">الأقسام والمواد</h2>
+        </div>
+        <div id="subjects-list"></div>
+    </div>
+
+    <div id="fav-page" class="page">
+        <h2>⭐️ المفضلة</h2>
+        <div id="fav-list"></div>
+    </div>
+
+    <div id="recent-page" class="page">
+        <h2>🕒 المحفوظات</h2>
+        <p style="font-size:12px; color:var(--gray);">آخر الملفات التي قمت بفتحها</p>
+        <div id="recent-list"></div>
+    </div>
+
+    <div id="more-page" class="page">
+        <h2>🔍 نتائج البحث</h2>
+        <div id="search-results"></div>
+    </div>
+
+    <div id="admin-panel" class="admin-panel">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2>🛠 لوحة الإدارة</h2>
+            <i class="fas fa-times" onclick="closeAdmin()" style="font-size:24px; cursor:pointer;"></i>
+        </div>
+        
+        <div style="background:rgba(77,149,255,0.1); padding:15px; border-radius:15px; margin-bottom:20px;">
+            <h4>⚙️ هوية التطبيق</h4>
+            <input type="text" id="setAppTitle" class="admin-input" placeholder="اسم التطبيق الجديد">
+            <input type="text" id="setAppLogo" class="admin-input" placeholder="رابط صورة اللوغو">
+            <button class="admin-btn" onclick="updateAppIdentity()">تحديث الهوية</button>
+        </div>
+
+        <div style="background:rgba(46,204,113,0.1); padding:15px; border-radius:15px; margin-bottom:20px;">
+            <h4>➕ إضافة قسم / ملف</h4>
+            <input type="text" id="admSubName" class="admin-input" placeholder="اسم القسم (مثلاً: الفيزياء)">
+            <input type="text" id="admFileName" class="admin-input" placeholder="اسم الملف">
+            <input type="text" id="admFileUrl" class="admin-input" placeholder="رابط الملف">
+            <button class="admin-btn" onclick="saveDataToCloud()">حفظ في السحابة</button>
+        </div>
+
+        <div id="admin-list-edit"></div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-link active" onclick="navigate('home')"><i class="fas fa-home"></i>الرئيسية</div>
+        <div class="nav-link" onclick="navigate('fav')"><i class="fas fa-heart"></i>المفضلة</div>
+        <div class="nav-center-btn" onclick="navigate('recent')"><img src="https://i.ibb.co/VvzKXY7/bot-avatar.png" id="navBotLogo"></div>
+        <div class="nav-link" onclick="navigate('recent')"><i class="fas fa-history"></i>المحفوظات</div>
+        <div class="nav-link" onclick="navigate('more')"><i class="fas fa-th-large"></i>المزيد</div>
+    </div>
+
+    <script>
+        const DB_URL = "https://hillah-app-default-rtdb.firebaseio.com/.json";
+
+        let appData = { subjects: [], settings: { title: "تطبيق الحلة الجامعي", logo: "https://i.ibb.co/VvzKXY7/bot-avatar.png" } };
+        let favorites = JSON.parse(localStorage.getItem('favs')) || [];
+        let recentFiles = JSON.parse(localStorage.getItem('recent')) || [];
+
+        // تحميل البيانات
+        async function loadApp() {
+            try {
+                const res = await fetch(DB_URL + "?nocache=" + Math.random());
+                const data = await res.json();
+                if(data) appData = data;
+                applySettings();
+                renderSubjects();
+                renderFavorites();
+                renderRecent();
+            } catch(e) { console.log("Error sync"); }
+        }
+
+        function applySettings() {
+            document.getElementById('mainAppTitle').innerText = appData.settings.title;
+            document.getElementById('mainAppLogo').src = appData.settings.logo;
+            document.getElementById('navBotLogo').src = appData.settings.logo;
+        }
+
+        // التنقل
+        function navigate(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId + '-page').classList.add('active');
+            
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            if(pageId !== 'recent') {
+                const links = { 'home':0, 'fav':1, 'recent':3, 'more':4 };
+                if(links[pageId] !== undefined) document.querySelectorAll('.nav-link')[links[pageId]].classList.add('active');
+            }
+            window.scrollTo(0,0);
+        }
+
+        // رسم الأقسام
+        function renderSubjects() {
+            const list = document.getElementById('subjects-list');
+            list.innerHTML = "";
+            (appData.subjects || []).forEach((sub, i) => {
+                let filesHtml = "";
+                sub.files.forEach((file, fi) => {
+                    const isFav = favorites.includes(file.url) ? 'active' : '';
+                    filesHtml += `
+                        <div class="list-item">
+                            <div class="item-info" onclick="openFile('${file.name}', '${file.url}')">
+                                <div style="background:#f1f5f9; padding:10px; border-radius:10px;"><i class="fas fa-file-pdf" style="color:#ef4444;"></i></div>
+                                <div class="item-details"><h4>${file.name}</h4><p>ملف PDF • 2.4 MB</p></div>
+                            </div>
+                            <i class="fas fa-heart fav-icon ${isFav}" onclick="toggleFav('${file.url}', '${file.name}', event)"></i>
+                        </div>`;
+                });
+
+                list.innerHTML += `
+                    <div style="margin-bottom:25px;">
+                        <h4 style="color:var(--primary); margin-bottom:10px;">📂 ${sub.name}</h4>
+                        ${filesHtml}
+                    </div>`;
+            });
+        }
+
+        // فتح ملف
+        function openFile(name, url) {
+            // إضافة للمحفوظات
+            recentFiles = recentFiles.filter(f => f.url !== url);
+            recentFiles.unshift({name, url, time: new Date().toLocaleTimeString()});
+            if(recentFiles.length > 10) recentFiles.pop();
+            localStorage.setItem('recent', JSON.stringify(recentFiles));
+            renderRecent();
+
+            window.open(url, '_blank');
+        }
+
+        // المفضلة
+        function toggleFav(url, name, e) {
+            e.stopPropagation();
+            if(favorites.includes(url)) {
+                favorites = favorites.filter(f => f !== url);
+            } else {
+                favorites.push(url);
+            }
+            localStorage.setItem('favs', JSON.stringify(favorites));
+            loadApp();
+        }
+
+        function renderFavorites() {
+            const list = document.getElementById('fav-list');
+            list.innerHTML = favorites.length === 0 ? "<p style='text-align:center;'>لا توجد ملفات في المفضلة</p>" : "";
+            // البحث عن الملفات المفضلة في الداتا
+            appData.subjects.forEach(sub => {
+                sub.files.forEach(file => {
+                    if(favorites.includes(file.url)) {
+                        list.innerHTML += `
+                            <div class="list-item">
+                                <div class="item-info" onclick="openFile('${file.name}', '${file.url}')">
+                                    <div style="background:#fdf2f2; padding:10px; border-radius:10px;"><i class="fas fa-heart" style="color:#ef4444;"></i></div>
+                                    <div class="item-details"><h4>${file.name}</h4><p>من قسم: ${sub.name}</p></div>
+                                </div>
+                            </div>`;
+                    }
+                });
+            });
+        }
+
+        function renderRecent() {
+            const list = document.getElementById('recent-list');
+            list.innerHTML = recentFiles.length === 0 ? "<p style='text-align:center;'>لم تقم بفتح أي ملفات بعد</p>" : "";
+            recentFiles.forEach(file => {
+                list.innerHTML += `
+                    <div class="list-item">
+                        <div class="item-info" onclick="openFile('${file.name}', '${file.url}')">
+                            <div style="background:#f1f5f9; padding:10px; border-radius:10px;"><i class="fas fa-history" style="color:var(--primary);"></i></div>
+                            <div class="item-details"><h4>${file.name}</h4><p>فتحت في: ${file.time}</p></div>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        // البحث
+        function realTimeSearch() {
+            const val = document.getElementById('appSearch').value.toLowerCase();
+            const results = document.getElementById('search-results');
+            if(val.length < 2) return;
+            navigate('more');
+            results.innerHTML = "";
+            appData.subjects.forEach(sub => {
+                sub.files.forEach(file => {
+                    if(file.name.toLowerCase().includes(val)) {
+                        results.innerHTML += `<div class="list-item" onclick="openFile('${file.name}', '${file.url}')"><h4>${file.name}</h4></div>`;
+                    }
+                });
+            });
+        }
+
+        // الإدارة
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
+        function toggleDark() { 
+            const isDark = document.body.classList.toggle('dark');
+            localStorage.setItem('dark', isDark);
+            document.getElementById('darkToggle').checked = isDark;
+        }
+
+        // سر الإدارة: اضغط مطولاً على اللوغو لفتح لوحة الإدارة
+        let timer;
+        document.getElementById('mainAppLogo').addEventListener('touchstart', () => {
+            timer = setTimeout(() => {
+                const pass = prompt("أدخل رمز الإدارة السري:");
+                if(pass === "1234") { document.getElementById('admin-panel').style.display = "block"; }
+            }, 3000);
+        });
+        document.getElementById('mainAppLogo').addEventListener('touchend', () => clearTimeout(timer));
+
+        function closeAdmin() { document.getElementById('admin-panel').style.display = "none"; }
+
+        async function updateAppIdentity() {
+            appData.settings.title = document.getElementById('setAppTitle').value || appData.settings.title;
+            appData.settings.logo = document.getElementById('setAppLogo').value || appData.settings.logo;
+            await saveCloud();
+        }
+
+        async function saveDataToCloud() {
+            const subName = document.getElementById('admSubName').value;
+            const fileName = document.getElementById('admFileName').value;
+            const fileUrl = document.getElementById('admFileUrl').value;
+            if(!subName || !fileName || !fileUrl) return;
+
+            let subject = appData.subjects.find(s => s.name === subName);
+            if(!subject) {
+                subject = { name: subName, files: [] };
+                appData.subjects.push(subject);
+            }
+            subject.files.push({ name: fileName, url: fileUrl });
+            await saveCloud();
+        }
+
+        async function saveCloud() {
+            await fetch(DB_URL, { method: 'PUT', body: JSON.stringify(appData) });
+            alert("تم التحديث بنجاح!");
+            loadApp();
+        }
+
+        if(localStorage.getItem('dark') === 'true') toggleDark();
+        loadApp();
+    </script>
+</body>
+</html>
                 <i class="fas fa-phone"></i><span>تواصل معنا<br><small style="font-weight:400; opacity:0.7;">الدعم والإدارة</small></span>
             </div>
             <div class="menu-card" style="color:#6366f1;">
