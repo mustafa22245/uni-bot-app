@@ -3,383 +3,329 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>تطبيق الحلة الجامعي - سحابي واحترافي 🎓</title>
+    <title>تطبيق الحلة الجامعي - النسخة العملاقة 🎓</title>
     
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#4D95FF">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
-
         :root { 
-            --main-color: #FFFFFF; 
-            --bg-color: #F8FAFD; 
-            --text-color: #222222;
-            --primary-action: #4D95FF;
-            --secondary-text: #999999;
-            --header-gradient: linear-gradient(135deg, #A4CDFF, #E3F2FF);
-            --blue-card: #6C94FF;
-            --green-card: #27AE60;
-            --purple-card: #9B59B6;
-            --orange-card: #E67E22;
-            --pink-card: #E91E63;
+            --bg: #F8FAFD; 
+            --card: #FFFFFF; 
+            --text: #222222;
+            --primary: #4D95FF;
+            --header-grad: linear-gradient(135deg, #A4CDFF, #E3F2FF);
+            --shadow: 0 4px 15px rgba(0,0,0,0.05);
+            --blue: #6C94FF; --green: #27AE60; --purple: #9B59B6; 
+            --orange: #E67E22; --pink: #E91E63;
+        }
+
+        /* الوضع الليلي */
+        body.dark {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f1f5f9;
+            --header-grad: linear-gradient(135deg, #1e293b, #334155);
+            --shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
         
-        body { font-family: 'Cairo', sans-serif; background: var(--bg-color); color: var(--text-color); margin: 0; padding: 0; direction: rtl; transition: 0.4s; overflow-x: hidden; padding-bottom: 80px; }
-        .mobile-frame { max-width: 500px; margin: auto; height: 100vh; display: flex; flex-direction: column; box-shadow: 0 0 20px rgba(0,0,0,0.05); }
+        body { font-family: 'Cairo', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; direction: rtl; transition: 0.3s; overflow-x: hidden; }
 
-        /* رأس الصفحة */
-        .app-header { background: var(--header-gradient); padding: 40px 20px; text-align: center; border-radius: 0 0 30px 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative; }
-        .bot-avatar { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); width: 80px; height: 80px; border-radius: 50%; border: 4px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .bot-avatar img { width: 100%; height: 100%; border-radius: 50%; }
-        .app-title { font-size: 24px; font-weight: 700; color: #333333; margin: 0; margin-top: 30px; }
-        .app-subtitle { font-size: 14px; color: #555555; margin: 0; }
-        .notification-bell { position: absolute; top: 15px; left: 20px; font-size: 22px; color: #FFD700; cursor: pointer; }
+        /* القائمة الجانبية */
+        .side-menu { position: fixed; right: -280px; top: 0; width: 280px; height: 100%; background: var(--card); transition: 0.4s; box-shadow: -5px 0 25px rgba(0,0,0,0.1); z-index: 1000; padding-top: 20px; }
+        .side-menu.active { right: 0; }
+        .side-header { text-align: center; padding: 20px; border-bottom: 1px solid #eee; }
+        .side-item { padding: 15px 25px; display: flex; align-items: center; gap: 15px; cursor: pointer; font-weight: 600; }
+        .side-item:hover { background: rgba(77, 149, 255, 0.1); }
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 999; }
 
-        /* شريط البحث */
-        .search-bar { display: flex; align-items: center; background: white; border: 1px solid #EEEEEE; border-radius: 12px; padding: 5px 15px; margin: 15px 0; }
-        .search-bar input { flex: 1; border: none; padding: 10px; outline: none; font-size: 14px; color: var(--secondary-text); }
-        .search-bar i { color: var(--primary-action); }
+        /* الهيدر (رأس الصفحة) */
+        .header { background: var(--header-grad); padding: 40px 20px; text-align: center; border-radius: 0 0 30px 30px; box-shadow: var(--shadow); position: relative; }
+        .menu-btn { position: absolute; right: 20px; top: 20px; font-size: 24px; cursor: pointer; color: var(--text); }
+        .bot-img { width: 85px; height: 85px; border-radius: 50%; border: 4px solid white; margin-top: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .header h2 { margin: 15px 0 5px; font-size: 22px; }
+        .header p { margin: 0; font-size: 13px; opacity: 0.8; }
 
-        /* الحاوية الرئيسية */
-        .app-content { flex: 1; overflow-y: auto; padding: 15px; }
-        #loader { text-align: center; padding: 100px 0; font-weight: 700; color: var(--primary-action); }
+        /* البحث */
+        .search-container { padding: 15px 20px; }
+        .search-box { display: flex; align-items: center; background: var(--card); padding: 12px 15px; border-radius: 15px; box-shadow: var(--shadow); }
+        .search-box input { flex: 1; border: none; background: transparent; outline: none; color: var(--text); font-family: 'Cairo'; }
+        .search-box i { color: var(--primary); }
 
-        /* شبكة الأقسام الملونة */
-        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; display: none; }
-        .card { background: white; padding: 20px 10px; border-radius: 15px; text-align: center; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 2px solid transparent; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 11px; font-weight: 600; color: var(--text-color); }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 6px 15px rgba(0,0,0,0.08); }
-        .card i { font-size: 26px; }
+        /* حاوية المحتوى */
+        .content { padding: 0 15px 100px; }
 
-        /* لوحات العرض والتحكم */
-        .panel { display: none; background: white; border-radius: 20px; padding: 15px; margin-top: 5px; box-shadow: 0 8px 25px rgba(0,0,0,0.06); animation: fadeIn 0.5s; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; flex-direction: column; }
-        .panel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #EEEEEE; padding-bottom: 10px; margin-bottom: 15px; }
-        .action-btn { width: 100%; padding: 15px; border-radius: 12px; border: none; cursor: pointer; font-weight: 700; margin-top: 10px; background: var(--primary-action); color: white; transition: 0.3s; }
-        .action-btn:hover { opacity: 0.9; }
-        .btn-close { background: var(--blue-card); width: auto; font-size: 14px; padding: 10px 15px; display: flex; align-items: center; gap: 5px; }
-        .delete-btn { background: var(--orange-card); width: auto; font-size: 11px; padding: 8px 12px; }
+        /* شبكة الأيقونات (Home) */
+        .home-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .main-card { background: var(--card); padding: 20px 10px; border-radius: 20px; text-align: center; cursor: pointer; box-shadow: var(--shadow); transition: 0.3s; font-size: 11px; font-weight: 700; }
+        .main-card:active { transform: scale(0.9); }
+        .main-card i { font-size: 28px; margin-bottom: 10px; display: block; }
 
-        /* قائمة المواد والملائف */
-        .list-item { display: flex; align-items: center; justify-content: space-between; background: white; padding: 15px; border-radius: 15px; cursor: pointer; border-bottom: 1px solid #F0F0F0; transition: 0.3s; }
-        .list-item:hover { background: #F8FAFD; }
-        .item-icon { font-size: 28px; color: var(--blue-card); }
-        .item-text { flex: 1; margin: 0 15px; }
-        .item-title { font-size: 15px; font-weight: 700; color: var(--text-color); }
-        .item-subtitle { font-size: 11px; color: var(--secondary-text); }
-        .item-arrow { color: var(--primary-action); font-size: 16px; }
+        /* القوائم (Subjects & Files) */
+        .list-container { display: none; animation: fadeIn 0.4s; }
+        .list-item { background: var(--card); padding: 18px; border-radius: 18px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow); cursor: pointer; }
+        .item-info { display: flex; align-items: center; gap: 15px; }
+        .item-icon-box { width: 45px; height: 45px; border-radius: 12px; background: rgba(77, 149, 255, 0.1); display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--primary); }
+        .back-btn { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 12px; margin-bottom: 15px; cursor: pointer; font-family: 'Cairo'; font-weight: 700; }
 
-        /* شريط التنقل السفلي */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; border-radius: 20px 20px 0 0; box-shadow: 0 -4px 15px rgba(0,0,0,0.05); display: flex; justify-content: space-around; align-items: center; padding: 10px 0; z-index: 10; }
-        .nav-item { text-align: center; color: var(--secondary-text); font-size: 11px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-        .nav-item.active { color: var(--primary-action); font-weight: 700; }
-        .nav-item i { font-size: 20px; }
-        .bot-nav-item { position: relative; width: 50px; height: 50px; border-radius: 50%; background: var(--header-gradient); top: -20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .bot-nav-item img { width: 100%; height: 100%; border-radius: 50%; border: 2px solid white; }
+        /* لوحة التحكم (Admin) */
+        .admin-panel { display: none; background: #1a1a2e; color: white; padding: 25px; border-radius: 25px 25px 0 0; position: fixed; bottom: 0; left: 0; width: 100%; box-sizing: border-box; z-index: 2000; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); }
+        .admin-input { width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 12px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; }
+        .save-btn { width: 100%; padding: 15px; background: #2ecc71; border: none; color: white; border-radius: 12px; font-weight: 700; cursor: pointer; }
 
-        /* لوحة التحكم */
-        .admin-panel { background: #1a1a2e; color: #efefef; border-top: 5px solid #e74c3c; animation: slideUp 0.6s; z-index: 15; }
-        .admin-section { background: #16213e; padding: 15px; border-radius: 15px; margin-bottom: 15px; border: 1px solid #0f3460; }
-        .admin-title { color: #48abe0; font-size: 16px; font-weight: 700; margin-bottom: 12px; display: block; border-right: 4px solid #e74c3c; padding-right: 10px; }
-        .admin-input, .admin-select { width: 100%; padding: 12px; margin: 8px 0; border-radius: 12px; border: 1px solid #0f3460; box-sizing: border-box; background: #1a1a2e; color: white; font-size: 13px; }
-        
-        /* نافذة عرض الملفات المدمجة */
-        .viewer-panel { z-index: 20; padding: 10px; height: 100vh; margin-top: 0; display: none; }
-        .viewer-container { position: relative; flex: 1; border-radius: 15px; overflow: hidden; background: #eee; box-shadow: inset 0 4px 10px rgba(0,0,0,0.1); }
-        iframe { width: 100%; height: 100%; border: none; }
+        /* نافذة العرض */
+        .viewer-panel { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 3000; flex-direction: column; }
+        .viewer-header { padding: 15px; display: flex; align-items: center; gap: 15px; background: var(--card); box-shadow: var(--shadow); }
+        .viewer-frame { flex: 1; border: none; width: 100%; height: 100%; }
+
+        /* التنقل السفلي */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--card); display: flex; justify-content: space-around; padding: 15px 0; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); border-radius: 25px 25px 0 0; }
+        .nav-link { text-align: center; font-size: 12px; color: #94a3b8; cursor: pointer; }
+        .nav-link.active { color: var(--primary); font-weight: 700; }
+        .nav-link i { font-size: 20px; display: block; margin-bottom: 3px; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(100%); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body>
+<body id="body">
 
-    <div class="mobile-frame">
-        <div class="app-header">
-            <div class="bot-avatar"><img src="https://i.ibb.co/VvzKXY7/bot-avatar.png" alt="bot-avatar"></div>
-            <h1 id="appTitle" class="app-title">تطبيق الحلة الجامعي</h1>
-            <p id="appSubtitle" class="app-subtitle">المساعد الذكي لك في رحلتك التعليمية 🚀</p>
-            <i class="fas fa-bell notification-bell"></i>
+    <div id="loader" style="position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:9999; display:flex; align-items:center; justify-content:center; flex-direction:column;">
+        <i class="fas fa-circle-notch fa-spin" style="font-size:40px; color:#4D95FF;"></i>
+        <p style="margin-top:20px; font-weight:700;">جاري مزامنة السحابة...</p>
+    </div>
+
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+    <div class="side-menu" id="sideMenu">
+        <div class="side-header">
+            <img src="https://i.ibb.co/VvzKXY7/bot-avatar.png" width="60" style="border-radius:50%;">
+            <h3 style="margin:10px 0 5px;">المساعد الأكاديمي</h3>
+            <p style="font-size:12px; color:#64748b;">v3.5.0 Premium</p>
         </div>
+        <div class="side-item" onclick="toggleDark()"><i class="fas fa-moon"></i>الوضع الليلي</div>
+        <div class="side-item" onclick="showAdmin()"><i class="fas fa-user-shield"></i>لوحة الإدارة</div>
+        <div class="side-item"><i class="fas fa-info-circle"></i>حول التطبيق</div>
+        <div class="side-item" onclick="resetData()"><i class="fas fa-trash-alt"></i>حذف البيانات</div>
+    </div>
 
-        <div class="app-content">
-            <div class="search-bar">
-                <input type="text" placeholder="ابحث عن مادة أو ملف...">
-                <i class="fas fa-search"></i>
-            </div>
-            
-            <div id="loader">🔒 جاري جلب البيانات...</div>
+    <div class="header">
+        <i class="fas fa-bars menu-btn" onclick="toggleMenu()"></i>
+        <img src="https://i.ibb.co/VvzKXY7/bot-avatar.png" class="bot-img">
+        <h2 id="appTitle">تطبيق الحلة الجامعي</h2>
+        <p>مساعدك الدراسي الذكي متصل بالسحابة ☁️</p>
+    </div>
 
-            <div id="mainGrid" class="grid">
-                <div class="card" onclick="showSubjectList()" style="color: var(--blue-card);">
-                    <i class="fas fa-book-open"></i>الأقسام والملفات
-                </div>
-                <div class="card" style="color: var(--green-card);">
-                    <i class="fas fa-hourglass-start"></i>العد التنازلي
-                </div>
-                <div class="card" style="color: var(--purple-card);">
-                    <i class="fas fa-alarm-clock"></i>المنبهاتي
-                </div>
-                <div class="card" style="color: var(--orange-card);">
-                    <i class="fas fa-lightbulb"></i>نصائح يومية
-                </div>
-                <div class="card" style="color: var(--pink-card);">
-                    <i class="fas fa-gamepad"></i>قسم الترفيه
-                </div>
-                <div class="card" style="color: var(--main-color); background: var(--header-gradient);">
-                    <i class="fas fa-language"></i>ترجمة النصوص
-                </div>
-                <div class="card" style="color: var(--blue-card);">
-                    <i class="fas fa-exclamation-triangle"></i>إبلاغ / اقتراح
-                </div>
-                <div class="card" style="color: var(--green-card);">
-                    <i class="fas fa-comments"></i>تواصل معنا
-                </div>
-                <div class="card" style="color: var(--purple-card);">
-                    <i class="fas fa-star"></i>تقييم الملفات
-                </div>
-            </div>
-
-            <div id="subjectList" style="display:none; padding-bottom: 10px;">
-                </div>
-            
-            <div id="fileList" style="display:none; padding-bottom: 10px;">
-                <div class="panel-header">
-                    <button class="action-btn btn-close" onclick="showSubjectList()"><i class="fas fa-arrow-right"></i>الأقسام والملفات</button>
-                    <h3 id="currentSubjectTitle" style="font-size:16px; margin:0;">فيزياء</h3>
-                </div>
-                <div id="filesContainer">
-                    </div>
-            </div>
-
+    <div class="search-container">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="ابحث عن محاضرات، ملازم، أقسام..." oninput="searchApp()">
         </div>
+    </div>
 
-        <div id="adminPanel" class="panel admin-panel">
-            <div class="panel-header" style="border-bottom-color:#0f3460;">
-                <button class="action-btn btn-close" onclick="showMain()"><i class="fas fa-times"></i>إغلاق</button>
-                <h3 style="font-size:16px; color:#48abe0; margin:0;">🛠️ لوحة الإدارة السحابية</h3>
-                <button class="action-btn delete-btn" onclick="deleteLast()"><i class="fas fa-trash-alt"></i></button>
-            </div>
-            <div class="admin-section">
-                <span class="admin-title">➕ إضافة مادة جديدة</span>
-                <input type="text" id="itemName" class="admin-input" placeholder="اسم الملزمة (مثلاً: الفيزياء 1)">
-                <input type="text" id="itemUrl" class="admin-input" placeholder="ضع رابط Google Drive المباشر">
-                <input type="text" id="subjectName" class="admin-input" placeholder="اسم القسم (مثلاً: الفيزياء)">
-                <button class="action-btn" style="background:#2ecc71;" onclick="addNewItem()"><i class="fas fa-cloud-upload-alt"></i>💾 حفظ في السحابة</button>
-            </div>
-        </div>
+    <div class="content">
         
-        <div style="text-align:center; padding:15px 0;">
-            <button onclick="showAdmin()" style="background:none; border:none; color:gray; opacity:0.1; cursor:pointer;">[ ADMIN ]</button>
-        </div>
-        
-        <div class="bottom-nav">
-            <div class="nav-item active"><i class="fas fa-home"></i>الرئيسية</div>
-            <div class="nav-item"><i class="fas fa-heart"></i>المفضلة</div>
-            <div class="bot-nav-item"><img src="https://i.ibb.co/VvzKXY7/bot-avatar.png" alt="bot-icon"></div>
-            <div class="nav-item"><i class="fas fa-download"></i>المحفوظات</div>
-            <div class="nav-item"><i class="fas fa-bars"></i>المزيد</div>
+        <div id="homeGrid" class="home-grid">
+            <div class="main-card" onclick="openSubjects()" style="color:var(--blue);"><i class="fas fa-folder-open"></i>الأقسام</div>
+            <div class="main-card" style="color:var(--green);"><i class="fas fa-hourglass-half"></i>العد التنازلي</div>
+            <div class="main-card" style="color:var(--purple);"><i class="fas fa-stopwatch"></i>المنبهاتي</div>
+            <div class="main-card" style="color:var(--orange);"><i class="fas fa-lightbulb"></i>نصائح اليوم</div>
+            <div class="main-card" style="color:var(--pink);"><i class="fas fa-gamepad"></i>قسم الترفيه</div>
+            <div class="main-card" style="color:var(--primary);"><i class="fas fa-language"></i>ترجمة النصوص</div>
         </div>
 
-        <div id="viewerPanel" class="panel viewer-panel">
-            <div class="panel-header" style="padding: 10px 0;">
-                <button class="action-btn btn-close" onclick="showFileList(currentSubjectIndex)"><i class="fas fa-arrow-right"></i>العودة</button>
-                <h3 id="viewingTitle" style="font-size:16px; text-align:center; margin:0;">اسم الملف</h3>
-            </div>
-            <div class="viewer-container">
-                <iframe id="appViewer" src=""></iframe>
-            </div>
+        <div id="subjectsView" class="list-container">
+            <button class="back-btn" onclick="goHome()"><i class="fas fa-chevron-right"></i> رجوع للرئيسية</button>
+            <div id="subjectsList"></div>
+        </div>
+
+        <div id="filesView" class="list-container">
+            <button class="back-btn" onclick="openSubjects()"><i class="fas fa-chevron-right"></i> رجوع للأقسام</button>
+            <h3 id="currentSubName" style="margin:10px 5px;"></h3>
+            <div id="filesList"></div>
         </div>
 
     </div>
 
-    <script>
-        // الرابط الخاص بك من الصورة
-        const DB_URL = "https://hillah-app-default-rtdb.firebaseio.com/.json"; 
-        
-        // الأيقونة الافتراضية للبوت
-        const BOT_AVATAR_URL = "https://i.ibb.co/VvzKXY7/bot-avatar.png";
+    <div class="bottom-nav">
+        <div class="nav-link active" onclick="goHome()"><i class="fas fa-home"></i>الرئيسية</div>
+        <div class="nav-link"><i class="fas fa-bookmark"></i>المفضلة</div>
+        <div class="nav-link"><i class="fas fa-comment-dots"></i>البوت</div>
+        <div class="nav-link"><i class="fas fa-cog"></i>الإعدادات</div>
+    </div>
 
-        let appData = { 
-            title: "تطبيق الحلة الجامعي", 
-            subjects: [] 
-        };
-        
+    <div id="adminPanel" class="admin-panel">
+        <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+            <h4 style="margin:0;">إضافة محتوى جديد للسحابة</h4>
+            <i class="fas fa-times" onclick="closeAdmin()" style="cursor:pointer;"></i>
+        </div>
+        <input type="text" id="newSubName" class="admin-input" placeholder="اسم القسم (مثلاً: الفيزياء)">
+        <input type="text" id="newFileName" class="admin-input" placeholder="اسم الملف (مثلاً: الفصل الأول)">
+        <input type="text" id="newFileUrl" class="admin-input" placeholder="رابط Google Drive (Preview)">
+        <button class="save-btn" onclick="uploadData()">💾 حفظ ونشر فوراً</button>
+    </div>
+
+    <div id="viewer" class="viewer-panel">
+        <div class="viewer-header">
+            <i class="fas fa-arrow-right" onclick="closeViewer()" style="font-size:20px; cursor:pointer;"></i>
+            <h4 id="viewerTitle" style="margin:0;">عرض الملف</h4>
+        </div>
+        <iframe id="viewerFrame" class="viewer-frame"></iframe>
+    </div>
+
+    <script>
+        // رابط قاعدة البيانات الخاص بك
+        const DB_URL = "https://hillah-app-default-rtdb.firebaseio.com/.json";
+
+        let appData = { subjects: [] };
         let currentSubjectIndex = -1;
 
-        async function loadData() {
+        // 1. جلب البيانات
+        async function loadApp() {
             try {
-                // تكتيك منع التخزين المؤقت لضمان رؤية البيانات الجديدة دائماً
-                const response = await fetch(DB_URL + "?nocache=" + Math.random());
-                const data = await response.json();
-                if (data) {
-                    appData = data;
-                } else {
-                    // بيانات افتراضية احترافية
-                    appData = { 
-                        title: "تطبيق الحلة الجامعي", 
-                        subjects: [
-                            { name: "فيزياء", icon: "📁", file_count: 5, files: [
-                                { name: "الفيزياء الأساسية - الفصل الأول", type: "📄", url: "https://drive.google.com/file/d/19sQcSw8XqoutnFQw-Iw3IK9G8K9qn7SL/preview" }
-                            ] },
-                            { name: "برمجة جافا", icon: "📁", file_count: 3, files: [] },
-                            { name: "كيمياء عضوية", icon: "📁", file_count: 2, files: [] },
-                            { name: "لغة إنجليزية", icon: "📁", file_count: 4, files: [] }
-                        ] 
-                    };
-                }
-                applyData();
-            } catch (e) { 
-                console.error("Firebase Connect Error");
-                document.getElementById('loader').innerText = "❌ فشل الاتصال بالسحابة";
-            }
+                const res = await fetch(DB_URL + "?t=" + Date.now());
+                const data = await res.json();
+                if(data) appData = data;
+                document.getElementById('loader').style.display = "none";
+                renderSubjects();
+            } catch(e) { alert("فشل في مزامنة السحابة!"); }
         }
 
-        function applyData() {
-            document.getElementById('appTitle').innerText = appData.title;
-            document.getElementById('loader').style.display = "none";
-            document.getElementById('mainGrid').style.display = "grid";
-            // تحميل واجهة الأقسام والملازم افتراضياً
-            showSubjectList();
-        }
-
-        // رسم شبكة الأقسام الملونة (Home Screen)
-        function renderHomeGrid() {
-            // لم يتم تغييرها لأنها ثابتة من الـ HTML
-        }
-
-        // رسم قائمة المواد والملازم (Subject List View)
-        function renderSubjectList() {
-            const list = document.getElementById('subjectList');
-            list.innerHTML = "";
-            (appData.subjects || []).forEach((subject, index) => {
-                const item = document.createElement('div');
-                item.className = 'list-item';
-                item.onclick = () => showFileList(index);
-                item.innerHTML = `
-                    <div class="item-icon">📄</div>
-                    <div class="item-text">
-                        <div class="item-title">${subject.name}</div>
-                        <div class="item-subtitle">ملزمة ${subject.file_count || 0}</div>
-                    </div>
-                    <i class="fas fa-chevron-left item-arrow"></i>
-                `;
-                list.appendChild(item);
-            });
-        }
-        
-        // رسم قائمة الملفات داخل مادة محددة (File List View)
-        function renderFileList(index) {
-            const subject = appData.subjects[index];
-            const container = document.getElementById('filesContainer');
-            container.innerHTML = "";
-            (subject.files || []).forEach((file, fileIndex) => {
-                const item = document.createElement('div');
-                item.className = 'list-item';
-                item.onclick = () => viewFile(file.name, file.url);
-                item.innerHTML = `
-                    <div class="item-icon" style="color: var(--purple-card);"><i class="fas fa-file-pdf"></i></div>
-                    <div class="item-text">
-                        <div class="item-title">${file.name}</div>
-                        <div class="item-subtitle">${file.type === '📄' ? 'PDF' : 'فيديو'} • ${(file.size || '1') + ' MB'}</div>
-                    </div>
-                    <i class="fas fa-chevron-left item-arrow"></i>
-                `;
-                container.appendChild(item);
-            });
-        }
-
-        async function saveToCloud() {
-            try {
-                const res = await fetch(DB_URL, { 
-                    method: 'PUT', 
-                    body: JSON.stringify(appData) 
-                });
-                if(res.ok) {
-                    alert("✅ تم الحفظ في السحابة للأبد!");
-                    loadData(); // إعادة تحميل للتأكد
-                }
-            } catch(e) { alert("❌ فشل الحفظ!"); }
-        }
-
-        function addNewItem() {
-            const name = document.getElementById('itemName').value;
-            const url = document.getElementById('itemUrl').value;
-            const subjectName = document.getElementById('subjectName').value;
-            if(name && url && subjectName) {
-                // البحث عن المادة أو إنشاء جديدة
-                let subject = appData.subjects.find(s => s.name === subjectName);
-                if(!subject) {
-                    subject = { name: subjectName, icon: "📁", file_count: 0, files: [] };
-                    appData.subjects.push(subject);
-                }
-                subject.files.push({ name, url, type: "📄", size: Math.floor(Math.random() * 5) + 1 });
-                subject.file_count++;
-                saveToCloud();
-                document.getElementById('itemName').value = "";
-                document.getElementById('itemUrl').value = "";
-                document.getElementById('subjectName').value = "";
-            } else { alert("يرجى ملء كافة الحقول"); }
-        }
-
-        function viewFile(name, url) {
-            document.getElementById('fileList').style.display = "none";
-            document.getElementById('viewerPanel').style.display = "flex";
-            document.getElementById('viewingTitle').innerText = name;
-            document.getElementById('appViewer').src = url;
-        }
-
-        function showSubjectList() {
-            document.getElementById('mainGrid').style.display = "none";
-            document.getElementById('fileList').style.display = "none";
-            document.getElementById('subjectList').style.display = "block";
-            renderSubjectList();
-        }
-        
-        function showFileList(index) {
-            currentSubjectIndex = index;
-            document.getElementById('subjectList').style.display = "none";
-            document.getElementById('viewerPanel').style.display = "none";
-            document.getElementById('fileList').style.display = "block";
-            document.getElementById('currentSubjectTitle').innerText = appData.subjects[index].name;
-            renderFileList(index);
-        }
-
-        function showAdmin() {
-            document.getElementById('mainGrid').style.display = "none";
-            document.getElementById('subjectList').style.display = "none";
-            document.getElementById('fileList').style.display = "none";
-            document.getElementById('adminPanel').style.display = "flex";
-        }
-
-        function showMain() {
-            document.getElementById('adminPanel').style.display = "none";
-            document.getElementById('viewerPanel').style.display = "none";
-            document.getElementById('appViewer').src = "";
-            showSubjectList(); // العودة لقائمة المواد افتراضياً
-        }
-
-        function deleteLast() {
-            if(confirm("حذف آخر مادة تمت إضافتها؟")) {
-                if(appData.subjects && appData.subjects.length > 0) {
-                    appData.subjects.pop();
-                    saveToCloud();
-                }
-            }
-        }
-
-        loadData();
-    </script>
-</body>
-</html>
-
+        // 2. التنقل
         function goHome() {
-            document.getElementById('mainGrid').style.display = "grid";
-            document.getElementById('resultsPanel').style.display = "none";
+            hideAll();
+            document.getElementById('homeGrid').style.display = "grid";
+            setActiveNav(0);
+        }
+
+        function openSubjects() {
+            hideAll();
+            document.getElementById('subjectsView').style.display = "block";
+            renderSubjects();
+        }
+
+        function openFiles(index) {
+            currentSubjectIndex = index;
+            hideAll();
+            document.getElementById('filesView').style.display = "block";
+            document.getElementById('currentSubName').innerText = appData.subjects[index].name;
+            renderFiles(index);
+        }
+
+        function hideAll() {
+            document.getElementById('homeGrid').style.display = "none";
+            document.getElementById('subjectsView').style.display = "none";
+            document.getElementById('filesView').style.display = "none";
             document.getElementById('adminPanel').style.display = "none";
         }
+
+        // 3. الرسم (Rendering)
+        function renderSubjects() {
+            const list = document.getElementById('subjectsList');
+            list.innerHTML = "";
+            (appData.subjects || []).forEach((s, i) => {
+                list.innerHTML += `
+                    <div class="list-item" onclick="openFiles(${i})">
+                        <div class="item-info">
+                            <div class="item-icon-box"><i class="fas fa-folder"></i></div>
+                            <div>
+                                <div style="font-weight:700;">${s.name}</div>
+                                <div style="font-size:11px; opacity:0.6;">يحتوي على ${s.files ? s.files.length : 0} ملفات</div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-left" style="color:#ccc;"></i>
+                    </div>`;
+            });
+        }
+
+        function renderFiles(index) {
+            const list = document.getElementById('filesList');
+            list.innerHTML = "";
+            const files = appData.subjects[index].files || [];
+            files.forEach((f, fi) => {
+                list.innerHTML += `
+                    <div class="list-item" onclick="viewFile('${f.name}', '${f.url}')">
+                        <div class="item-info">
+                            <div class="item-icon-box" style="background:rgba(233, 30, 99, 0.1); color:#E91E63;">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                            <div>
+                                <div style="font-weight:700;">${f.name}</div>
+                                <div style="font-size:11px; opacity:0.6;">ملف PDF - عرض مباشر</div>
+                            </div>
+                        </div>
+                        <i class="fas fa-eye" style="color:var(--primary);"></i>
+                    </div>`;
+            });
+        }
+
+        // 4. العرض (Viewer)
+        function viewFile(name, url) {
+            document.getElementById('viewer').style.display = "flex";
+            document.getElementById('viewerTitle').innerText = name;
+            document.getElementById('viewerFrame').src = url;
+        }
+
+        function closeViewer() {
+            document.getElementById('viewer').style.display = "none";
+            document.getElementById('viewerFrame').src = "";
+        }
+
+        // 5. الإدارة والسحابة
+        async function uploadData() {
+            const subName = document.getElementById('newSubName').value;
+            const fileName = document.getElementById('newFileName').value;
+            const fileUrl = document.getElementById('newFileUrl').value;
+
+            if(!subName || !fileName || !fileUrl) return alert("امسح الحقول أولاً!");
+
+            let subject = appData.subjects.find(s => s.name === subName);
+            if(!subject) {
+                subject = { name: subName, files: [] };
+                appData.subjects.push(subject);
+            }
+            subject.files.push({ name: fileName, url: fileUrl });
+
+            await fetch(DB_URL, { method: 'PUT', body: JSON.stringify(appData) });
+            alert("تم النشر في السحابة!");
+            closeAdmin();
+            loadApp();
+        }
+
+        // 6. ميزات إضافية
+        function toggleMenu() {
+            document.getElementById('sideMenu').classList.toggle('active');
+            document.getElementById('overlay').style.display = 
+                document.getElementById('sideMenu').classList.contains('active') ? "block" : "none";
+        }
+
+        function toggleDark() {
+            document.body.classList.toggle('dark');
+            localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+        }
+
+        function searchApp() {
+            let val = document.getElementById('searchInput').value.toLowerCase();
+            let items = document.querySelectorAll('.list-item');
+            items.forEach(it => {
+                it.style.display = it.innerText.toLowerCase().includes(val) ? "flex" : "none";
+            });
+        }
+
+        function showAdmin() { hideAll(); document.getElementById('adminPanel').style.display = "block"; toggleMenu(); }
+        function closeAdmin() { document.getElementById('adminPanel').style.display = "none"; goHome(); }
+        function setActiveNav(i) {
+            document.querySelectorAll('.nav-link').forEach((n, idx) => {
+                n.classList.toggle('active', idx === i);
+            });
+        }
+
+        // تشغيل عند البدء
+        if(localStorage.getItem('theme') === 'dark') document.body.classList.add('dark');
+        loadApp();
     </script>
 </body>
 </html>
