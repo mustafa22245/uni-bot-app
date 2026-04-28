@@ -3,148 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق الحلة الجامعي</title>
+    <title>تطبيق الحلة الجامعي - النسخة العملاقة</title>
     <style>
-        :root { --main: #0088cc; --bg: #f8fafd; }
-        body { font-family: sans-serif; background: var(--bg); margin: 0; padding: 0; direction: rtl; }
-        .header { background: linear-gradient(135deg, #0088cc, #005588); color: white; padding: 30px; text-align: center; border-radius: 0 0 30px 30px; }
-        .container { padding: 20px; }
+        :root { 
+            --main-color: #0088cc; 
+            --bg-color: #f8fafd; 
+            --text-color: #333333;
+        }
+        
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-color); color: var(--text-color); margin: 0; padding: 0; direction: rtl; transition: 0.4s; }
+        .header { background: linear-gradient(135deg, var(--main-color), #005588); color: white; padding: 40px 20px; text-align: center; border-radius: 0 0 40px 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .container { padding: 20px; max-width: 600px; margin: auto; }
+        
+        /* Grid Layout */
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .card { background: white; padding: 25px 15px; border-radius: 20px; text-align: center; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.05); font-weight: bold; }
-        .results-panel { display: none; background: white; border-radius: 20px; padding: 20px; margin-top: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); min-height: 300px; }
-        .admin-panel { display: none; background: #2c3e50; color: white; border-radius: 20px; padding: 20px; margin-top: 10px; }
-        .admin-input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: none; box-sizing: border-box; background: #34495e; color: white; }
-        .admin-btn { width: 100%; padding: 12px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; margin-top: 10px; background: #2ecc71; color: white; }
-        .list-item { background: #f9f9f9; padding: 15px; border-radius: 12px; margin-bottom: 10px; border-right: 5px solid var(--main); display: flex; justify-content: space-between; align-items: center; }
-        iframe { width: 100%; height: 500px; border: none; border-radius: 15px; }
+        .card { background: white; padding: 25px 15px; border-radius: 25px; text-align: center; cursor: pointer; box-shadow: 0 6px 12px rgba(0,0,0,0.05); font-weight: bold; border: 2px solid transparent; transition: 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+        .card:hover { border-color: var(--main-color); transform: translateY(-5px); }
+        .card i { font-size: 24px; }
+
+        /* Panels */
+        .panel { display: none; background: white; border-radius: 25px; padding: 25px; margin-top: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); animation: fadeIn 0.5s; }
+        
+        /* Admin Styling */
+        .admin-panel { background: #1a1a2e; color: #efefef; border-top: 5px solid #e74c3c; }
+        .admin-section { background: #16213e; padding: 15px; border-radius: 15px; margin-bottom: 20px; border: 1px solid #0f3460; }
+        .admin-title { color: #48abe0; font-size: 16px; font-weight: bold; margin-bottom: 15px; display: block; border-right: 4px solid #e74c3c; padding-right: 10px; }
+        .admin-input, .admin-select { width: 100%; padding: 12px; margin: 8px 0; border-radius: 12px; border: 1px solid #0f3460; box-sizing: border-box; background: #1a1a2e; color: white; }
+        .color-group { display: flex; align-items: center; justify-content: space-between; background: #0f3460; padding: 10px; border-radius: 12px; margin-bottom: 10px; }
+        
+        .action-btn { width: 100%; padding: 15px; border-radius: 12px; border: none; cursor: pointer; font-weight: bold; margin-top: 10px; background: var(--main-color); color: white; }
+        .btn-close { background: #e74c3c; margin-bottom: 15px; }
+
+        /* Media Display */
+        .media-item { background: #f9f9f9; padding: 15px; border-radius: 15px; margin-bottom: 10px; border-right: 5px solid var(--main-color); }
+        iframe, video, img { width: 100%; border-radius: 15px; margin-top: 10px; border: none; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h2>🎓 تطبيق الحلة الجامعي</h2>
-        <p>الإصدار المشفر والنهائي 🔒</p>
+    <div class="header" id="appHeader">
+        <h2 id="appTitle">🎓 تطبيق الحلة الجامعي</h2>
+        <p id="appSubtitle">الإصدار الشامل والذكي 🚀</p>
     </div>
 
     <div class="container">
         <div id="mainGrid" class="grid">
-            <div class="card" onclick="openSection('files')">📁<br>الملازم</div>
-            <div class="card" onclick="openSection('tips')">📢<br>نصيحة اليوم</div>
-            <div class="card" onclick="openSection('tr')">✅<br>المترجم</div>
-            <div class="card" onclick="openSection('exams')">⏳<br>الامتحانات</div>
-        </div>
+            </div>
 
-        <div id="resultsPanel" class="results-panel">
-            <button onclick="goHome()" style="width:100%; padding:10px; margin-bottom:10px;">🔙 عودة للرئيسية</button>
+        <div id="contentPanel" class="panel">
+            <button class="action-btn btn-close" onclick="showMain()">🔙 العودة للرئيسية</button>
             <div id="dynamicContent"></div>
         </div>
 
-        <div id="adminPanel" class="admin-panel">
-            <button onclick="goHome()" style="background:#e74c3c; color:white; border:none; padding:10px; border-radius:10px; cursor:pointer;">❌ إغلاق</button>
-            <h3 style="text-align:center;">🛠️ لوحة التحكم</h3>
-            <input type="text" id="newTip" class="admin-input" placeholder="اكتب نصيحة جديدة هنا...">
-            <button class="admin-btn" style="background:#3498db;" onclick="addTip()">➕ إضافة نصيحة</button>
-            <hr style="opacity:0.2; margin:20px 0;">
-            <input type="text" id="newCat" class="admin-input" placeholder="اسم القسم (مثلاً: التحليل المرضي)">
-            <input type="text" id="fileName" class="admin-input" placeholder="اسم الملزمة">
-            <input type="text" id="fileUrl" class="admin-input" placeholder="رابط الملف المباشر PDF">
-            <button class="admin-btn" onclick="saveEntry()">💾 حفظ ونشر التعديلات فوراً</button>
+        <div id="adminPanel" class="panel admin-panel">
+            <button class="action-btn btn-close" onclick="showMain()">❌ إغلاق لوحة التحكم</button>
+            <h3 style="text-align:center;">🛠️ لوحة التحكم المركزية</h3>
+
+            <div class="admin-section">
+                <span class="admin-title">🎨 هوية التطبيق</span>
+                <input type="text" id="editTitle" class="admin-input" placeholder="اسم التطبيق">
+                <div class="color-group">
+                    <label>اللون الأساسي:</label>
+                    <input type="color" id="colorMain" onchange="applyDesign()">
+                </div>
+                <div class="color-group">
+                    <label>لون الخلفية:</label>
+                    <input type="color" id="colorBg" onchange="applyDesign()">
+                </div>
+            </div>
+
+            <div class="admin-section">
+                <span class="admin-title">➕ إضافة قسم / محتوى جديد</span>
+                <select id="typeSelect" class="admin-select">
+                    <option value="ملزمة">📄 ملف PDF / ملزمة</option>
+                    <option value="فيديو">🎥 فيديو (YouTube)</option>
+                    <option value="صورة">🖼️ صورة / إعلان</option>
+                    <option value="رابط">🔗 رابط خارجي</option>
+                </select>
+                <input type="text" id="itemName" class="admin-input" placeholder="اسم القسم أو العنوان">
+                <input type="text" id="itemUrl" class="admin-input" placeholder="الرابط (URL)">
+                <button class="action-btn" style="background:#2ecc71;" onclick="addNewItem()">💾 حفظ ونشر فوراً</button>
+            </div>
+            
+            <button class="action-btn" style="background:#f39c12;" onclick="resetApp()">♻️ إعادة ضبط المصنع</button>
         </div>
 
-        <div style="text-align:center; padding:30px;">
-            <button onclick="openAdmin()" style="background:none; border:none; color:#ccc; font-size:10px; cursor:pointer; letter-spacing:1px;">CONTROL PANEL</button>
+        <div style="text-align:center; padding:40px;">
+            <button onclick="showAdmin()" style="background:none; border:none; color:#ccc; font-size:10px; cursor:pointer; opacity:0.5;">[ DEV MODE ]</button>
         </div>
     </div>
 
     <script>
-        // الرابط المشفر الجديد الخاص بمنصة Vercel
-        const API_URL = "https://back-end-two-jade.vercel.app"; 
-        let currentDB = { categories: {}, tips: [] };
+        // البيانات الافتراضية
+        const defaultData = {
+            title: "🎓 تطبيق الحلة الجامعي",
+            mainColor: "#0088cc",
+            bgColor: "#f8fafd",
+            items: [
+                { name: "الملازم", type: "ملزمة", url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" },
+                { name: "شرح الفيديو", type: "فيديو", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
+            ]
+        };
 
-        async function openSection(id) {
-            document.getElementById('mainGrid').style.display = "none";
-            document.getElementById('resultsPanel').style.display = "block";
-            const content = document.getElementById('dynamicContent');
-            content.innerHTML = "<p style='text-align:center'>جاري الاتصال الآمن... 🔒</p>";
-            try {
-                if (id === 'tips') {
-                    const res = await fetch(`${API_URL}/get_tip`);
-                    const data = await res.json();
-                    content.innerHTML = `<div style="padding:40px; text-align:center; font-size:22px; color:#2c3e50; line-height:1.6;">🌟<br><br>${data.tip}</div>`;
-                } else if (id === 'files') {
-                    const res = await fetch(`${API_URL}/get_categories`);
-                    const cats = await res.json();
-                    content.innerHTML = "<h3>📂 الأقسام المتوفرة:</h3>" + cats.map(c => `<div class="card" style="width:95%; margin:10px auto; border:1px solid #eee;" onclick="loadFiles('${c}')">${c}</div>`).join('');
-                } else {
-                    content.innerHTML = "<h3 style='text-align:center'>قريباً... ⏳</h3>";
-                }
-            } catch (e) { 
-                content.innerHTML = "<p style='color:red; text-align:center'>❌ فشل الاتصال بالسيرفر. تأكد أن الاتصال بالإنترنت يعمل وأن السيرفر نشط.</p>"; 
-            }
+        let appData = JSON.parse(localStorage.getItem('hillahAppData')) || defaultData;
+
+        // تشغيل التطبيق
+        function init() {
+            document.getElementById('appTitle').innerText = appData.title;
+            document.documentElement.style.setProperty('--main-color', appData.mainColor);
+            document.documentElement.style.setProperty('--bg-color', appData.bgColor);
+            renderGrid();
         }
 
-        async function openAdmin() {
+        // رسم الشبكة الرئيسية
+        function renderGrid() {
+            const grid = document.getElementById('mainGrid');
+            grid.innerHTML = "";
+            appData.items.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.onclick = () => showContent(index);
+                let icon = item.type === "ملزمة" ? "📄" : item.type === "فيديو" ? "🎥" : "🖼️";
+                card.innerHTML = `<span>${icon}</span><span>${item.name}</span>`;
+                grid.appendChild(card);
+            });
+        }
+
+        function showContent(index) {
+            const item = appData.items[index];
+            const container = document.getElementById('dynamicContent');
+            document.getElementById('mainGrid').style.display = "none";
+            document.getElementById('contentPanel').style.display = "block";
+            
+            let html = `<h3>${item.name}</h3>`;
+            if(item.type === "فيديو") {
+                html += `<iframe height="315" src="${item.url}" allowfullscreen></iframe>`;
+            } else if(item.type === "ملزمة") {
+                html += `<iframe src="${item.url}" style="height:500px;"></iframe>`;
+            } else if(item.type === "صورة") {
+                html += `<img src="${item.url}">`;
+            }
+            container.innerHTML = html;
+        }
+
+        function showAdmin() {
             document.getElementById('mainGrid').style.display = "none";
             document.getElementById('adminPanel').style.display = "block";
-            try {
-                const res = await fetch(`${API_URL}/get_db`);
-                currentDB = await res.json();
-            } catch(e) { console.log("قاعدة البيانات ستبدأ من جديد عند أول حفظ."); }
+            document.getElementById('editTitle').value = appData.title;
         }
 
-        function addTip() {
-            const tip = document.getElementById('newTip').value;
-            if(tip) { 
-                currentDB.tips.push(tip); 
-                alert("تمت الإضافة مؤقتاً. اضغط 'حفظ' للتثبيت النهائي."); 
-                document.getElementById('newTip').value = ""; 
+        function showMain() {
+            document.getElementById('mainGrid').style.display = "grid";
+            document.querySelectorAll('.panel').forEach(p => p.style.display = "none");
+        }
+
+        function applyDesign() {
+            appData.title = document.getElementById('editTitle').value;
+            appData.mainColor = document.getElementById('colorMain').value;
+            appData.bgColor = document.getElementById('colorBg').value;
+            saveAndRefresh();
+        }
+
+        function addNewItem() {
+            const name = document.getElementById('itemName').value;
+            const url = document.getElementById('itemUrl').value;
+            const type = document.getElementById('typeSelect').value;
+            
+            if(name && url) {
+                appData.items.push({ name, url, type });
+                saveAndRefresh();
+                alert("تمت إضافة القسم الجديد بنجاح!");
             }
         }
 
-        async function saveEntry() {
-            const cat = document.getElementById('newCat').value;
-            const name = document.getElementById('fileName').value;
-            const url = document.getElementById('fileUrl').value;
+        function saveAndRefresh() {
+            localStorage.setItem('hillahAppData', JSON.stringify(appData));
+            init();
+        }
 
-            if(cat && name && url) {
-                if(!currentDB.categories[cat]) currentDB.categories[cat] = {};
-                currentDB.categories[cat][name] = url;
-            }
-
-            try {
-                const response = await fetch(`${API_URL}/save_db`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(currentDB)
-                });
-                if(response.ok) {
-                    alert("✅ تم الحفظ والنشر بنجاح! سيظهر التعديل للطلاب فوراً.");
-                    goHome();
-                } else {
-                    throw new Error();
-                }
-            } catch (e) { 
-                alert("❌ فشل الحفظ. حدث خطأ في الاتصال بالسيرفر."); 
+        function resetApp() {
+            if(confirm("هل تريد العودة للإعدادات الأصلية وحذف كل الأقسام؟")) {
+                localStorage.removeItem('hillahAppData');
+                location.reload();
             }
         }
 
-        async function loadFiles(cat) {
-            const content = document.getElementById('dynamicContent');
-            content.innerHTML = "<p style='text-align:center'>جاري تحميل الملفات... 📄</p>";
-            try {
-                const res = await fetch(`${API_URL}/get_files/${encodeURIComponent(cat)}`);
-                const files = await res.json();
-                let html = `<h3>📄 ملفات ${cat}:</h3>`;
-                for(let n in files) { 
-                    html += `<div class="list-item" onclick="viewFile('${files[n]}','${n}')"><span>${n}</span><span style="color:#0088cc; font-weight:bold; cursor:pointer;">👁️ عرض</span></div>`; 
-                }
-                content.innerHTML = html;
-            } catch(e) { content.innerHTML = "خطأ في تحميل الملفات."; }
-        }
-
-        function viewFile(url, name) {
-            document.getElementById('dynamicContent').innerHTML = `<h4 style="text-align:center;">👀 عرض: ${name}</h4><iframe src="${url}"></iframe>`;
-        }
+        init();
+    </script>
+</body>
+</html>
 
         function goHome() {
             document.getElementById('mainGrid').style.display = "grid";
