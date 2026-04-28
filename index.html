@@ -57,7 +57,7 @@
     </div>
 
     <script>
-        // الرابط المشفر الجديد الخاص بك
+        // الرابط المشفر الجديد الخاص بمنصة Vercel
         const API_URL = "https://back-end-two-jade.vercel.app"; 
         let currentDB = { categories: {}, tips: [] };
 
@@ -79,7 +79,7 @@
                     content.innerHTML = "<h3 style='text-align:center'>قريباً... ⏳</h3>";
                 }
             } catch (e) { 
-                content.innerHTML = "<p style='color:red; text-align:center'>❌ فشل الاتصال بالسيرفر. تأكد أن السيرفر في Railway يعمل.</p>"; 
+                content.innerHTML = "<p style='color:red; text-align:center'>❌ فشل الاتصال بالسيرفر. تأكد أن الاتصال بالإنترنت يعمل وأن السيرفر نشط.</p>"; 
             }
         }
 
@@ -124,7 +124,7 @@
                     throw new Error();
                 }
             } catch (e) { 
-                alert("❌ فشل الحفظ. تأكد من تشغيل السيرفر في Railway."); 
+                alert("❌ فشل الحفظ. حدث خطأ في الاتصال بالسيرفر."); 
             }
         }
 
