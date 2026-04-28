@@ -18,194 +18,278 @@
         body.dark {
             --bg: #0F172A; --card: #1E293B; --text: #F8FAFC; --primary: #38BDF8;
             --header-grad: linear-gradient(180deg, #1E293B 0%, #0F172A 100%);
+            --border: #334155;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Cairo', sans-serif; background: var(--bg); color: var(--text); margin: 0; transition: 0.3s; overflow-x: hidden; }
+        body { font-family: 'Cairo', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; transition: 0.3s; overflow-x: hidden; }
 
-        /* الشاشات الأساسية */
-        #onboarding-screen, .page { display: none; min-height: 100vh; animation: fadeIn 0.4s; }
-        .page.active { display: block; }
+        /* شاشة التسجيل */
+        #onboarding { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 10000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; }
+        .in-box { width: 100%; padding: 14px; margin-bottom: 10px; border-radius: 12px; border: 1px solid var(--border); font-family: 'Cairo'; background: #f8fafc; }
+        .btn-main { width: 100%; padding: 16px; background: var(--primary); color: #fff; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; }
+
+        /* القائمة الجانبية */
+        .sidebar { position: fixed; right: -100%; top: 0; width: 85%; max-width: 310px; height: 100%; background: var(--card); z-index: 2000; transition: 0.4s; padding: 25px; box-sizing: border-box; overflow-y: auto; }
+        .sidebar.active { right: 0; }
+        .side-head { text-align: center; border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 20px; }
+        .side-pfp { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary); }
+        .side-btn { display: flex; align-items: center; justify-content: space-between; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px; margin-bottom: 5px; }
+        .side-btn:hover { background: rgba(77, 149, 255, 0.1); }
 
         /* الهيدر */
         .app-header { background: var(--header-grad); padding: 50px 20px 30px; text-align: center; position: relative; }
-        .menu-icon { position: absolute; right: 20px; top: 25px; font-size: 24px; cursor: pointer; }
+        .menu-toggle { position: absolute; right: 20px; top: 25px; font-size: 24px; cursor: pointer; }
         .app-logo { width: 80px; height: 80px; background: white; border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; }
         .app-logo img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* الشات المتطور */
-        .chat-area { height: 65vh; background: var(--card); border-radius: 20px; display: flex; flex-direction: column; border: 1px solid var(--border); overflow: hidden; margin-top: 10px; }
-        #chat-stream { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 12px; }
-        
-        .chat-bubble-wrap { display: flex; align-items: flex-end; gap: 10px; max-width: 85%; }
-        .chat-bubble-wrap.me { align-self: flex-start; flex-direction: row; }
-        .chat-bubble-wrap.other { align-self: flex-end; flex-direction: row-reverse; }
+        /* الصفحات */
+        .page { display: none; padding: 20px 20px 120px; animation: fadeIn 0.4s; box-sizing: border-box; min-height: 100vh; }
+        .page.active { display: block; }
 
-        .chat-avatar { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid var(--primary); }
-        .msg-content { padding: 10px 14px; border-radius: 18px; font-size: 13px; position: relative; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
-        .me .msg-content { background: var(--primary); color: white; border-bottom-right-radius: 2px; }
-        .other .msg-content { background: #E2E8F0; color: #333; border-bottom-left-radius: 2px; }
+        /* الأزرار الرئيسية */
+        .grid-home { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
+        .item-card { background: var(--card); border-radius: 15px; padding: 15px 5px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.02); cursor: pointer; font-size: 11px; font-weight: 700; }
+        .item-card i { font-size: 24px; margin-bottom: 8px; display: block; color: var(--primary); }
 
-        /* القائمة المنبثقة للرسائل */
-        .msg-menu { position: fixed; background: white; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); display: none; z-index: 3000; padding: 5px; min-width: 120px; }
-        .menu-item { padding: 10px; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 10px; border-radius: 8px; }
-        .menu-item:hover { background: #f1f5f9; }
+        /* الملفات */
+        .file-row { background: var(--card); border-radius: 15px; padding: 12px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); }
+        .file-info { display: flex; align-items: center; gap: 10px; flex: 1; cursor: pointer; }
+        .heart { font-size: 20px; color: #ddd; cursor: pointer; transition: 0.2s; padding: 5px; }
+        .heart.active { color: #ef4444; }
 
-        /* بروفايل المستخدم الآخر */
-        .user-view-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 4000; display: none; flex-direction: column; padding: 25px; animation: slideUp 0.3s; }
-        .user-view-header { text-align: center; margin-top: 40px; }
-        .user-view-pfp { width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--primary); margin-bottom: 15px; }
+        /* الشات */
+        .chat-container { height: 62vh; background: var(--card); border-radius: 20px; border: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+        #chat-stream { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+        .msg-wrap { display: flex; align-items: flex-end; gap: 8px; max-width: 85%; }
+        .msg-wrap.me { align-self: flex-start; }
+        .msg-wrap.other { align-self: flex-end; flex-direction: row-reverse; }
+        .msg-pfp { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; }
+        .msg-txt { padding: 8px 12px; border-radius: 15px; font-size: 13px; cursor: pointer; }
+        .me .msg-txt { background: var(--primary); color: white; border-bottom-right-radius: 2px; }
+        .other .msg-txt { background: #E2E8F0; color: #333; border-bottom-left-radius: 2px; }
+
+        /* قائمة الرسالة */
+        .msg-popup { position: fixed; background: white; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); display: none; z-index: 5000; padding: 5px; min-width: 130px; }
+        .pop-item { padding: 10px; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 10px; border-radius: 5px; }
+        .pop-item:hover { background: #f1f5f9; }
+
+        /* بروفايل خارجي */
+        .modal-user { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 6000; display: none; flex-direction: column; padding: 30px; }
 
         /* الشريط السفلي */
         .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--card); display: flex; justify-content: space-around; padding: 10px 0; border-radius: 20px 20px 0 0; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); z-index: 1000; }
-        .nav-link { text-align: center; color: var(--gray); font-size: 10px; cursor: pointer; flex: 1; }
-        .nav-link.active { color: var(--primary); font-weight: 700; }
-        .nav-link i { font-size: 20px; display: block; margin-bottom: 3px; }
+        .nav-btn { text-align: center; color: var(--gray); font-size: 10px; cursor: pointer; flex: 1; }
+        .nav-btn.active { color: var(--primary); font-weight: 700; }
+        .nav-btn i { font-size: 20px; display: block; margin-bottom: 3px; }
 
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1500; backdrop-filter: blur(4px); }
-        .sidebar { position: fixed; right: -100%; top: 0; width: 80%; max-width: 300px; height: 100%; background: var(--card); z-index: 2000; transition: 0.4s; padding: 25px; box-sizing: border-box; }
-        .sidebar.active { right: 0; }
-
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1500; backdrop-filter: blur(3px); }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
     </style>
 </head>
 <body id="appBody">
 
-    <div id="onboarding-screen" style="flex-direction: column; align-items: center; justify-content: center; padding: 30px;">
-        <h2 style="margin-bottom: 20px;">إنشاء حسابك الجامعي</h2>
-        <input type="text" id="reg-user" style="width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 12px; border: 1px solid #ddd;" placeholder="اسم المستخدم (Username)">
-        <input type="text" id="reg-name" style="width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 12px; border: 1px solid #ddd;" placeholder="الاسم الكامل">
-        <button onclick="finishReg()" style="width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: bold;">دخول المنصة 🚀</button>
+    <div id="onboarding">
+        <div class="app-logo"><img src="https://i.ibb.co/VvzKXY7/bot-avatar.png"></div>
+        <h2 style="margin-bottom: 15px;">إنشاء بروفايلك</h2>
+        <input type="text" id="reg-user" class="in-box" placeholder="اسم المستخدم (Username)">
+        <input type="text" id="reg-name" class="in-box" placeholder="الاسم الكامل">
+        <input type="text" id="reg-uni" class="in-box" placeholder="الجامعة">
+        <input type="text" id="reg-lvl" class="in-box" placeholder="المرحلة الدراسية">
+        <input type="number" id="reg-age" class="in-box" placeholder="العمر">
+        <button class="btn-main" onclick="register()">دخول المنصة 🚀</button>
     </div>
 
     <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
-    <div id="msg-menu" class="msg-menu">
-        <div class="menu-item" onclick="copyMsg()"><i class="fas fa-copy"></i> نسخ النص</div>
-        <div class="menu-item" onclick="replyMsg()"><i class="fas fa-reply"></i> رد</div>
+    <div id="msg-pop" class="msg-popup">
+        <div class="pop-item" onclick="copyText()"><i class="fas fa-copy"></i> نسخ النص</div>
+        <div class="pop-item" onclick="reply()"><i class="fas fa-reply"></i> رد على الرسالة</div>
     </div>
 
-    <div id="user-view" class="user-view-modal">
-        <i class="fas fa-times" onclick="closeUserView()" style="font-size: 24px; cursor: pointer;"></i>
-        <div class="user-view-header">
-            <img id="v-pfp" src="" class="user-view-pfp">
-            <h2 id="v-name" style="margin: 5px 0;"></h2>
-            <span id="v-user" style="color: var(--primary);"></span>
-            <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
-                <div style="background: #f8fafc; padding: 15px; border-radius: 12px; text-align: right;">
-                    <b>الجامعة:</b> <span id="v-uni"></span><br>
-                    <b>المرحلة:</b> <span id="v-lvl"></span>
-                </div>
-                <button class="menu-item" style="background: var(--primary); color: white; justify-content: center;" onclick="alert('تم إرسال طلب الصداقة!')">إضافة صديق</button>
-                <button class="menu-item" style="background: #fee2e2; color: #ef4444; justify-content: center;" onclick="alert('تم حظر المستخدم')">حظر المستخدم</button>
+    <div id="user-modal" class="modal-user">
+        <i class="fas fa-times" onclick="closeUserModal()" style="font-size: 24px; cursor: pointer;"></i>
+        <div style="text-align: center; margin-top: 50px;">
+            <img id="m-pfp" src="" style="width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--primary);">
+            <h2 id="m-name" style="margin: 10px 0;"></h2>
+            <span id="m-user" style="color: var(--primary);"></span>
+            <div style="margin-top: 20px; background: #f8fafc; padding: 20px; border-radius: 15px; text-align: right;">
+                <b>الجامعة:</b> <span id="m-uni"></span><br>
+                <b>المرحلة:</b> <span id="m-lvl"></span><br>
+                <b>العمر:</b> <span id="m-age"></span>
             </div>
+            <button class="btn-main" style="margin-top: 20px;" onclick="alert('تم إرسال طلب صداقة')">إضافة صديق</button>
         </div>
     </div>
 
     <div id="sidebar" class="sidebar">
-        <div style="text-align: center; border-bottom: 1px solid #eee; padding-bottom: 20px; margin-bottom: 20px;">
-            <img id="my-side-pfp" src="" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--primary);">
-            <h3 id="my-side-name" style="margin: 10px 0 0;"></h3>
+        <div class="side-head">
+            <img id="my-side-pfp" src="" class="side-pfp">
+            <h3 id="my-side-name" style="margin: 5px 0;"></h3>
+            <span id="my-side-user" style="color: var(--primary); font-size: 12px;"></span>
         </div>
-        <div class="side-item" onclick="nav('home')"><i class="fas fa-home"></i> الرئيسية</div>
-        <div class="side-item" onclick="toggleDark()"><i class="fas fa-moon"></i> الوضع الليلي</div>
-        <div class="side-item" style="color:#ef4444; margin-top:20px;" onclick="localStorage.clear(); location.reload();"><i class="fas fa-power-off"></i> تسجيل الخروج</div>
+        <div class="side-btn" onclick="nav('edit')"><i class="fas fa-user-edit"></i> تعديل البروفايل <i class="fas fa-chevron-left"></i></div>
+        <div class="side-btn" onclick="toggleDark()"><i class="fas fa-moon"></i> الوضع الليلي</div>
+        <div class="side-btn" onclick="window.open('https://t.me/M3y4_p', '_blank')"><i class="fas fa-paper-plane"></i> تواصل مع المطور</div>
+        <div class="side-btn" style="color:red; margin-top:20px;" onclick="localStorage.clear(); location.reload();"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</div>
     </div>
 
     <div id="home-page" class="page active" style="padding:0;">
         <div class="app-header">
-            <i class="fas fa-bars menu-icon" onclick="toggleSidebar()"></i>
+            <i class="fas fa-bars menu-toggle" onclick="toggleSidebar()"></i>
             <div class="app-logo"><img src="https://i.ibb.co/VvzKXY7/bot-avatar.png"></div>
-            <h2 id="hi-user">مرحباً بك</h2>
+            <h2 id="welcome-name">مرحباً بك</h2>
         </div>
-        <div style="padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-            <div onclick="nav('chat')" style="background: white; padding: 25px; border-radius: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
-                <i class="fas fa-comments" style="font-size: 30px; color: #a855f7;"></i><br><b>الشات العام</b>
-            </div>
-            <div onclick="nav('social')" style="background: white; padding: 25px; border-radius: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
-                <i class="fas fa-search" style="font-size: 30px; color: #2ecc71;"></i><br><b>بحث أصدقاء</b>
+        <div style="padding: 20px;">
+            <div class="grid-home">
+                <div class="item-card" onclick="nav('subjects')"><i class="fas fa-graduation-cap"></i>مواد الفاينل</div>
+                <div class="item-card"><i class="fas fa-clock"></i>العد التنازلي</div>
+                <div class="item-card"><i class="fas fa-stopwatch"></i>منبهاتي</div>
+                <div class="item-card" onclick="nav('translate')"><i class="fas fa-language"></i>الترجمة</div>
+                <div class="item-card"><i class="fas fa-gamepad"></i>ترفيه</div>
+                <div class="item-card"><i class="fas fa-lightbulb"></i>نصائح</div>
             </div>
         </div>
     </div>
 
+    <div id="subjects-page" class="page">
+        <h2>📂 مواد الفاينل</h2>
+        <div id="files-list"></div>
+    </div>
+
+    <div id="fav-page" class="page">
+        <h2>⭐ المفضلة</h2>
+        <div id="fav-list"></div>
+    </div>
+
     <div id="chat-page" class="page">
-        <h2 style="margin: 0 0 10px;">💬 غرف الدردشة</h2>
-        <div class="chat-area">
+        <h2>💬 الشات العام</h2>
+        <div class="chat-container">
             <div id="chat-stream"></div>
             <div style="display:flex; padding:10px; background:#f1f5f9; gap:10px;">
-                <input type="text" id="chat-input" style="flex:1; padding:10px; border-radius:10px; border:1px solid #ddd;" placeholder="اكتب رسالة...">
+                <input type="text" id="chat-in" class="in-box" style="margin:0;" placeholder="اكتب رسالة...">
                 <button onclick="sendMsg()" style="background:var(--primary); color:white; border:none; padding:10px 15px; border-radius:10px;"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
     </div>
 
     <div id="social-page" class="page">
-        <h2 style="margin-bottom: 15px;">🔍 البحث عن زملاء</h2>
-        <input type="text" id="user-search" style="width:100%; padding:15px; border-radius:12px; border:1px solid #ddd;" placeholder="ادخل اليوزر أو الاسم..." oninput="realTimeSearch()">
-        <div id="search-results" style="margin-top: 20px;"></div>
+        <h2>🔍 بحث عن أصدقاء</h2>
+        <input type="text" class="in-box" id="user-search" placeholder="ابحث باليوزر أو الاسم..." oninput="liveSearch()">
+        <div id="search-results" style="margin-top: 15px;"></div>
+    </div>
+
+    <div id="edit-page" class="page">
+        <h2>🛠 تعديل الملف الشخصي</h2>
+        <div style="text-align: center; margin-bottom: 20px;">
+            <div style="position: relative; display: inline-block;">
+                <img id="edit-pfp" src="" style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--primary);">
+                <label for="up-pfp" style="position: absolute; bottom: 0; right: 0; background: var(--primary); color: white; padding: 8px; border-radius: 50%; cursor: pointer;"><i class="fas fa-camera"></i></label>
+                <input type="file" id="up-pfp" style="display:none;" accept="image/*" onchange="previewImg(this)">
+            </div>
+        </div>
+        <input type="text" id="e-name" class="in-box" placeholder="الاسم الكامل">
+        <input type="text" id="e-uni" class="in-box" placeholder="الجامعة">
+        <input type="text" id="e-lvl" class="in-box" placeholder="المرحلة">
+        <button class="btn-main" onclick="saveProfile()">حفظ التعديلات ✅</button>
+    </div>
+
+    <div id="translate-page" class="page">
+        <h2>🌐 الترجمة</h2>
+        <button class="btn-main" onclick="window.open('https://translate.google.com/?sl=en&tl=ar&op=translate', '_blank')">افتح مترجم جوجل</button>
     </div>
 
     <div class="nav-bar">
-        <div class="nav-link active" onclick="nav('home')"><i class="fas fa-home"></i><span>الرئيسية</span></div>
-        <div class="nav-link" onclick="nav('chat')"><i class="fas fa-comment-dots"></i><span>شات</span></div>
-        <div class="nav-link" onclick="nav('social')"><i class="fas fa-user-friends"></i><span>أصدقاء</span></div>
-        <div class="nav-link" onclick="toggleSidebar()"><i class="fas fa-bars"></i><span>المزيد</span></div>
+        <div class="nav-btn active" onclick="nav('home')"><i class="fas fa-home"></i><span>الرئيسية</span></div>
+        <div class="nav-btn" onclick="nav('fav')"><i class="fas fa-heart"></i><span>المفضلة</span></div>
+        <div class="nav-btn" onclick="nav('chat')"><i class="fas fa-comment-dots"></i><span>شات</span></div>
+        <div class="nav-btn" onclick="nav('social')"><i class="fas fa-user-friends"></i><span>أصدقاء</span></div>
     </div>
 
     <script>
-        const FIREBASE = "https://hillah-app-default-rtdb.firebaseio.com/";
-        let me = JSON.parse(localStorage.getItem('userProfile'));
-        let selectedMsg = "";
+        const FB = "https://hillah-app-default-rtdb.firebaseio.com/";
+        let user = JSON.parse(localStorage.getItem('userProfile'));
+        let favs = JSON.parse(localStorage.getItem('favs')) || [];
+        let selTxt = "";
 
         window.onload = () => {
-            if(!me) { document.getElementById('onboarding-screen').style.display = 'flex'; }
+            if(!user) document.getElementById('onboarding').style.display = 'flex';
             else { 
                 updateUI(); 
-                setInterval(loadChat, 2000); // تحديث الشات تلقائياً كل ثانيتين
+                loadFiles(); 
+                setInterval(loadChat, 1000); // تحديث كل ثانية
             }
         };
 
-        async function finishReg() {
-            const user = document.getElementById('reg-user').value.toLowerCase().trim();
-            const name = document.getElementById('reg-name').value.trim();
-            if(user && name) {
-                me = { username: user, name: name, pfp: 'https://i.ibb.co/VvzKXY7/bot-avatar.png', university: 'بابل', level: 'الأولى', id: Date.now() };
-                localStorage.setItem('userProfile', JSON.stringify(me));
-                await fetch(FIREBASE + "users/" + me.id + ".json", { method: 'PUT', body: JSON.stringify(me) });
+        async function register() {
+            const u = document.getElementById('reg-user').value.toLowerCase().trim();
+            const n = document.getElementById('reg-name').value.trim();
+            const uni = document.getElementById('reg-uni').value.trim();
+            const l = document.getElementById('reg-lvl').value.trim();
+            const a = document.getElementById('reg-age').value.trim();
+            if(u && n) {
+                user = { username: u, name: n, uni: uni, lvl: l, age: a, pfp: 'https://i.ibb.co/VvzKXY7/bot-avatar.png', id: Date.now() };
+                localStorage.setItem('userProfile', JSON.stringify(user));
+                await fetch(FB + "users/" + user.id + ".json", { method: 'PUT', body: JSON.stringify(user) });
                 location.reload();
             }
         }
 
         function updateUI() {
-            document.getElementById('hi-user').innerText = "مرحباً، " + me.name;
-            document.getElementById('my-side-name').innerText = me.name;
-            document.getElementById('my-side-pfp').src = me.pfp;
+            document.getElementById('welcome-name').innerText = "مرحباً، " + user.name;
+            document.getElementById('my-side-name').innerText = user.name;
+            document.getElementById('my-side-user').innerText = "@" + user.username;
+            document.getElementById('my-side-pfp').src = user.pfp;
+            document.getElementById('edit-pfp').src = user.pfp;
+            document.getElementById('e-name').value = user.name;
+            document.getElementById('e-uni').value = user.uni;
+            document.getElementById('e-lvl').value = user.lvl;
         }
 
-        // شات ذكي ولحظي
+        function previewImg(input) {
+            if (input.files && input.files[0]) {
+                const r = new FileReader();
+                r.onload = (e) => {
+                    document.getElementById('edit-pfp').src = e.target.result;
+                    user.pfp = e.target.result;
+                };
+                r.readAsDataURL(input.files[0]);
+            }
+        }
+
+        async function saveProfile() {
+            user.name = document.getElementById('e-name').value;
+            user.uni = document.getElementById('e-uni').value;
+            user.lvl = document.getElementById('e-lvl').value;
+            localStorage.setItem('userProfile', JSON.stringify(user));
+            await fetch(FB + "users/" + user.id + ".json", { method: 'PATCH', body: JSON.stringify(user) });
+            alert("تم التحديث!");
+            location.reload();
+        }
+
+        // شات ومزامنة
         async function sendMsg() {
-            const input = document.getElementById('chat-input');
-            if(!input.value) return;
-            const msg = { senderId: me.id, senderName: me.name, senderPfp: me.pfp, text: input.value, time: Date.now() };
-            await fetch(FIREBASE + "global_chat.json", { method: 'POST', body: JSON.stringify(msg) });
-            input.value = "";
+            const i = document.getElementById('chat-in');
+            if(!i.value) return;
+            const m = { uid: user.id, name: user.name, pfp: user.pfp, text: i.value, time: Date.now() };
+            await fetch(FB + "global_chat.json", { method: 'POST', body: JSON.stringify(m) });
+            i.value = "";
             loadChat();
         }
 
         async function loadChat() {
-            const res = await fetch(FIREBASE + "global_chat.json");
+            const res = await fetch(FB + "global_chat.json");
             const data = await res.json();
             const stream = document.getElementById('chat-stream');
             stream.innerHTML = "";
             for(let k in data) {
                 const m = data[k];
-                const isMe = m.senderId === me.id ? 'me' : 'other';
+                const type = m.uid === user.id ? 'me' : 'other';
                 stream.innerHTML += `
-                    <div class="chat-bubble-wrap ${isMe}">
-                        <img src="${m.senderPfp}" class="chat-avatar" onclick="viewUser('${m.senderId}')">
-                        <div class="msg-content" onclick="showMsgMenu(event, '${m.text}')">
-                            <b style="font-size: 10px; display: block;">${m.senderName}</b>
+                    <div class="msg-wrap ${type}">
+                        <img src="${m.pfp}" class="msg-pfp" onclick="viewUser('${m.uid}')">
+                        <div class="msg-txt" onclick="showPop(event, '${m.text}')">
+                            <b style="font-size:9px; display:block;">${m.name}</b>
                             ${m.text}
                         </div>
                     </div>`;
@@ -213,66 +297,99 @@
             stream.scrollTop = stream.scrollHeight;
         }
 
-        // بحث لحظي وقوي
-        async function realTimeSearch() {
+        // بحث
+        async function liveSearch() {
             const q = document.getElementById('user-search').value.toLowerCase();
-            const results = document.getElementById('search-results');
-            if(q.length < 1) { results.innerHTML = ""; return; }
-
-            const res = await fetch(FIREBASE + "users.json");
+            const resBox = document.getElementById('search-results');
+            if(q.length < 1) { resBox.innerHTML = ""; return; }
+            const res = await fetch(FB + "users.json");
             const all = await res.json();
-            results.innerHTML = "";
+            resBox.innerHTML = "";
             for(let id in all) {
                 const u = all[id];
                 if(u.username.includes(q) || u.name.toLowerCase().includes(q)) {
-                    results.innerHTML += `
-                        <div style="background:white; padding:15px; border-radius:15px; display:flex; align-items:center; gap:15px; margin-bottom:10px; border:1px solid #eee;" onclick="viewUser('${u.id}')">
-                            <img src="${u.pfp}" style="width:45px; height:45px; border-radius:50%;">
-                            <div><b>${u.name}</b><br><small style="color:var(--primary);">@${u.username}</small></div>
+                    resBox.innerHTML += `
+                        <div class="file-row" onclick="viewUser('${u.id}')">
+                            <div class="file-info">
+                                <img src="${u.pfp}" style="width:40px; height:40px; border-radius:50%;">
+                                <div><b>${u.name}</b><br><small>@${u.username}</small></div>
+                            </div>
                         </div>`;
                 }
             }
         }
 
-        // عرض بروفايل المستخدم
-        async function viewUser(userId) {
-            const res = await fetch(FIREBASE + "users/" + userId + ".json");
+        async function viewUser(uid) {
+            const res = await fetch(FB + "users/" + uid + ".json");
             const u = await res.json();
-            document.getElementById('v-pfp').src = u.pfp;
-            document.getElementById('v-name').innerText = u.name;
-            document.getElementById('v-user').innerText = "@" + u.username;
-            document.getElementById('v-uni').innerText = u.university;
-            document.getElementById('v-lvl').innerText = u.level;
-            document.getElementById('user-view').style.display = "flex";
+            document.getElementById('m-pfp').src = u.pfp;
+            document.getElementById('m-name').innerText = u.name;
+            document.getElementById('m-user').innerText = "@" + u.username;
+            document.getElementById('m-uni').innerText = u.uni || 'غير محدد';
+            document.getElementById('m-lvl').innerText = u.lvl || 'غير محدد';
+            document.getElementById('m-age').innerText = u.age || '--';
+            document.getElementById('user-modal').style.display = "flex";
         }
 
-        function closeUserView() { document.getElementById('user-view').style.display = "none"; }
+        function closeUserModal() { document.getElementById('user-modal').style.display = "none"; }
+
+        // الملفات والمفضلة
+        function loadFiles() {
+            const list = document.getElementById('files-list');
+            const flist = document.getElementById('fav-list');
+            const data = [
+                { cat: "اللغة العربية", files: [{ id: "n_1", name: "ملزمة النحو الشاملة", url: "https://drive.google.com/file/d/1Vl9sP1Lh5oRS6Wrg-F5gJ9s7OQCRNIpl/view" }] }
+            ];
+            list.innerHTML = ""; flist.innerHTML = "";
+            data.forEach(s => {
+                let h = `<h4>📂 ${s.cat}</h4>`;
+                s.files.forEach(f => {
+                    const active = favs.includes(f.id) ? 'active' : '';
+                    const card = `
+                        <div class="file-row">
+                            <div class="file-info" onclick="window.open('${f.url}','_blank')">
+                                <i class="fas fa-file-pdf" style="color:red;"></i>
+                                <b>${f.name}</b>
+                            </div>
+                            <i class="fas fa-heart heart ${active}" onclick="toggleFav('${f.id}', this)"></i>
+                        </div>`;
+                    h += card;
+                    if(favs.includes(f.id)) flist.innerHTML += card;
+                });
+                list.innerHTML += h;
+            });
+        }
+
+        function toggleFav(id, el) {
+            if(favs.includes(id)) favs = favs.filter(i => i !== id);
+            else favs.push(id);
+            localStorage.setItem('favs', JSON.stringify(favs));
+            el.classList.toggle('active');
+            loadFiles();
+        }
 
         // قائمة الرسالة
-        function showMsgMenu(e, text) {
-            selectedMsg = text;
-            const menu = document.getElementById('msg-menu');
-            menu.style.display = "block";
-            menu.style.top = e.clientY + "px";
-            menu.style.left = e.clientX + "px";
+        function showPop(e, text) {
+            selTxt = text;
+            const pop = document.getElementById('msg-pop');
+            pop.style.display = "block";
+            pop.style.top = e.clientY + "px"; pop.style.left = e.clientX + "px";
             e.stopPropagation();
         }
-
-        document.onclick = () => document.getElementById('msg-menu').style.display = "none";
-
-        function copyMsg() { navigator.clipboard.writeText(selectedMsg); alert("تم النسخ!"); }
-        function replyMsg() { document.getElementById('chat-input').value = `الرد على: (${selectedMsg}) -> `; }
+        document.onclick = () => document.getElementById('msg-pop').style.display = "none";
+        function copyText() { navigator.clipboard.writeText(selTxt); alert("تم النسخ!"); }
+        function reply() { document.getElementById('chat-in').value = `الرد على: (${selTxt}) -> `; }
 
         function nav(p) {
             document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active'));
             document.getElementById(p + '-page').classList.add('active');
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             toggleSidebar(true);
         }
 
-        function toggleSidebar(close = false) {
+        function toggleSidebar(c = false) {
             const s = document.getElementById('sidebar'), o = document.getElementById('overlay');
-            if(close) { s.classList.remove('active'); o.style.display="none"; return; }
+            if(c) { s.classList.remove('active'); o.style.display="none"; return; }
             s.classList.toggle('active'); o.style.display = s.classList.contains('active') ? "block" : "none";
         }
         function toggleDark() { document.body.classList.toggle('dark'); }
