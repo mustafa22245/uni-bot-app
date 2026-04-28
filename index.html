@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق الحلة الجامعي - النسخة النهائية</title>
+    <title>تطبيق الحلة الجامعي</title>
     <style>
         :root { --main: #0088cc; --bg: #f8fafd; }
         body { font-family: sans-serif; background: var(--bg); margin: 0; padding: 0; direction: rtl; }
@@ -15,7 +15,7 @@
         .admin-panel { display: none; background: #2c3e50; color: white; border-radius: 20px; padding: 20px; margin-top: 10px; }
         .admin-input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: none; box-sizing: border-box; background: #34495e; color: white; }
         .admin-btn { width: 100%; padding: 12px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; margin-top: 10px; background: #2ecc71; color: white; }
-        .list-item { background: #f9f9f9; padding: 15px; border-radius: 12px; margin-bottom: 10px; border-right: 5px solid var(--main); display: flex; justify-content: space-between; }
+        .list-item { background: #f9f9f9; padding: 15px; border-radius: 12px; margin-bottom: 10px; border-right: 5px solid var(--main); display: flex; justify-content: space-between; align-items: center; }
         iframe { width: 100%; height: 500px; border: none; border-radius: 15px; }
     </style>
 </head>
@@ -35,29 +35,29 @@
         </div>
 
         <div id="resultsPanel" class="results-panel">
-            <button onclick="goHome()" style="width:100%; padding:10px; margin-bottom:10px;">🔙 عودة</button>
+            <button onclick="goHome()" style="width:100%; padding:10px; margin-bottom:10px;">🔙 عودة للرئيسية</button>
             <div id="dynamicContent"></div>
         </div>
 
         <div id="adminPanel" class="admin-panel">
-            <button onclick="goHome()" style="background:#e74c3c; color:white; border:none; padding:10px; border-radius:10px;">❌ إغلاق</button>
+            <button onclick="goHome()" style="background:#e74c3c; color:white; border:none; padding:10px; border-radius:10px; cursor:pointer;">❌ إغلاق</button>
             <h3 style="text-align:center;">🛠️ لوحة التحكم</h3>
-            <input type="text" id="newTip" class="admin-input" placeholder="نصيحة جديدة">
+            <input type="text" id="newTip" class="admin-input" placeholder="اكتب نصيحة جديدة هنا...">
             <button class="admin-btn" style="background:#3498db;" onclick="addTip()">➕ إضافة نصيحة</button>
-            <hr>
-            <input type="text" id="newCat" class="admin-input" placeholder="اسم القسم">
+            <hr style="opacity:0.2; margin:20px 0;">
+            <input type="text" id="newCat" class="admin-input" placeholder="اسم القسم (مثلاً: التحليل المرضي)">
             <input type="text" id="fileName" class="admin-input" placeholder="اسم الملزمة">
-            <input type="text" id="fileUrl" class="admin-input" placeholder="رابط PDF">
-            <button class="admin-btn" onclick="saveEntry()">💾 حفظ التعديلات فوراً</button>
+            <input type="text" id="fileUrl" class="admin-input" placeholder="رابط الملف المباشر PDF">
+            <button class="admin-btn" onclick="saveEntry()">💾 حفظ ونشر التعديلات فوراً</button>
         </div>
 
         <div style="text-align:center; padding:30px;">
-            <button onclick="openAdmin()" style="background:none; border:none; color:#ccc; font-size:10px; cursor:pointer;">CONTROL PANEL</button>
+            <button onclick="openAdmin()" style="background:none; border:none; color:#ccc; font-size:10px; cursor:pointer; letter-spacing:1px;">CONTROL PANEL</button>
         </div>
     </div>
 
     <script>
-        // ضع رابط Railway الخاص بك هنا (تأكد أنه يبدأ بـ https)
+        // الرابط المشفر الجديد الخاص بك
         const API_URL = "https://manifestjson-production.up.railway.app"; 
         let currentDB = { categories: {}, tips: [] };
 
@@ -65,18 +65,22 @@
             document.getElementById('mainGrid').style.display = "none";
             document.getElementById('resultsPanel').style.display = "block";
             const content = document.getElementById('dynamicContent');
-            content.innerHTML = "جاري التحميل... 🔒";
+            content.innerHTML = "<p style='text-align:center'>جاري الاتصال الآمن... 🔒</p>";
             try {
                 if (id === 'tips') {
                     const res = await fetch(`${API_URL}/get_tip`);
                     const data = await res.json();
-                    content.innerHTML = `<div style="padding:40px; text-align:center; font-size:22px;">🌟<br><br>${data.tip}</div>`;
+                    content.innerHTML = `<div style="padding:40px; text-align:center; font-size:22px; color:#2c3e50; line-height:1.6;">🌟<br><br>${data.tip}</div>`;
                 } else if (id === 'files') {
                     const res = await fetch(`${API_URL}/get_categories`);
                     const cats = await res.json();
-                    content.innerHTML = "<h3>📂 الأقسام:</h3>" + cats.map(c => `<div class="card" style="width:95%; margin:10px auto" onclick="loadFiles('${c}')">${c}</div>`).join('');
+                    content.innerHTML = "<h3>📂 الأقسام المتوفرة:</h3>" + cats.map(c => `<div class="card" style="width:95%; margin:10px auto; border:1px solid #eee;" onclick="loadFiles('${c}')">${c}</div>`).join('');
+                } else {
+                    content.innerHTML = "<h3 style='text-align:center'>قريباً... ⏳</h3>";
                 }
-            } catch (e) { content.innerHTML = "❌ فشل الاتصال بالسيرفر."; }
+            } catch (e) { 
+                content.innerHTML = "<p style='color:red; text-align:center'>❌ فشل الاتصال بالسيرفر. تأكد أن السيرفر في Railway يعمل.</p>"; 
+            }
         }
 
         async function openAdmin() {
@@ -85,22 +89,28 @@
             try {
                 const res = await fetch(`${API_URL}/get_db`);
                 currentDB = await res.json();
-            } catch(e) { console.log("DB Empty"); }
+            } catch(e) { console.log("قاعدة البيانات ستبدأ من جديد عند أول حفظ."); }
         }
 
         function addTip() {
             const tip = document.getElementById('newTip').value;
-            if(tip) { currentDB.tips.push(tip); alert("تمت الإضافة مؤقتاً"); document.getElementById('newTip').value = ""; }
+            if(tip) { 
+                currentDB.tips.push(tip); 
+                alert("تمت الإضافة مؤقتاً. اضغط 'حفظ' للتثبيت النهائي."); 
+                document.getElementById('newTip').value = ""; 
+            }
         }
 
         async function saveEntry() {
             const cat = document.getElementById('newCat').value;
             const name = document.getElementById('fileName').value;
             const url = document.getElementById('fileUrl').value;
+
             if(cat && name && url) {
                 if(!currentDB.categories[cat]) currentDB.categories[cat] = {};
                 currentDB.categories[cat][name] = url;
             }
+
             try {
                 const response = await fetch(`${API_URL}/save_db`, {
                     method: 'POST',
@@ -108,61 +118,32 @@
                     body: JSON.stringify(currentDB)
                 });
                 if(response.ok) {
-                    alert("✅ تم الحفظ والنشر بنجاح!");
+                    alert("✅ تم الحفظ والنشر بنجاح! سيظهر التعديل للطلاب فوراً.");
                     goHome();
+                } else {
+                    throw new Error();
                 }
-            } catch (e) { alert("❌ خطأ في الحفظ. تأكد أن السيرفر يعمل."); }
-        }
-
-        async function loadFiles(cat) {
-            const res = await fetch(`${API_URL}/get_files/${encodeURIComponent(cat)}`);
-            const files = await res.json();
-            let html = `<h3>📄 ملفات ${cat}:</h3>`;
-            for(let n in files) { html += `<div class="list-item" onclick="viewFile('${files[n]}','${n}')"><span>${n}</span><span>👁️ عرض</span></div>`; }
-            document.getElementById('dynamicContent').innerHTML = html;
-        }
-
-        function viewFile(url, name) {
-            document.getElementById('dynamicContent').innerHTML = `<h4>👀 ${name}</h4><iframe src="${url}"></iframe>`;
-        }
-
-        function goHome() {
-            document.getElementById('mainGrid').style.display = "grid";
-            document.getElementById('resultsPanel').style.display = "none";
-            document.getElementById('adminPanel').style.display = "none";
-        }
-    </script>
-</body>
-</html>
-            document.getElementById('mainGrid').style.display = "grid";
-            document.getElementById('resultsPanel').style.display = "none";
-            document.getElementById('adminPanel').style.display = "none";
-        }
-    </script>
-</body>
-</html>
-            } catch (e) {
-                alert("❌ فشل الحفظ بسبب قيود الأمان.\n\nسيتم الآن فتح رابط السيرفر في صفحة جديدة، اضغط 'متابعة' هناك ثم ارجع هنا واضغط حفظ مجدداً.");
-                window.open(API_URL + "/", "_blank");
+            } catch (e) { 
+                alert("❌ فشل الحفظ. تأكد من تشغيل السيرفر في Railway."); 
             }
         }
 
-        // 4. وظائف الملازم والرجوع
-        async function loadFiles(catName) {
+        async function loadFiles(cat) {
             const content = document.getElementById('dynamicContent');
-            content.innerHTML = "جاري تحميل الملفات... 📄";
+            content.innerHTML = "<p style='text-align:center'>جاري تحميل الملفات... 📄</p>";
             try {
-                const files = await getData('/get_files/' + encodeURIComponent(catName));
-                let html = `<h3>📄 ملفات ${catName}:</h3>`;
+                const res = await fetch(`${API_URL}/get_files/${encodeURIComponent(cat)}`);
+                const files = await res.json();
+                let html = `<h3>📄 ملفات ${cat}:</h3>`;
                 for(let n in files) { 
-                    html += `<div class="list-item" onclick="viewFile('${files[n]}','${n}')"><span>${n}</span><span style="color:#0088cc;">👁️ عرض</span></div>`; 
+                    html += `<div class="list-item" onclick="viewFile('${files[n]}','${n}')"><span>${n}</span><span style="color:#0088cc; font-weight:bold; cursor:pointer;">👁️ عرض</span></div>`; 
                 }
                 content.innerHTML = html;
-            } catch(e) { content.innerHTML = "خطأ في التحميل."; }
+            } catch(e) { content.innerHTML = "خطأ في تحميل الملفات."; }
         }
 
         function viewFile(url, name) {
-            document.getElementById('dynamicContent').innerHTML = `<h4 style="text-align:center;">👀 ${name}</h4><iframe src="${url}"></iframe>`;
+            document.getElementById('dynamicContent').innerHTML = `<h4 style="text-align:center;">👀 عرض: ${name}</h4><iframe src="${url}"></iframe>`;
         }
 
         function goHome() {
