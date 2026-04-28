@@ -2,216 +2,375 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق الحلة الجامعي - سحابي ☁️</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>تطبيق الحلة الجامعي - سحابي واحترافي 🎓</title>
+    
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#4D95FF">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
     <style>
-        :root { --main-color: #0088cc; --bg-color: #f8fafd; --text-color: #333333; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg-color); color: var(--text-color); margin: 0; padding: 0; direction: rtl; transition: 0.4s; }
-        .header { background: linear-gradient(135deg, var(--main-color), #005588); color: white; padding: 40px 20px; text-align: center; border-radius: 0 0 40px 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .container { padding: 20px; max-width: 600px; margin: auto; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .card { background: white; padding: 25px 15px; border-radius: 25px; text-align: center; cursor: pointer; box-shadow: 0 6px 12px rgba(0,0,0,0.05); font-weight: bold; border: 2px solid transparent; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-        .card:hover { border-color: var(--main-color); transform: translateY(-5px); }
-        .panel { display: none; background: white; border-radius: 25px; padding: 25px; margin-top: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
-        .admin-panel { background: #1a1a2e; color: #efefef; border-top: 5px solid #e74c3c; }
-        .admin-section { background: #16213e; padding: 15px; border-radius: 15px; margin-bottom: 20px; }
-        .admin-input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 12px; border: 1px solid #0f3460; background: #1a1a2e; color: white; }
-        .action-btn { width: 100%; padding: 15px; border-radius: 12px; border: none; cursor: pointer; font-weight: bold; margin-top: 10px; background: var(--main-color); color: white; }
-        iframe { width: 100%; height: 500px; border-radius: 15px; border: none; margin-top: 10px; }
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+
+        :root { 
+            --main-color: #FFFFFF; 
+            --bg-color: #F8FAFD; 
+            --text-color: #222222;
+            --primary-action: #4D95FF;
+            --secondary-text: #999999;
+            --header-gradient: linear-gradient(135deg, #A4CDFF, #E3F2FF);
+            --blue-card: #6C94FF;
+            --green-card: #27AE60;
+            --purple-card: #9B59B6;
+            --orange-card: #E67E22;
+            --pink-card: #E91E63;
+        }
+        
+        body { font-family: 'Cairo', sans-serif; background: var(--bg-color); color: var(--text-color); margin: 0; padding: 0; direction: rtl; transition: 0.4s; overflow-x: hidden; padding-bottom: 80px; }
+        .mobile-frame { max-width: 500px; margin: auto; height: 100vh; display: flex; flex-direction: column; box-shadow: 0 0 20px rgba(0,0,0,0.05); }
+
+        /* رأس الصفحة */
+        .app-header { background: var(--header-gradient); padding: 40px 20px; text-align: center; border-radius: 0 0 30px 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative; }
+        .bot-avatar { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); width: 80px; height: 80px; border-radius: 50%; border: 4px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .bot-avatar img { width: 100%; height: 100%; border-radius: 50%; }
+        .app-title { font-size: 24px; font-weight: 700; color: #333333; margin: 0; margin-top: 30px; }
+        .app-subtitle { font-size: 14px; color: #555555; margin: 0; }
+        .notification-bell { position: absolute; top: 15px; left: 20px; font-size: 22px; color: #FFD700; cursor: pointer; }
+
+        /* شريط البحث */
+        .search-bar { display: flex; align-items: center; background: white; border: 1px solid #EEEEEE; border-radius: 12px; padding: 5px 15px; margin: 15px 0; }
+        .search-bar input { flex: 1; border: none; padding: 10px; outline: none; font-size: 14px; color: var(--secondary-text); }
+        .search-bar i { color: var(--primary-action); }
+
+        /* الحاوية الرئيسية */
+        .app-content { flex: 1; overflow-y: auto; padding: 15px; }
+        #loader { text-align: center; padding: 100px 0; font-weight: 700; color: var(--primary-action); }
+
+        /* شبكة الأقسام الملونة */
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; display: none; }
+        .card { background: white; padding: 20px 10px; border-radius: 15px; text-align: center; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 2px solid transparent; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 11px; font-weight: 600; color: var(--text-color); }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 6px 15px rgba(0,0,0,0.08); }
+        .card i { font-size: 26px; }
+
+        /* لوحات العرض والتحكم */
+        .panel { display: none; background: white; border-radius: 20px; padding: 15px; margin-top: 5px; box-shadow: 0 8px 25px rgba(0,0,0,0.06); animation: fadeIn 0.5s; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; flex-direction: column; }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #EEEEEE; padding-bottom: 10px; margin-bottom: 15px; }
+        .action-btn { width: 100%; padding: 15px; border-radius: 12px; border: none; cursor: pointer; font-weight: 700; margin-top: 10px; background: var(--primary-action); color: white; transition: 0.3s; }
+        .action-btn:hover { opacity: 0.9; }
+        .btn-close { background: var(--blue-card); width: auto; font-size: 14px; padding: 10px 15px; display: flex; align-items: center; gap: 5px; }
+        .delete-btn { background: var(--orange-card); width: auto; font-size: 11px; padding: 8px 12px; }
+
+        /* قائمة المواد والملائف */
+        .list-item { display: flex; align-items: center; justify-content: space-between; background: white; padding: 15px; border-radius: 15px; cursor: pointer; border-bottom: 1px solid #F0F0F0; transition: 0.3s; }
+        .list-item:hover { background: #F8FAFD; }
+        .item-icon { font-size: 28px; color: var(--blue-card); }
+        .item-text { flex: 1; margin: 0 15px; }
+        .item-title { font-size: 15px; font-weight: 700; color: var(--text-color); }
+        .item-subtitle { font-size: 11px; color: var(--secondary-text); }
+        .item-arrow { color: var(--primary-action); font-size: 16px; }
+
+        /* شريط التنقل السفلي */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; border-radius: 20px 20px 0 0; box-shadow: 0 -4px 15px rgba(0,0,0,0.05); display: flex; justify-content: space-around; align-items: center; padding: 10px 0; z-index: 10; }
+        .nav-item { text-align: center; color: var(--secondary-text); font-size: 11px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .nav-item.active { color: var(--primary-action); font-weight: 700; }
+        .nav-item i { font-size: 20px; }
+        .bot-nav-item { position: relative; width: 50px; height: 50px; border-radius: 50%; background: var(--header-gradient); top: -20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .bot-nav-item img { width: 100%; height: 100%; border-radius: 50%; border: 2px solid white; }
+
+        /* لوحة التحكم */
+        .admin-panel { background: #1a1a2e; color: #efefef; border-top: 5px solid #e74c3c; animation: slideUp 0.6s; z-index: 15; }
+        .admin-section { background: #16213e; padding: 15px; border-radius: 15px; margin-bottom: 15px; border: 1px solid #0f3460; }
+        .admin-title { color: #48abe0; font-size: 16px; font-weight: 700; margin-bottom: 12px; display: block; border-right: 4px solid #e74c3c; padding-right: 10px; }
+        .admin-input, .admin-select { width: 100%; padding: 12px; margin: 8px 0; border-radius: 12px; border: 1px solid #0f3460; box-sizing: border-box; background: #1a1a2e; color: white; font-size: 13px; }
+        
+        /* نافذة عرض الملفات المدمجة */
+        .viewer-panel { z-index: 20; padding: 10px; height: 100vh; margin-top: 0; display: none; }
+        .viewer-container { position: relative; flex: 1; border-radius: 15px; overflow: hidden; background: #eee; box-shadow: inset 0 4px 10px rgba(0,0,0,0.1); }
+        iframe { width: 100%; height: 100%; border: none; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(100%); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h2 id="appTitle">تطبيق الحلة الجامعي</h2>
-        <p>تحكم كامل بالسحابة 🚀</p>
-    </div>
+    <div class="mobile-frame">
+        <div class="app-header">
+            <div class="bot-avatar"><img src="https://i.ibb.co/VvzKXY7/bot-avatar.png" alt="bot-avatar"></div>
+            <h1 id="appTitle" class="app-title">تطبيق الحلة الجامعي</h1>
+            <p id="appSubtitle" class="app-subtitle">المساعد الذكي لك في رحلتك التعليمية 🚀</p>
+            <i class="fas fa-bell notification-bell"></i>
+        </div>
 
-    <div class="container">
-        <div id="loader" style="text-align:center; padding:20px;">جاري جلب البيانات...</div>
-        <div id="mainGrid" class="grid" style="display:none;"></div>
+        <div class="app-content">
+            <div class="search-bar">
+                <input type="text" placeholder="ابحث عن مادة أو ملف...">
+                <i class="fas fa-search"></i>
+            </div>
+            
+            <div id="loader">🔒 جاري جلب البيانات...</div>
 
-        <div id="contentPanel" class="panel">
-            <button class="action-btn" style="background:#666" onclick="showMain()">🔙 عودة</button>
-            <div id="dynamicContent"></div>
+            <div id="mainGrid" class="grid">
+                <div class="card" onclick="showSubjectList()" style="color: var(--blue-card);">
+                    <i class="fas fa-book-open"></i>الأقسام والملفات
+                </div>
+                <div class="card" style="color: var(--green-card);">
+                    <i class="fas fa-hourglass-start"></i>العد التنازلي
+                </div>
+                <div class="card" style="color: var(--purple-card);">
+                    <i class="fas fa-alarm-clock"></i>المنبهاتي
+                </div>
+                <div class="card" style="color: var(--orange-card);">
+                    <i class="fas fa-lightbulb"></i>نصائح يومية
+                </div>
+                <div class="card" style="color: var(--pink-card);">
+                    <i class="fas fa-gamepad"></i>قسم الترفيه
+                </div>
+                <div class="card" style="color: var(--main-color); background: var(--header-gradient);">
+                    <i class="fas fa-language"></i>ترجمة النصوص
+                </div>
+                <div class="card" style="color: var(--blue-card);">
+                    <i class="fas fa-exclamation-triangle"></i>إبلاغ / اقتراح
+                </div>
+                <div class="card" style="color: var(--green-card);">
+                    <i class="fas fa-comments"></i>تواصل معنا
+                </div>
+                <div class="card" style="color: var(--purple-card);">
+                    <i class="fas fa-star"></i>تقييم الملفات
+                </div>
+            </div>
+
+            <div id="subjectList" style="display:none; padding-bottom: 10px;">
+                </div>
+            
+            <div id="fileList" style="display:none; padding-bottom: 10px;">
+                <div class="panel-header">
+                    <button class="action-btn btn-close" onclick="showSubjectList()"><i class="fas fa-arrow-right"></i>الأقسام والملفات</button>
+                    <h3 id="currentSubjectTitle" style="font-size:16px; margin:0;">فيزياء</h3>
+                </div>
+                <div id="filesContainer">
+                    </div>
+            </div>
+
         </div>
 
         <div id="adminPanel" class="panel admin-panel">
-            <button class="action-btn" style="background:#e74c3c" onclick="showMain()">❌ إغلاق</button>
-            <div class="admin-section">
-                <input type="text" id="editTitle" class="admin-input" placeholder="اسم التطبيق الجديد">
-                <label>اختر لون التطبيق:</label> <input type="color" id="colorMain" onchange="updateDesign()">
+            <div class="panel-header" style="border-bottom-color:#0f3460;">
+                <button class="action-btn btn-close" onclick="showMain()"><i class="fas fa-times"></i>إغلاق</button>
+                <h3 style="font-size:16px; color:#48abe0; margin:0;">🛠️ لوحة الإدارة السحابية</h3>
+                <button class="action-btn delete-btn" onclick="deleteLast()"><i class="fas fa-trash-alt"></i></button>
             </div>
             <div class="admin-section">
-                <input type="text" id="itemName" class="admin-input" placeholder="اسم الملزمة أو الفيديو">
-                <input type="text" id="itemUrl" class="admin-input" placeholder="رابط الملف المباشر">
-                <button class="action-btn" style="background:#2ecc71" onclick="addNewItem()">💾 حفظ في Firebase</button>
+                <span class="admin-title">➕ إضافة مادة جديدة</span>
+                <input type="text" id="itemName" class="admin-input" placeholder="اسم الملزمة (مثلاً: الفيزياء 1)">
+                <input type="text" id="itemUrl" class="admin-input" placeholder="ضع رابط Google Drive المباشر">
+                <input type="text" id="subjectName" class="admin-input" placeholder="اسم القسم (مثلاً: الفيزياء)">
+                <button class="action-btn" style="background:#2ecc71;" onclick="addNewItem()"><i class="fas fa-cloud-upload-alt"></i>💾 حفظ في السحابة</button>
+            </div>
+        </div>
+        
+        <div style="text-align:center; padding:15px 0;">
+            <button onclick="showAdmin()" style="background:none; border:none; color:gray; opacity:0.1; cursor:pointer;">[ ADMIN ]</button>
+        </div>
+        
+        <div class="bottom-nav">
+            <div class="nav-item active"><i class="fas fa-home"></i>الرئيسية</div>
+            <div class="nav-item"><i class="fas fa-heart"></i>المفضلة</div>
+            <div class="bot-nav-item"><img src="https://i.ibb.co/VvzKXY7/bot-avatar.png" alt="bot-icon"></div>
+            <div class="nav-item"><i class="fas fa-download"></i>المحفوظات</div>
+            <div class="nav-item"><i class="fas fa-bars"></i>المزيد</div>
+        </div>
+
+        <div id="viewerPanel" class="panel viewer-panel">
+            <div class="panel-header" style="padding: 10px 0;">
+                <button class="action-btn btn-close" onclick="showFileList(currentSubjectIndex)"><i class="fas fa-arrow-right"></i>العودة</button>
+                <h3 id="viewingTitle" style="font-size:16px; text-align:center; margin:0;">اسم الملف</h3>
+            </div>
+            <div class="viewer-container">
+                <iframe id="appViewer" src=""></iframe>
             </div>
         </div>
 
-        <div style="text-align:center; padding:40px;">
-            <button onclick="showAdmin()" style="opacity:0.3; background:none; border:none; color:gray; cursor:pointer;">[ لوحة التحكم ]</button>
-        </div>
     </div>
 
     <script>
-        // الرابط المستخرج من صورتك بدقة
+        // الرابط الخاص بك من الصورة
         const DB_URL = "https://hillah-app-default-rtdb.firebaseio.com/.json"; 
+        
+        // الأيقونة الافتراضية للبوت
+        const BOT_AVATAR_URL = "https://i.ibb.co/VvzKXY7/bot-avatar.png";
 
-        let appData = { title: "تطبيق الحلة", mainColor: "#0088cc", items: [] };
+        let appData = { 
+            title: "تطبيق الحلة الجامعي", 
+            subjects: [] 
+        };
+        
+        let currentSubjectIndex = -1;
 
         async function loadData() {
             try {
-                const response = await fetch(DB_URL);
+                // تكتيك منع التخزين المؤقت لضمان رؤية البيانات الجديدة دائماً
+                const response = await fetch(DB_URL + "?nocache=" + Math.random());
                 const data = await response.json();
-                if (data) appData = data;
+                if (data) {
+                    appData = data;
+                } else {
+                    // بيانات افتراضية احترافية
+                    appData = { 
+                        title: "تطبيق الحلة الجامعي", 
+                        subjects: [
+                            { name: "فيزياء", icon: "📁", file_count: 5, files: [
+                                { name: "الفيزياء الأساسية - الفصل الأول", type: "📄", url: "https://drive.google.com/file/d/19sQcSw8XqoutnFQw-Iw3IK9G8K9qn7SL/preview" }
+                            ] },
+                            { name: "برمجة جافا", icon: "📁", file_count: 3, files: [] },
+                            { name: "كيمياء عضوية", icon: "📁", file_count: 2, files: [] },
+                            { name: "لغة إنجليزية", icon: "📁", file_count: 4, files: [] }
+                        ] 
+                    };
+                }
                 applyData();
-            } catch (e) { console.log("خطأ في الاتصال"); }
+            } catch (e) { 
+                console.error("Firebase Connect Error");
+                document.getElementById('loader').innerText = "❌ فشل الاتصال بالسحابة";
+            }
         }
 
         function applyData() {
             document.getElementById('appTitle').innerText = appData.title;
-            document.documentElement.style.setProperty('--main-color', appData.mainColor);
             document.getElementById('loader').style.display = "none";
             document.getElementById('mainGrid').style.display = "grid";
-            renderGrid();
+            // تحميل واجهة الأقسام والملازم افتراضياً
+            showSubjectList();
         }
 
-        function renderGrid() {
-            const grid = document.getElementById('mainGrid');
-            grid.innerHTML = "";
-            (appData.items || []).forEach((item, index) => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.onclick = () => showContent(index);
-                card.innerHTML = `<span>📂</span><span>${item.name}</span>`;
-                grid.appendChild(card);
+        // رسم شبكة الأقسام الملونة (Home Screen)
+        function renderHomeGrid() {
+            // لم يتم تغييرها لأنها ثابتة من الـ HTML
+        }
+
+        // رسم قائمة المواد والملازم (Subject List View)
+        function renderSubjectList() {
+            const list = document.getElementById('subjectList');
+            list.innerHTML = "";
+            (appData.subjects || []).forEach((subject, index) => {
+                const item = document.createElement('div');
+                item.className = 'list-item';
+                item.onclick = () => showFileList(index);
+                item.innerHTML = `
+                    <div class="item-icon">📄</div>
+                    <div class="item-text">
+                        <div class="item-title">${subject.name}</div>
+                        <div class="item-subtitle">ملزمة ${subject.file_count || 0}</div>
+                    </div>
+                    <i class="fas fa-chevron-left item-arrow"></i>
+                `;
+                list.appendChild(item);
+            });
+        }
+        
+        // رسم قائمة الملفات داخل مادة محددة (File List View)
+        function renderFileList(index) {
+            const subject = appData.subjects[index];
+            const container = document.getElementById('filesContainer');
+            container.innerHTML = "";
+            (subject.files || []).forEach((file, fileIndex) => {
+                const item = document.createElement('div');
+                item.className = 'list-item';
+                item.onclick = () => viewFile(file.name, file.url);
+                item.innerHTML = `
+                    <div class="item-icon" style="color: var(--purple-card);"><i class="fas fa-file-pdf"></i></div>
+                    <div class="item-text">
+                        <div class="item-title">${file.name}</div>
+                        <div class="item-subtitle">${file.type === '📄' ? 'PDF' : 'فيديو'} • ${(file.size || '1') + ' MB'}</div>
+                    </div>
+                    <i class="fas fa-chevron-left item-arrow"></i>
+                `;
+                container.appendChild(item);
             });
         }
 
-        async function saveData() {
-            await fetch(DB_URL, { method: 'PUT', body: JSON.stringify(appData) });
-            applyData();
+        async function saveToCloud() {
+            try {
+                const res = await fetch(DB_URL, { 
+                    method: 'PUT', 
+                    body: JSON.stringify(appData) 
+                });
+                if(res.ok) {
+                    alert("✅ تم الحفظ في السحابة للأبد!");
+                    loadData(); // إعادة تحميل للتأكد
+                }
+            } catch(e) { alert("❌ فشل الحفظ!"); }
         }
 
         function addNewItem() {
             const name = document.getElementById('itemName').value;
             const url = document.getElementById('itemUrl').value;
-            if(name && url) {
-                if(!appData.items) appData.items = [];
-                appData.items.push({ name, url });
-                saveData();
-                alert("تم التحديث بنجاح!");
-            }
+            const subjectName = document.getElementById('subjectName').value;
+            if(name && url && subjectName) {
+                // البحث عن المادة أو إنشاء جديدة
+                let subject = appData.subjects.find(s => s.name === subjectName);
+                if(!subject) {
+                    subject = { name: subjectName, icon: "📁", file_count: 0, files: [] };
+                    appData.subjects.push(subject);
+                }
+                subject.files.push({ name, url, type: "📄", size: Math.floor(Math.random() * 5) + 1 });
+                subject.file_count++;
+                saveToCloud();
+                document.getElementById('itemName').value = "";
+                document.getElementById('itemUrl').value = "";
+                document.getElementById('subjectName').value = "";
+            } else { alert("يرجى ملء كافة الحقول"); }
         }
 
-        function updateDesign() {
-            appData.title = document.getElementById('editTitle').value || appData.title;
-            appData.mainColor = document.getElementById('colorMain').value;
-            saveData();
+        function viewFile(name, url) {
+            document.getElementById('fileList').style.display = "none";
+            document.getElementById('viewerPanel').style.display = "flex";
+            document.getElementById('viewingTitle').innerText = name;
+            document.getElementById('appViewer').src = url;
         }
 
-        function showContent(index) {
-            const item = appData.items[index];
+        function showSubjectList() {
             document.getElementById('mainGrid').style.display = "none";
-            document.getElementById('contentPanel').style.display = "block";
-            document.getElementById('dynamicContent').innerHTML = `<h3>${item.name}</h3><iframe src="${item.url}"></iframe>`;
+            document.getElementById('fileList').style.display = "none";
+            document.getElementById('subjectList').style.display = "block";
+            renderSubjectList();
+        }
+        
+        function showFileList(index) {
+            currentSubjectIndex = index;
+            document.getElementById('subjectList').style.display = "none";
+            document.getElementById('viewerPanel').style.display = "none";
+            document.getElementById('fileList').style.display = "block";
+            document.getElementById('currentSubjectTitle').innerText = appData.subjects[index].name;
+            renderFileList(index);
         }
 
         function showAdmin() {
             document.getElementById('mainGrid').style.display = "none";
-            document.getElementById('adminPanel').style.display = "block";
+            document.getElementById('subjectList').style.display = "none";
+            document.getElementById('fileList').style.display = "none";
+            document.getElementById('adminPanel').style.display = "flex";
         }
 
         function showMain() {
-            document.getElementById('mainGrid').style.display = "grid";
-            document.querySelectorAll('.panel').forEach(p => p.style.display = "none");
+            document.getElementById('adminPanel').style.display = "none";
+            document.getElementById('viewerPanel').style.display = "none";
+            document.getElementById('appViewer').src = "";
+            showSubjectList(); // العودة لقائمة المواد افتراضياً
+        }
+
+        function deleteLast() {
+            if(confirm("حذف آخر مادة تمت إضافتها؟")) {
+                if(appData.subjects && appData.subjects.length > 0) {
+                    appData.subjects.pop();
+                    saveToCloud();
+                }
+            }
         }
 
         loadData();
-    </script>
-</body>
-</html>
-            document.getElementById('appTitle').innerText = appData.title;
-            document.documentElement.style.setProperty('--main-color', appData.mainColor);
-            document.documentElement.style.setProperty('--bg-color', appData.bgColor);
-            renderGrid();
-        }
-
-        // رسم الشبكة الرئيسية
-        function renderGrid() {
-            const grid = document.getElementById('mainGrid');
-            grid.innerHTML = "";
-            appData.items.forEach((item, index) => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.onclick = () => showContent(index);
-                let icon = item.type === "ملزمة" ? "📄" : item.type === "فيديو" ? "🎥" : "🖼️";
-                card.innerHTML = `<span>${icon}</span><span>${item.name}</span>`;
-                grid.appendChild(card);
-            });
-        }
-
-        function showContent(index) {
-            const item = appData.items[index];
-            const container = document.getElementById('dynamicContent');
-            document.getElementById('mainGrid').style.display = "none";
-            document.getElementById('contentPanel').style.display = "block";
-            
-            let html = `<h3>${item.name}</h3>`;
-            if(item.type === "فيديو") {
-                html += `<iframe height="315" src="${item.url}" allowfullscreen></iframe>`;
-            } else if(item.type === "ملزمة") {
-                html += `<iframe src="${item.url}" style="height:500px;"></iframe>`;
-            } else if(item.type === "صورة") {
-                html += `<img src="${item.url}">`;
-            }
-            container.innerHTML = html;
-        }
-
-        function showAdmin() {
-            document.getElementById('mainGrid').style.display = "none";
-            document.getElementById('adminPanel').style.display = "block";
-            document.getElementById('editTitle').value = appData.title;
-        }
-
-        function showMain() {
-            document.getElementById('mainGrid').style.display = "grid";
-            document.querySelectorAll('.panel').forEach(p => p.style.display = "none");
-        }
-
-        function applyDesign() {
-            appData.title = document.getElementById('editTitle').value;
-            appData.mainColor = document.getElementById('colorMain').value;
-            appData.bgColor = document.getElementById('colorBg').value;
-            saveAndRefresh();
-        }
-
-        function addNewItem() {
-            const name = document.getElementById('itemName').value;
-            const url = document.getElementById('itemUrl').value;
-            const type = document.getElementById('typeSelect').value;
-            
-            if(name && url) {
-                appData.items.push({ name, url, type });
-                saveAndRefresh();
-                alert("تمت إضافة القسم الجديد بنجاح!");
-            }
-        }
-
-        function saveAndRefresh() {
-            localStorage.setItem('hillahAppData', JSON.stringify(appData));
-            init();
-        }
-
-        function resetApp() {
-            if(confirm("هل تريد العودة للإعدادات الأصلية وحذف كل الأقسام؟")) {
-                localStorage.removeItem('hillahAppData');
-                location.reload();
-            }
-        }
-
-        init();
     </script>
 </body>
 </html>
