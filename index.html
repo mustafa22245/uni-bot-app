@@ -28,7 +28,6 @@
         #onboarding { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 10000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 30px; }
         .in-box { width: 100%; padding: 14px; margin-bottom: 10px; border-radius: 12px; border: 1px solid var(--border); font-family: 'Cairo'; background: #f8fafc; color: #333; }
         .btn-main { width: 100%; padding: 16px; background: var(--primary); color: #fff; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; }
-        .btn-main:active { transform: scale(0.98); opacity: 0.8; }
 
         /* القائمة الجانبية */
         .sidebar { position: fixed; right: -100%; top: 0; width: 85%; max-width: 310px; height: 100%; background: var(--card); z-index: 2000; transition: 0.4s; padding: 25px; box-sizing: border-box; overflow-y: auto; }
@@ -45,22 +44,11 @@
         .page { display: none; padding: 20px 20px 120px; animation: fadeIn 0.4s; box-sizing: border-box; min-height: 100vh; }
         .page.active { display: block; }
 
-        /* الأزرار الرئيسية */
-        .grid-home { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
-        .item-card { background: var(--card); border-radius: 15px; padding: 15px 5px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.02); cursor: pointer; font-size: 11px; font-weight: 700; }
-        .item-card i { font-size: 24px; margin-bottom: 8px; display: block; color: var(--primary); }
-
-        /* الملفات */
-        .file-row { background: var(--card); border-radius: 15px; padding: 12px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); }
-        .file-info { display: flex; align-items: center; gap: 10px; flex: 1; cursor: pointer; }
-        .heart { font-size: 20px; color: #ddd; cursor: pointer; padding: 5px; }
-        .heart.active { color: #ef4444; }
-
         /* الشات */
         .chat-container { height: 62vh; background: var(--card); border-radius: 20px; border: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
         #chat-stream { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth; }
         
-        .msg-wrap { display: flex; align-items: flex-end; gap: 8px; max-width: 85%; }
+        .msg-wrap { display: flex; align-items: flex-end; gap: 8px; max-width: 85%; animation: msgSlide 0.3s; }
         .msg-wrap.me { align-self: flex-start; }
         .msg-wrap.other { align-self: flex-end; flex-direction: row-reverse; }
         
@@ -71,7 +59,7 @@
 
         /* قائمة الرسالة */
         .msg-popup { position: fixed; background: white; border-radius: 10px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); display: none; z-index: 5000; padding: 5px; min-width: 140px; border: 1px solid #eee; }
-        .pop-item { padding: 12px; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 10px; border-radius: 8px; }
+        .pop-item { padding: 12px; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 10px; border-radius: 8px; color: #333; }
         .pop-item:hover { background: #f1f5f9; }
 
         /* بروفايل الآخرين */
@@ -85,6 +73,7 @@
 
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1500; backdrop-filter: blur(3px); }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes msgSlide { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
     </style>
 </head>
@@ -109,12 +98,12 @@
     </div>
 
     <div id="user-modal" class="modal-user">
-        <i class="fas fa-times" onclick="closeUserModal()" style="font-size: 24px; cursor: pointer;"></i>
+        <i class="fas fa-times" onclick="closeUserModal()" style="font-size: 24px; cursor: pointer; color: var(--primary);"></i>
         <div style="text-align: center; margin-top: 40px;">
             <img id="m-pfp" src="" style="width: 110px; height: 110px; border-radius: 50%; border: 4px solid var(--primary); object-fit: cover;">
             <h2 id="m-name" style="margin: 10px 0;"></h2>
             <span id="m-user" style="color: var(--primary); font-weight: bold;"></span>
-            <div style="margin-top: 25px; background: #f8fafc; padding: 20px; border-radius: 20px; text-align: right; box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);">
+            <div style="margin-top: 25px; background: #f8fafc; padding: 20px; border-radius: 20px; text-align: right;">
                 <b>الجامعة:</b> <span id="m-uni"></span><br>
                 <b>المرحلة:</b> <span id="m-lvl"></span><br>
                 <b>العمر:</b> <span id="m-age"></span>
@@ -145,7 +134,7 @@
             <h2 id="welcome-name">...</h2>
         </div>
         <div style="padding: 20px;">
-            <div class="grid-home">
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px;">
                 <div class="item-card" onclick="nav('subjects')"><i class="fas fa-graduation-cap"></i>مواد الفاينل</div>
                 <div class="item-card"><i class="fas fa-clock"></i>العد التنازلي</div>
                 <div class="item-card"><i class="fas fa-stopwatch"></i>منبهاتي</div>
@@ -228,14 +217,14 @@
         let user = JSON.parse(localStorage.getItem('userProfile'));
         let favs = JSON.parse(localStorage.getItem('favs')) || [];
         let selTxt = "";
-        let chatInterval;
+        let lastMsgCount = 0;
 
         window.onload = () => {
             if(!user) document.getElementById('onboarding').style.display = 'flex';
             else { 
                 updateUI(); 
                 loadFiles(); 
-                chatInterval = setInterval(loadChat, 1000); // تحديث حقيقي كل ثانية
+                setInterval(loadChat, 1000); // تحديث كل ثانية
             }
         };
 
@@ -285,26 +274,35 @@
             location.reload();
         }
 
-        // إرسال الرسائل
+        // إرسال الرسائل (إصلاح مشكلة الاختفاء)
         async function sendMsg() {
-            const i = document.getElementById('chat-in');
+            const input = document.getElementById('chat-in');
             const btn = document.getElementById('send-btn');
-            if(!i.value || btn.disabled) return;
+            const text = input.value.trim();
+            if(!text || btn.disabled) return;
             
-            btn.disabled = true; // منع الإرسال المتكرر
-            const m = { uid: user.id, name: user.name, pfp: user.pfp, text: i.value, time: Date.now() };
+            btn.disabled = true;
+            const msg = { uid: user.id, name: user.name, pfp: user.pfp, text: text, time: Date.now() };
             
+            // إضافة محليه فورية لمنع الاختفاء
+            const stream = document.getElementById('chat-stream');
+            const localMsg = `
+                <div class="msg-wrap me">
+                    <img src="${user.pfp}" class="msg-pfp">
+                    <div class="msg-txt"><b>${user.name}</b>${text}</div>
+                </div>`;
+            stream.innerHTML += localMsg;
+            stream.scrollTop = stream.scrollHeight;
+            input.value = "";
+
             try {
-                await fetch(FB + "global_chat.json", { method: 'POST', body: JSON.stringify(m) });
-                i.value = "";
-                loadChat();
+                await fetch(FB + "global_chat.json", { method: 'POST', body: JSON.stringify(msg) });
             } finally {
                 btn.disabled = false;
+                loadChat();
             }
         }
 
-        // تحميل الشات (معدل لمنع الوميض)
-        let lastMsgCount = 0;
         async function loadChat() {
             try {
                 const res = await fetch(FB + "global_chat.json");
@@ -312,7 +310,7 @@
                 if(!data) return;
                 
                 const keys = Object.keys(data);
-                if(keys.length === lastMsgCount) return; // لا يوجد جديد
+                if(keys.length === lastMsgCount) return;
 
                 const stream = document.getElementById('chat-stream');
                 stream.innerHTML = "";
@@ -333,28 +331,31 @@
             } catch(e) {}
         }
 
-        // البحث اللحظي
         async function liveSearch() {
-            const q = document.getElementById('user-search').value.toLowerCase();
+            const q = document.getElementById('user-search').value.toLowerCase().trim();
             const resBox = document.getElementById('search-results');
             if(q.length < 1) { resBox.innerHTML = ""; return; }
             
-            const res = await fetch(FB + "users.json");
-            const all = await res.json();
-            resBox.innerHTML = "";
-            for(let id in all) {
-                const u = all[id];
-                if(u.username.includes(q) || u.name.toLowerCase().includes(q)) {
-                    resBox.innerHTML += `
-                        <div class="file-row" onclick="viewUser('${u.id}')" style="cursor:pointer;">
-                            <div class="file-info">
-                                <img src="${u.pfp}" style="width:45px; height:45px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">
-                                <div><b>${u.name}</b><br><small style="color:var(--primary);">@${u.username}</small></div>
-                            </div>
-                            <i class="fas fa-chevron-left" style="opacity:0.3;"></i>
-                        </div>`;
-                }
-            }
+            try {
+                const res = await fetch(FB + "users.json");
+                const all = await res.json();
+                resBox.innerHTML = "";
+                if(!all) return;
+                
+                Object.keys(all).forEach(id => {
+                    const u = all[id];
+                    if(u.username.includes(q) || u.name.toLowerCase().includes(q)) {
+                        resBox.innerHTML += `
+                            <div class="file-row" onclick="viewUser('${u.id}')" style="cursor:pointer;">
+                                <div class="file-info">
+                                    <img src="${u.pfp}" style="width:45px; height:45px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">
+                                    <div><b>${u.name}</b><br><small style="color:var(--primary);">@${u.username}</small></div>
+                                </div>
+                                <i class="fas fa-chevron-left" style="opacity:0.3;"></i>
+                            </div>`;
+                    }
+                });
+            } catch(e) {}
         }
 
         async function viewUser(uid) {
@@ -371,13 +372,10 @@
 
         function closeUserModal() { document.getElementById('user-modal').style.display = "none"; }
 
-        // المواد والمفضلة
         function loadFiles() {
             const list = document.getElementById('files-list');
             const flist = document.getElementById('fav-list');
-            const data = [
-                { cat: "اللغة العربية", files: [{ id: "n_1", name: "ملزمة النحو الشاملة", url: "https://drive.google.com/file/d/1Vl9sP1Lh5oRS6Wrg-F5gJ9s7OQCRNIpl/view" }] }
-            ];
+            const data = [{ cat: "اللغة العربية", files: [{ id: "n_1", name: "ملزمة النحو الشاملة", url: "https://drive.google.com/file/d/1Vl9sP1Lh5oRS6Wrg-F5gJ9s7OQCRNIpl/view" }] }];
             list.innerHTML = ""; flist.innerHTML = "";
             data.forEach(s => {
                 let h = `<h4 style="margin:20px 0 10px; color:var(--primary); padding-right:10px; border-right:4px solid var(--primary);">📂 ${s.cat}</h4>`;
@@ -407,7 +405,6 @@
             loadFiles();
         }
 
-        // قائمة الرسالة
         function showPop(e, text) {
             selTxt = text;
             const pop = document.getElementById('msg-pop');
@@ -417,10 +414,9 @@
         }
         document.onclick = () => { if(document.getElementById('msg-pop')) document.getElementById('msg-pop').style.display = "none"; };
 
-        function copyText() { navigator.clipboard.writeText(selTxt); alert("تم النسخ إلى الحافظة!"); }
-        function reply() { document.getElementById('chat-in').value = `الرد على: (${selTxt}) -> `; document.getElementById('chat-in').focus(); }
+        function copyText() { navigator.clipboard.writeText(selTxt); alert("تم النسخ!"); }
+        function reply() { document.getElementById('chat-in').value = `الرد على: (${selTxt}) -> `; document.getElementById('chat-input').focus(); }
 
-        // تنقل
         function nav(p) {
             document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active'));
             document.getElementById(p + '-page').classList.add('active');
