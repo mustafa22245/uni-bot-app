@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>المساعد الأكاديمي - لوحة التحكم 🎓</title>
+    <title>المساعد الأكاديمي - النسخة الاحترافية 🎓</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
@@ -24,9 +24,10 @@
         body { 
             font-family: 'Cairo', sans-serif; background: var(--bg); color: var(--text); 
             margin: 0; padding: 0; transition: 0.3s; overflow-x: hidden;
+            user-select: none; -webkit-user-select: none;
         }
 
-        /* القائمة الجانبية */
+        /* Sidebar */
         .sidebar { position: fixed; right: -100%; top: 0; width: 85%; max-width: 300px; height: 100%; background: var(--card); z-index: 2000; transition: 0.4s; box-shadow: -10px 0 30px rgba(0,0,0,0.1); padding: 25px; box-sizing: border-box; }
         .sidebar.active { right: 0; }
         .side-profile { text-align: center; margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
@@ -35,40 +36,38 @@
         .side-item:hover { background: rgba(77, 149, 255, 0.1); }
         .side-item i { color: var(--primary); width: 25px; }
 
-        /* الهيدر */
+        /* Header */
         .app-header { background: var(--header-grad); padding: 50px 20px 30px; text-align: center; position: relative; }
         .menu-icon { position: absolute; right: 20px; top: 25px; font-size: 24px; cursor: pointer; }
         .app-logo { width: 100px; height: 100px; background: white; border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; }
         .app-logo img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* البحث */
+        /* Search */
         .search-wrap { padding: 0 20px; margin-top: -25px; position: relative; z-index: 100; }
         .search-box { background: var(--card); border-radius: 15px; padding: 12px 20px; display: flex; align-items: center; box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
         .search-box input { flex: 1; border: none; background: transparent; outline: none; font-family: 'Cairo'; color: var(--text); width: 100%; }
 
-        /* الصفحات */
+        /* Pages */
         .page { display: none; padding: 20px; padding-bottom: 120px; animation: fadeIn 0.4s; box-sizing: border-box; min-height: 80vh; }
         .page.active { display: block; }
         .main-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 30px; }
         .card-btn { background: var(--card); border-radius: 20px; padding: 20px 5px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.03); cursor: pointer; font-size: 11px; font-weight: 700; transition: 0.2s; }
         .card-btn i { font-size: 26px; margin-bottom: 8px; display: block; }
 
-        /* القوائم */
-        .list-item { background: var(--card); border-radius: 15px; padding: 15px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
-        .item-info { display: flex; align-items: center; gap: 12px; flex: 1; }
-
-        /* الشريط السفلي */
+        /* Navigation bar */
         .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--card); display: flex; justify-content: space-around; padding: 10px 0; border-radius: 25px 25px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); z-index: 1000; }
         .nav-btn { text-align: center; color: var(--gray); font-size: 10px; cursor: pointer; flex: 1; transition: 0.3s; }
         .nav-btn.active { color: var(--primary); font-weight: 700; }
         .nav-btn i { font-size: 22px; display: block; margin-bottom: 3px; }
 
-        /* لوحة التحكم الجديدة */
+        /* Admin/Grand Control */
         .admin-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--card); z-index: 5000; display: none; padding: 25px; box-sizing: border-box; overflow-y: auto; }
         .admin-section { background: var(--bg); padding: 15px; border-radius: 15px; margin-bottom: 20px; border: 1px solid var(--border); }
         .admin-input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 10px; font-family: 'Cairo'; background: #fff; color: #333; box-sizing: border-box; }
         .admin-action { width: 100%; padding: 15px; border-radius: 12px; border: none; background: var(--primary); color: white; font-weight: 700; margin-bottom: 10px; cursor: pointer; }
-        .danger-btn { background: #ef4444 !important; }
+
+        /* Viewer */
+        .viewer-frame { width: 100%; height: 80vh; border: none; border-radius: 15px; background: #fff; }
 
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1500; backdrop-filter: blur(4px); }
         
@@ -85,16 +84,11 @@
             <h3 id="sideName" style="margin:10px 0 5px;">مصطفى مهند</h3>
             <span style="color:var(--primary); font-size:12px; font-weight:bold;">@M3y4_p</span>
         </div>
-        
         <div class="side-item" onclick="accessAdmin()" style="background: rgba(77, 149, 255, 0.1); border: 1px solid var(--primary);">
-            <span><i class="fas fa-user-shield"></i> لوحة التحكم (Admin)</span>
-            <i class="fas fa-lock" style="font-size: 12px; opacity: 0.5;"></i>
+            <span><i class="fas fa-user-shield"></i> لوحة التحكم الكبرى</span>
         </div>
-
-        <div class="side-item"><span><i class="fas fa-cog"></i> الإعدادات</span></div>
         <div class="side-item" onclick="toggleDark()"><span><i class="fas fa-moon"></i> الوضع الليلي</span></div>
-        <div class="side-item"><span><i class="fas fa-bell"></i> الإشعارات</span></div>
-        <div class="side-item"><span><i class="fas fa-info-circle"></i> من نحن</span></div>
+        <div class="side-item"><span><i class="fas fa-language"></i> اللغة (العربية)</span></div>
         <div class="side-item" style="color:#ef4444; margin-top:20px;" onclick="location.reload()"><span><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</span></div>
     </div>
 
@@ -103,7 +97,7 @@
             <i class="fas fa-bars menu-icon" onclick="toggleSide()"></i>
             <div class="app-logo"><img id="appLogoImg" src="https://i.ibb.co/VvzKXY7/bot-avatar.png"></div>
             <h2 id="appTitleText" style="margin:0;">المساعد الأكاديمي</h2>
-            <p id="appSubtitleText" style="opacity:0.7; font-size:12px;">مساعدك الدراسي الذكي في رحلتك التعليمية</p>
+            <p id="appSubtitleText" style="opacity:0.7; font-size:12px;">مساعدك الأكاديمي الذكي</p>
         </div>
 
         <div class="search-wrap">
@@ -119,7 +113,7 @@
             <div class="card-btn" style="color:#a855f7;"><i class="fas fa-stopwatch"></i><span>منبهاتي</span></div>
             <div class="card-btn" style="color:#f59e0b;"><i class="fas fa-lightbulb"></i><span>نصائح</span></div>
             <div class="card-btn" style="color:#ec4899;"><i class="fas fa-gamepad"></i><span>ترفيه</span></div>
-            <div class="card-btn" style="color:#3b82f6;"><i class="fas fa-language"></i><span>ترجمة</span></div>
+            <div class="card-btn" onclick="nav('translate')" style="color:#3b82f6;"><i class="fas fa-language"></i><span>ترجمة</span></div>
         </div>
     </div>
 
@@ -131,13 +125,21 @@
         <div id="subjectsList"></div>
     </div>
 
-    <div id="favorites-page" class="page"><h2>⭐️ المفضلة</h2><div id="favoritesList"></div></div>
+    <div id="translate-page" class="page">
+        <div style="display:flex; align-items:center; gap:15px; margin-bottom:20px;">
+            <i class="fas fa-arrow-right" onclick="nav('home')" style="font-size:20px; cursor:pointer;"></i>
+            <h2 style="margin:0;">الترجمة الفورية</h2>
+        </div>
+        <iframe src="https://translate.google.com/?sl=en&tl=ar&op=translate" class="viewer-frame"></iframe>
+    </div>
+
+    <div id="favorites-page" class="page"><h2>⭐ المفضلة</h2><div id="favoritesList"></div></div>
     <div id="recent-page" class="page"><h2>🕒 المحفوظات</h2><div id="recentList"></div></div>
-    <div id="more-page" class="page"><h2>🔍 المزيد والبحث</h2><div id="searchResultList"></div></div>
+    <div id="more-page" class="page"><h2>🔍 نتائج البحث</h2><div id="searchResultList"></div></div>
 
     <div id="admin-page" class="admin-page">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <h2 style="margin:0;">🛠 لوحة التحكم الكبرى</h2>
+            <h2>🛠 لوحة التحكم الكبرى</h2>
             <i class="fas fa-times" onclick="closeAdmin()" style="font-size:24px; cursor:pointer;"></i>
         </div>
         
@@ -151,11 +153,10 @@
         <div class="admin-section">
             <h4>📂 إدارة المحتوى السحابي</h4>
             <input type="text" id="admSubName" class="admin-input" placeholder="اسم القسم (مثلاً: الفيزياء)">
-            <input type="text" id="admFileName" class="admin-input" placeholder="اسم الملف">
-            <input type="text" id="admFileUrl" class="admin-input" placeholder="رابط الملف المباشر">
+            <input type="text" id="admFileName" class="admin-input" placeholder="اسم الملزمة">
+            <input type="text" id="admFileUrl" class="admin-input" placeholder="رابط الملف (Preview)">
             <button class="admin-action" onclick="addFullContent()" style="background:#2ecc71;">حفظ في السحابة</button>
             <hr style="opacity:0.2; margin:15px 0;">
-            <h5>قائمة الأقسام الحالية (للحذف أو التعديل):</h5>
             <div id="admSubjectsList"></div>
         </div>
     </div>
@@ -169,16 +170,16 @@
 
     <script>
         const DB_URL = "https://hillah-app-default-rtdb.firebaseio.com/.json";
-        const ADMIN_PASS = "2004@@##mklL"; // الرمز السري الخاص بك
+        const PASS = "2004@@##mklL";
 
         let appData = { subjects: [], config: { title: "المساعد الأكاديمي", logo: "https://i.ibb.co/VvzKXY7/bot-avatar.png" } };
 
-        // جلب البيانات عند التشغيل
         async function load() {
             try {
                 const r = await fetch(DB_URL + "?t=" + Date.now());
                 const d = await r.json();
                 if(d) appData = d;
+                if(!appData.subjects) appData.subjects = [];
                 syncUI();
             } catch(e) { console.log("Error loading"); }
         }
@@ -191,45 +192,48 @@
             renderAdminSubjects();
         }
 
-        // صلاحية لوحة التحكم
+        function nav(p) {
+            document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active'));
+            document.getElementById(p + '-page').classList.add('active');
+            toggleSide(true);
+        }
+
         function accessAdmin() {
-            const pass = prompt("أدخل الرمز السري للدخول إلى لوحة التحكم:");
-            if(pass === ADMIN_PASS) {
-                document.getElementById('admin-page').style.display = "block";
-                toggleSide();
-            } else {
-                alert("الرمز السري غير صحيح!");
-            }
+            if(prompt("أدخل الرمز السري:") === PASS) document.getElementById('admin-page').style.display = "block";
         }
 
         function closeAdmin() { document.getElementById('admin-page').style.display = "none"; }
 
-        // إضافة محتوى سحابي
+        // إضافة مادة وقسم
         async function addFullContent() {
-            const subName = document.getElementById('admSubName').value;
-            const fileName = document.getElementById('admFileName').value;
-            const fileUrl = document.getElementById('admFileUrl').value;
+            const sub = document.getElementById('admSubName').value;
+            const file = document.getElementById('admFileName').value;
+            const url = document.getElementById('admFileUrl').value;
 
-            if(!subName || !fileName || !fileUrl) return alert("يرجى ملء كافة الحقول");
+            if(!sub || !file || !url) return alert("امسح الحقول أولاً!");
 
-            let subject = appData.subjects.find(s => s.name === subName);
-            if(!subject) {
-                subject = { name: subName, files: [] };
-                appData.subjects.push(subject);
+            if(!appData.subjects) appData.subjects = [];
+            let target = appData.subjects.find(s => s.name === sub);
+            if(!target) {
+                target = { name: sub, files: [] };
+                appData.subjects.push(target);
             }
-            subject.files.push({ name: fileName, url: fileUrl });
+            if(!target.files) target.files = [];
+            target.files.push({ name: file, url: url });
+            
             await save();
-            alert("تمت الإضافة بنجاح!");
+            alert("تم الحفظ بنجاح!");
+            document.getElementById('admFileName').value = "";
+            document.getElementById('admFileUrl').value = "";
         }
 
         function renderAdminSubjects() {
             const list = document.getElementById('admSubjectsList');
-            list.innerHTML = "";
+            list.innerHTML = "<h5>الأقسام الحالية:</h5>";
             (appData.subjects || []).forEach((s, i) => {
-                list.innerHTML += `
-                <div style="background:#fff; padding:10px; border-radius:10px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
-                    <b>${s.name}</b>
-                    <button onclick="delSub(${i})" class="admin-action danger-btn" style="width:auto; padding:5px 15px; margin:0;">حذف</button>
+                list.innerHTML += `<div style="display:flex; justify-content:space-between; padding:5px; background:#fff; margin-top:5px; border-radius:8px;">
+                    <span>${s.name}</span>
+                    <button onclick="delSub(${i})" style="color:red; border:none; background:none;">حذف</button>
                 </div>`;
             });
         }
@@ -241,17 +245,16 @@
             alert("تم تحديث الهوية!");
         }
 
+        async function delSub(i) {
+            if(confirm("حذف القسم؟")) {
+                appData.subjects.splice(i, 1);
+                await save();
+            }
+        }
+
         async function save() {
             await fetch(DB_URL, { method: 'PUT', body: JSON.stringify(appData) });
             load();
-        }
-
-        // باقي الوظائف (التنقل، البحث، القائمة الجانبية)
-        function nav(p) {
-            document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active'));
-            document.getElementById(p + '-page').classList.add('active');
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            window.scrollTo(0,0);
         }
 
         function renderSubjects() {
@@ -260,15 +263,18 @@
             (appData.subjects || []).forEach(s => {
                 let files = "";
                 (s.files || []).forEach(f => {
-                    files += `<div class="list-item" onclick="window.open('${f.url}','_blank')"><b>${f.name}</b><i class="fas fa-file-pdf" style="color:red;"></i></div>`;
+                    files += `<div style="background:#fff; padding:15px; border-radius:12px; margin-top:10px; display:flex; justify-content:space-between;" onclick="window.open('${f.url}','_blank')">
+                        <b>${f.name}</b> <i class="fas fa-file-pdf" style="color:red;"></i>
+                    </div>`;
                 });
-                list.innerHTML += `<div style="margin-bottom:20px;"><h4>📂 ${s.name}</h4>${files}</div>`;
+                list.innerHTML += `<div style="margin-top:20px;"><h4>📂 ${s.name}</h4>${files}</div>`;
             });
         }
 
-        function toggleSide() {
+        function toggleSide(closeOnly = false) {
             const s = document.getElementById('sidebar');
             const o = document.getElementById('overlay');
+            if(closeOnly) { s.classList.remove('active'); o.style.display = "none"; return; }
             s.classList.toggle('active');
             o.style.display = s.classList.contains('active') ? "block" : "none";
         }
